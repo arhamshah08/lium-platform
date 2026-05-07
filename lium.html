@@ -1154,6 +1154,35 @@ body {
       </div>
     </div>
 
+    <!-- Payback Summary — 4 headline boxes (Qcells Predict format) -->
+    <div class="panel" style="background:var(--panel-2);">
+      <div class="panel-body" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:0;">
+        <div style="padding:18px 22px;border-right:1px solid var(--line);">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);margin-bottom:8px;">NPV (25yr, 5%)</div>
+          <div style="font-size:26px;font-weight:700;color:var(--ember);letter-spacing:-0.03em;line-height:1;">-$653<small style="font-size:13px;font-weight:700;">K</small></div>
+          <div style="font-size:10px;color:var(--ink-3);margin-top:6px;">Discounted present value of all cashflows</div>
+        </div>
+        <div style="padding:18px 22px;border-right:1px solid var(--line);">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);margin-bottom:8px;">Payback Period</div>
+          <div style="font-size:26px;font-weight:700;color:var(--amber);letter-spacing:-0.03em;line-height:1;">None <small style="font-size:13px;font-weight:700;">in 25yr</small></div>
+          <div style="font-size:10px;color:var(--ink-3);margin-top:6px;">Cumulative stays negative through model horizon</div>
+        </div>
+        <div style="padding:18px 22px;border-right:1px solid var(--line);">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);margin-bottom:8px;">IRR</div>
+          <div style="font-size:26px;font-weight:700;color:var(--amber);letter-spacing:-0.03em;line-height:1;">&lt; 0<small style="font-size:13px;font-weight:700;">%</small></div>
+          <div style="font-size:10px;color:var(--ink-3);margin-top:6px;">Bill savings alone can't service debt — grid services required</div>
+        </div>
+        <div style="padding:18px 22px;">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);margin-bottom:8px;">ROI (25yr)</div>
+          <div style="font-size:26px;font-weight:700;color:var(--ember);letter-spacing:-0.03em;line-height:1;">-7.6<small style="font-size:13px;font-weight:700;">%</small></div>
+          <div style="font-size:10px;color:var(--ink-3);margin-top:6px;">Net operating gain / initial capex (ex. grid services)</div>
+        </div>
+      </div>
+      <div style="padding:8px 22px;border-top:1px solid var(--line);font-size:10px;color:var(--ink-3);">
+        REopt base model only. Grid services revenue (Beckn dispatch, PPA contracts, capacity payments) projected to close gap to <b style="color:var(--good);">3–5% IRR</b> — tracked live in LIUM Energy.
+      </div>
+    </div>
+
     <div class="col-2-1" style="align-items:start;">
 
       <!-- LEFT: charts -->
@@ -1214,10 +1243,137 @@ body {
           </div>
         </div>
 
+        <!-- Cashflow Inputs table (Qcells Predict format) -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Cashflow Inputs</div>
+            <div style="font-size:10px;color:var(--ink-3);font-weight:400;">REopt model components — Year 0 = commissioning date</div>
+          </div>
+          <div class="panel-body no-pad">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>System</th>
+                  <th>Yr 1 ($)</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Escalator</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Solar PV Capex</td>
+                  <td><span class="status-pill" style="color:var(--ember);border-color:color-mix(in srgb,var(--ember) 30%,transparent);">Cost</span></td>
+                  <td>Solar</td>
+                  <td style="color:var(--ember);">-$35,791</td>
+                  <td>0</td><td>0</td><td>—</td>
+                </tr>
+                <tr>
+                  <td>BESS Capex</td>
+                  <td><span class="status-pill" style="color:var(--ember);border-color:color-mix(in srgb,var(--ember) 30%,transparent);">Cost</span></td>
+                  <td>BESS</td>
+                  <td style="color:var(--ember);">-$398,861</td>
+                  <td>0</td><td>0</td><td>—</td>
+                </tr>
+                <tr>
+                  <td>Generator Capex</td>
+                  <td><span class="status-pill" style="color:var(--ember);border-color:color-mix(in srgb,var(--ember) 30%,transparent);">Cost</span></td>
+                  <td>Generator</td>
+                  <td style="color:var(--ember);">-$211,568</td>
+                  <td>0</td><td>0</td><td>—</td>
+                </tr>
+                <tr>
+                  <td>Construction &amp; Soft Costs</td>
+                  <td><span class="status-pill" style="color:var(--ember);border-color:color-mix(in srgb,var(--ember) 30%,transparent);">Cost</span></td>
+                  <td>All</td>
+                  <td style="color:var(--ember);">-$208,141</td>
+                  <td>0</td><td>0</td><td>—</td>
+                </tr>
+                <tr style="background:color-mix(in srgb,var(--good) 6%,transparent);">
+                  <td>ITC — Solar + Storage</td>
+                  <td><span class="status-pill green">Incentive</span></td>
+                  <td>Federal</td>
+                  <td style="color:var(--good);">+$256,308</td>
+                  <td>1</td><td>1</td><td>One-time</td>
+                </tr>
+                <tr style="background:color-mix(in srgb,var(--good) 6%,transparent);">
+                  <td>Bill Savings</td>
+                  <td><span class="status-pill green">Savings</span></td>
+                  <td>Solar / BESS</td>
+                  <td style="color:var(--good);">+$9,495</td>
+                  <td>1</td><td>25</td><td>3%/yr · 0.5% degr.</td>
+                </tr>
+                <tr>
+                  <td>BoxPower O&amp;M</td>
+                  <td><span class="status-pill" style="color:var(--ember);border-color:color-mix(in srgb,var(--ember) 30%,transparent);">Cost</span></td>
+                  <td>All</td>
+                  <td style="color:var(--ember);">-$10,901</td>
+                  <td>1</td><td>25</td><td>2%/yr</td>
+                </tr>
+                <tr>
+                  <td>PSI Generator O&amp;M</td>
+                  <td><span class="status-pill" style="color:var(--ember);border-color:color-mix(in srgb,var(--ember) 30%,transparent);">Cost</span></td>
+                  <td>Generator</td>
+                  <td style="color:var(--ember);">-$6,366</td>
+                  <td>1</td><td>25</td><td>3%/yr</td>
+                </tr>
+                <tr style="background:color-mix(in srgb,var(--amber) 8%,transparent);">
+                  <td>Generator Major Service</td>
+                  <td><span class="status-pill amber">One-off</span></td>
+                  <td>Generator</td>
+                  <td style="color:var(--amber);">-$186,568</td>
+                  <td>15</td><td>15</td><td>—</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr style="border-top:2px solid var(--line-strong);">
+                  <td colspan="3" style="font-weight:700;color:var(--ink-2);">Total Upfront Capex</td>
+                  <td style="font-weight:700;color:var(--ember);">-$854,361</td>
+                  <td colspan="3"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
       </div>
 
       <!-- RIGHT: stack + breakdown -->
       <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- 25-Year Term Summary -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">25-Year Term Summary</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:0;padding:0;">
+            <div style="padding:12px 16px;border-bottom:1px solid var(--line);">
+              <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.10em;color:var(--good);margin-bottom:8px;">Revenue &amp; Savings</div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;color:var(--ink-3);">Bill Savings (25yr)</span><b style="font-size:12px;">$346K</b></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-size:12px;color:var(--ink-3);">Federal ITC (30%)</span><b style="font-size:12px;">$256K</b></div>
+              <div style="display:flex;justify-content:space-between;padding-top:6px;border-top:1px solid var(--line-strong);">
+                <span style="font-size:12px;font-weight:700;">Gross Revenue (25yr)</span>
+                <b style="font-size:15px;font-weight:700;color:var(--good);">$602K</b>
+              </div>
+            </div>
+            <div style="padding:12px 16px;border-bottom:1px solid var(--line);">
+              <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.10em;color:var(--ember);margin-bottom:8px;">Costs</div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;color:var(--ink-3);">Upfront Capex</span><b style="font-size:12px;">$854K</b></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-size:12px;color:var(--ink-3);">O&amp;M — 25yr total</span><b style="font-size:12px;">$618K</b></div>
+              <div style="display:flex;justify-content:space-between;padding-top:6px;border-top:1px solid var(--line-strong);">
+                <span style="font-size:12px;font-weight:700;">Total Costs (25yr)</span>
+                <b style="font-size:15px;font-weight:700;color:var(--ember);">$1,472K</b>
+              </div>
+            </div>
+            <div style="padding:12px 16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <span style="font-size:13px;font-weight:700;">Net Cash (25yr)</span>
+                <b style="font-size:20px;font-weight:700;color:var(--ember);">-$919K</b>
+              </div>
+              <div style="font-size:10px;color:var(--ink-3);line-height:1.5;">Excludes Beckn grid services, PPA revenue, and capacity payments — those are tracked in LIUM Energy and projected to cover the gap.</div>
+            </div>
+          </div>
+        </div>
 
         <!-- Capital Stack -->
         <div class="panel">
