@@ -472,7 +472,8 @@ body {
   <div class="role-picker">
     <div class="label">Active Role</div>
     <select class="role-select" id="roleSelect" onchange="switchRole(this.value)">
-      <option value="utility">Utility / EdgeGrid</option>
+      <option value="utility">Utility</option>
+      <option value="edgegrid">EdgeGrid</option>
       <option value="microgrid">Microgrid / DC Operator</option>
       <option value="risk-provider">Risk Provider</option>
     </select>
@@ -480,7 +481,7 @@ body {
 
   <!-- Utility Nav -->
   <nav class="nav-section" id="nav-utility">
-    <div class="nav-section-label">Utility / EdgeGrid</div>
+    <div class="nav-section-label">Utility</div>
     <a class="nav-link active" onclick="showPage('util-post')">
       <i data-lucide="send"></i> Post Flexibility Need
     </a>
@@ -493,6 +494,24 @@ body {
     </a>
     <a class="nav-link" onclick="showPage('util-revenue')">
       <i data-lucide="coins"></i> Revenue Allocation
+    </a>
+    <a class="nav-link" onclick="showPage('rp-telemetry')">
+      <i data-lucide="activity"></i> Live Telemetry
+    </a>
+  </nav>
+
+  <!-- EdgeGrid Nav -->
+  <nav class="nav-section" id="nav-edgegrid" style="display:none">
+    <div class="nav-section-label">EdgeGrid</div>
+    <a class="nav-link active" onclick="showPage('util-browse')">
+      <i data-lucide="layers"></i> DER Capacity Pool
+    </a>
+    <a class="nav-link" onclick="showPage('util-dispatch')">
+      <i data-lucide="zap"></i> Active Dispatches
+      <span class="nav-badge">1</span>
+    </a>
+    <a class="nav-link" onclick="showPage('util-revenue')">
+      <i data-lucide="trending-up"></i> Flexibility Revenue
     </a>
     <a class="nav-link" onclick="showPage('rp-telemetry')">
       <i data-lucide="activity"></i> Live Telemetry
@@ -546,7 +565,7 @@ body {
     <div class="user-row">
       <div class="avatar" id="avatarInitials">EG</div>
       <div>
-        <div class="user-name" id="userName">PG&amp;E EdgeGrid</div>
+        <div class="user-name" id="userName">Pacific Gas &amp; Electric</div>
         <div class="user-role" id="userRole">Utility</div>
       </div>
     </div>
@@ -560,7 +579,7 @@ body {
   <div class="topbar">
     <div>
       <div class="topbar-title" id="topbarTitle">Post Flexibility Need</div>
-      <div class="topbar-sub" id="topbarSub">Utility / EdgeGrid — PG&amp;E</div>
+      <div class="topbar-sub" id="topbarSub">Utility — PG&amp;E</div>
     </div>
     <div class="topbar-live">Grid Live</div>
   </div>
@@ -569,7 +588,7 @@ body {
   <section class="page active" id="page-util-post">
     <div class="page-head">
       <div class="page-head-left">
-        <span class="eyebrow utility">Utility / EdgeGrid</span>
+        <span class="eyebrow utility">Utility</span>
         <h1 class="page-title">Post Flexibility Need</h1>
         <p class="page-meta">Publish ancillary capacity request to LIUM microgrid network</p>
       </div>
@@ -726,7 +745,7 @@ body {
   <section class="page" id="page-util-browse">
     <div class="page-head">
       <div class="page-head-left">
-        <span class="eyebrow utility">Utility / EdgeGrid</span>
+        <span class="eyebrow utility">Utility</span>
         <h1 class="page-title">Available Microgrid Capacity</h1>
         <p class="page-meta">Registered microgrids offering flexibility in your zone</p>
       </div>
@@ -835,7 +854,7 @@ body {
   <section class="page" id="page-util-dispatch">
     <div class="page-head">
       <div class="page-head-left">
-        <span class="eyebrow utility">Utility / EdgeGrid</span>
+        <span class="eyebrow utility">Utility</span>
         <h1 class="page-title">Active Dispatch</h1>
         <p class="page-meta">LIUM orchestrating delivery — real-time tracking</p>
       </div>
@@ -933,7 +952,7 @@ body {
   <section class="page" id="page-util-revenue">
     <div class="page-head">
       <div class="page-head-left">
-        <span class="eyebrow utility">Utility / EdgeGrid</span>
+        <span class="eyebrow utility">Utility</span>
         <h1 class="page-title">Revenue Allocation</h1>
         <p class="page-meta">Confirm distribution pool — UNITS distributes to participants via LIUM</p>
       </div>
@@ -2056,9 +2075,10 @@ async function submitIndicator() {
 }
 
 const roleConfig = {
-  utility:        { nav: 'nav-utility',       default: 'util-post',    initials: 'EG', name: 'PG&E EdgeGrid',      role: 'Utility' },
-  microgrid:      { nav: 'nav-microgrid',     default: 'mg-requests',  initials: 'AX', name: 'Axil Developers',    role: 'DC Operator' },
-  'risk-provider':{ nav: 'nav-risk-provider', default: 'rp-projects',  initials: 'RP', name: 'Trusted Risk Prov.', role: 'Risk Provider' },
+  utility:        { nav: 'nav-utility',       default: 'util-post',    initials: 'PG', name: 'Pacific Gas & Electric', role: 'Utility' },
+  edgegrid:       { nav: 'nav-edgegrid',      default: 'util-browse',  initials: 'EG', name: 'AutoGrid Networks',      role: 'EdgeGrid' },
+  microgrid:      { nav: 'nav-microgrid',     default: 'mg-requests',  initials: 'AX', name: 'Axil Developers',        role: 'DC Operator' },
+  'risk-provider':{ nav: 'nav-risk-provider', default: 'rp-projects',  initials: 'RP', name: 'Trusted Risk Prov.',     role: 'Risk Provider' },
 };
 
 function switchRole(role) {
@@ -2090,7 +2110,7 @@ function showPage(pageId) {
   if (pageId === 'rp-projects') loadRPProjects();
 
   const titles = {
-    'util-post':     ['Post Flexibility Need', 'Utility / EdgeGrid — PG&E'],
+    'util-post':     ['Post Flexibility Need', 'Utility — PG&E'],
     'util-browse':   ['Available Microgrid Capacity', 'Bay Area · 3 microgrids online'],
     'util-dispatch': ['Active Dispatch', 'GS-2026-0047 — delivering now'],
     'util-revenue':  ['Revenue Allocation', 'Confirm distribution pool'],
