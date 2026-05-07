@@ -629,6 +629,9 @@ body {
     <a class="nav-link" onclick="showPage('dev-consent')">
       <i data-lucide="shield-check"></i> Telemetry Consent
     </a>
+    <a class="nav-link" onclick="showPage('dev-financials')">
+      <i data-lucide="bar-chart-2"></i> Project Financials
+    </a>
     <a class="nav-link" onclick="showPage('dev-disbursements')">
       <i data-lucide="trending-up"></i> Disbursements
     </a>
@@ -648,6 +651,9 @@ body {
     </a>
     <a class="nav-link" onclick="showPage('fin-securitise')">
       <i data-lucide="layers"></i> Enlist for Securitisation
+    </a>
+    <a class="nav-link" onclick="showPage('dev-financials')">
+      <i data-lucide="bar-chart-2"></i> Project Financials
     </a>
   </nav>
 
@@ -1097,6 +1103,206 @@ body {
             <div style="font-size:11px;color:var(--ink-3);">Controller · Battery ×2 · BESS Inverter · Solar PV · Generator · Switchgear</div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ PROJECT FINANCIALS ══════════════ -->
+  <section class="page" id="page-dev-financials">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Menlo Housing Microgrid</span>
+        <h1 class="page-title">Project Financials</h1>
+        <p class="page-meta">REopt 25-year model · BoxPower · Menlo Park, CA · Last updated May 2026</p>
+      </div>
+      <div class="btn-actions">
+        <a href="lium-energy.html" class="btn btn-ghost btn-sm" style="text-decoration:none;"><i data-lucide="external-link"></i> Live Telemetry →</a>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Total Capex</div>
+        <div class="k-val">$854<small>K</small></div>
+        <div class="k-delta pos">After ITC: $544K net</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Federal ITC (30%)</div>
+        <div class="k-val">$256<small>K</small></div>
+        <div class="k-delta pos">Year 1 credit</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Yr 1 Bill Savings</div>
+        <div class="k-val">$9.5<small>K</small></div>
+        <div class="k-delta pos">vs $51.9K BAU</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Yr 1 O&amp;M Cost</div>
+        <div class="k-val">$12.7<small>K</small></div>
+        <div class="k-delta">Monitoring + gen service</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">PV LCOE</div>
+        <div class="k-val">$0.054<small>/kWh</small></div>
+        <div class="k-delta pos">45,212 kWh/yr</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Peak Reduction</div>
+        <div class="k-val">43<small>%</small></div>
+        <div class="k-delta pos">82.5 → 47.1 kW</div>
+      </div>
+    </div>
+
+    <div class="col-2-1" style="align-items:start;">
+
+      <!-- LEFT: charts -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Chart 1: 25-yr cashflow -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">25-Year Annual Cash Position</div>
+            <div style="display:flex;gap:12px;font-size:10px;font-weight:700;">
+              <span style="color:var(--good);">■ Net Positive</span>
+              <span style="color:var(--ember);">■ Net Negative</span>
+              <span style="color:var(--sun);">— Cumulative</span>
+            </div>
+          </div>
+          <div class="panel-body" style="padding:16px 16px 8px;">
+            <svg id="chart-cashflow" width="100%" height="220" viewBox="0 0 560 220" preserveAspectRatio="xMidYMid meet" style="display:block;"></svg>
+            <div style="font-size:10px;color:var(--ink-3);margin-top:6px;">Year 0 = $854K capex outflow. Year 1 net positive due to $256K Federal ITC. Years 2–25 reflect operating cashflows.</div>
+          </div>
+        </div>
+
+        <!-- Chart 2: Annual Bill Savings vs O&M (10yr) -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Annual Bill Savings vs O&amp;M Cost — Years 1–25</div>
+            <div style="display:flex;gap:12px;font-size:10px;font-weight:700;">
+              <span style="color:var(--good);">■ Bill Savings</span>
+              <span style="color:var(--ember);">■ O&amp;M Cost</span>
+            </div>
+          </div>
+          <div class="panel-body" style="padding:16px 16px 8px;">
+            <svg id="chart-savings" width="100%" height="200" viewBox="0 0 560 200" preserveAspectRatio="xMidYMid meet" style="display:block;"></svg>
+            <div style="font-size:10px;color:var(--ink-3);margin-top:6px;">O&amp;M exceeds bill savings in all years — grid services revenue is the primary debt service source. Year 15 spike = generator major service ($186K O&amp;M).</div>
+          </div>
+        </div>
+
+        <!-- DSCR Table -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Debt Service Coverage Ratio — 10-Year Forward</div>
+            <div style="font-size:10px;color:var(--ink-3);font-weight:400;">Grid services rev projected at $35K/yr Year 1, escalating 3%/yr</div>
+          </div>
+          <div class="panel-body no-pad">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Year</th>
+                  <th>Bill Savings</th>
+                  <th>Grid Services</th>
+                  <th>O&amp;M</th>
+                  <th>NOI</th>
+                  <th>Debt Service</th>
+                  <th>DSCR</th>
+                </tr>
+              </thead>
+              <tbody id="dscr-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: stack + breakdown -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Capital Stack -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Capital Stack</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:0;">
+            <!-- Stacked bar -->
+            <div style="display:flex;height:16px;width:100%;margin-bottom:14px;gap:1px;">
+              <div style="flex:55;background:#00D26A;" title="Senior A 55%"></div>
+              <div style="flex:20;background:#60A5FA;" title="Senior B 20%"></div>
+              <div style="flex:7;background:#FF9E1B;" title="Mezzanine 7%"></div>
+              <div style="flex:18;background:#C8341A;" title="Equity 18%"></div>
+            </div>
+            <!-- Tranche rows -->
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="border-left:3px solid #00D26A;padding:10px 12px;background:var(--panel-2);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <span style="font-size:11px;font-weight:700;color:#00D26A;">Senior A · 55%</span>
+                  <span style="font-size:13px;font-weight:700;">$469,898</span>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--ink-3);">
+                  <span>5.0% p.a.</span><span>25yr term</span><span>Monthly disburse</span>
+                </div>
+                <div style="margin-top:6px;font-size:10px;color:var(--ink-3);">Annual service: <b style="color:var(--ink-2);">$33,261</b></div>
+              </div>
+              <div style="border-left:3px solid #60A5FA;padding:10px 12px;background:var(--panel-2);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <span style="font-size:11px;font-weight:700;color:#60A5FA;">Senior B · 20%</span>
+                  <span style="font-size:13px;font-weight:700;">$170,872</span>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--ink-3);">
+                  <span>5.8% p.a.</span><span>20yr term</span><span>Quarterly disburse</span>
+                </div>
+                <div style="margin-top:6px;font-size:10px;color:var(--ink-3);">Annual service: <b style="color:var(--ink-2);">$14,831</b></div>
+              </div>
+              <div style="border-left:3px solid #FF9E1B;padding:10px 12px;background:var(--panel-2);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <span style="font-size:11px;font-weight:700;color:#FF9E1B;">Mezzanine · 7%</span>
+                  <span style="font-size:13px;font-weight:700;">$59,806</span>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--ink-3);">
+                  <span>12% p.a.</span><span>PIK eligible</span>
+                </div>
+              </div>
+              <div style="border-left:3px solid #C8341A;padding:10px 12px;background:var(--panel-2);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <span style="font-size:11px;font-weight:700;color:#C8341A;">Equity · 18%</span>
+                  <span style="font-size:13px;font-weight:700;">$153,786</span>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--ink-3);">
+                  <span>18–22% IRR target</span><span>Sponsor equity</span>
+                </div>
+              </div>
+            </div>
+            <!-- Total debt service -->
+            <div style="margin-top:12px;padding:10px 12px;background:var(--panel-2);border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-3);">Total Debt Service (yr 1–20)</span>
+              <span style="font-size:14px;font-weight:700;color:var(--sun);">$48,092 / yr</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cost Breakdown -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Capex Breakdown</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;">
+            <div id="capex-bars"></div>
+          </div>
+        </div>
+
+        <!-- System stats -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">System &amp; Environmental</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;">
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Annual Load</span><b>314,244 kWh</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Renewable Fraction</span><b style="color:var(--good);">12.76%</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Grid Renewable (CA)</span><b style="color:var(--good);">90.03%</b></div>
+              <div style="border-top:1px solid var(--line);padding-top:7px;display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">CO₂ Reduction</span><b style="color:var(--good);">2.3 t/yr (14.6%)</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Annual PV Generation</span><b>45,212 kWh</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Year 1 Utility Bill</span><b>$42,373</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">BAU Utility Bill</span><b style="color:var(--ember);">$51,868</b></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -2486,7 +2692,8 @@ function showPage(pageId) {
       l.classList.add('active');
     }
   });
-  // Trigger live data loads
+  // Trigger live data loads + chart renders
+  if (pageId === 'dev-financials') renderFinancialCharts();
   if (pageId === 'fin-marketplace') loadMarketplaceProjects();
   if (pageId === 'dev-offers') loadDevLoanOffers();
   if (pageId === 'sa-loans') loadSALoans();
@@ -2495,6 +2702,7 @@ function showPage(pageId) {
 
   // Update topbar
   const titles = {
+    'dev-financials': ['Project Financials', 'Menlo Housing Microgrid — 25-yr REopt model'],
     'dev-projects': ['My Projects', 'Project Developer — Menlo Housing Microgrid'],
     'dev-list': ['List New Project', 'Publish to Beckn Catalog'],
     'dev-offers': ['Incoming Loan Offers', 'Project Developer — 2 pending'],
@@ -2521,6 +2729,192 @@ function showPage(pageId) {
     document.getElementById('topbarTitle').textContent = t[0];
     document.getElementById('topbarSub').textContent = t[1];
   }
+}
+
+// ── Financial Chart Data (Menlo Housing, REopt 25yr) ──
+const FIN = {
+  billSavings: [0,9495,9780,10073,10375,10687,11007,11338,11678,12028,12389,12760,13143,13538,13944,14362,14793,15237,15694,16165,16650,17149,17663,18193,18739,19301],
+  omCost:      [0,12732,13050,13376,13711,14054,14405,14765,15134,15513,15900,16298,16705,17123,17551,200930,18440,18901,19373,19857,20354,20863,21384,21919,22467,23028],
+  cumulative:  [-854361,-611200,-630328,-643145,-652189,-661264,-667516,-670944,-674400,-677885,-681397,-684934,-688496,-692081,-695689,-882257,-885903,-889567,-893246,-896939,-900644,-904357,-908078,-911803,-915531,-919258],
+  total:       [-854361,243161,-19127,-12817,-9044,-9075,-6252,-3428,-3457,-3485,-3512,-3537,-3562,-3585,-3607,-186568,-3647,-3664,-3679,-3693,-3704,-3714,-3721,-3725,-3728,-3727],
+};
+const CAPEX_BREAKDOWN = [
+  { label: 'BESS System',       val: 398861, color: '#0D9488' },
+  { label: 'Generator (LPG)',   val: 211568, color: '#2563EB' },
+  { label: 'Construction',      val: 155982, color: '#6B5A3F' },
+  { label: 'Soft Costs',        val: 52159,  color: '#B8A77F' },
+  { label: 'Solar PV',          val: 35791,  color: '#FFC400' },
+];
+const TOTAL_CAPEX = 854361;
+const DEBT_SERVICE_YR1_20 = 48092; // Senior A $33,261 + Senior B $14,831
+const DEBT_SERVICE_YR21_25 = 33261; // Senior A only after Senior B matures
+const GRID_SVC_BASE = 35000;         // projected grid services revenue Year 1
+
+function renderFinancialCharts() {
+  drawCashflowChart();
+  drawSavingsChart();
+  buildDSCRTable();
+  buildCapexBars();
+}
+
+function svgEl(tag, attrs, text) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const el = document.createElementNS(ns, tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  if (text) el.textContent = text;
+  return el;
+}
+
+function drawCashflowChart() {
+  const svg = document.getElementById('chart-cashflow');
+  if (!svg) return;
+  svg.innerHTML = '';
+  const W = 560, H = 220, PAD = { t: 10, r: 10, b: 30, l: 60 };
+  const cW = W - PAD.l - PAD.r, cH = H - PAD.t - PAD.b;
+  const data = FIN.total; // 26 values (year 0–25)
+  // Clamp display: year 0 shown as -$300K cap for readability; annotate actual
+  const displayData = data.map((v, i) => i === 0 ? Math.max(v, -300000) : v);
+  const maxVal = Math.max(...displayData);
+  const minVal = Math.min(...displayData);
+  const range = maxVal - minVal || 1;
+  const barW = cW / 26 - 2;
+  const yScale = v => PAD.t + cH - ((v - minVal) / range) * cH;
+  const zeroY = yScale(0);
+
+  // Grid lines
+  [-200000, -100000, 0, 100000, 200000].forEach(v => {
+    if (v < minVal || v > maxVal) return;
+    const y = yScale(v);
+    svg.appendChild(svgEl('line', { x1: PAD.l, y1: y, x2: W - PAD.r, y2: y, stroke: '#2A2A33', 'stroke-width': 1 }));
+    svg.appendChild(svgEl('text', { x: PAD.l - 4, y: y + 4, 'text-anchor': 'end', fill: '#6B5A3F', 'font-size': 9 }, (v / 1000).toFixed(0) + 'K'));
+  });
+
+  // Bars
+  displayData.forEach((v, i) => {
+    const x = PAD.l + i * (cW / 26) + 1;
+    const y1 = Math.min(yScale(v), zeroY);
+    const h = Math.abs(yScale(v) - zeroY);
+    const color = v >= 0 ? '#00D26A' : (i === 0 ? '#7C3AED' : '#C8341A');
+    svg.appendChild(svgEl('rect', { x, y: y1, width: barW, height: Math.max(h, 1), fill: color, opacity: i === 0 ? 0.8 : 0.75 }));
+    // Year label every 5 years
+    if (i % 5 === 0 || i === 25) {
+      svg.appendChild(svgEl('text', { x: x + barW / 2, y: H - 4, 'text-anchor': 'middle', fill: '#6B5A3F', 'font-size': 9 }, 'Yr' + i));
+    }
+  });
+
+  // Zero line
+  svg.appendChild(svgEl('line', { x1: PAD.l, y1: zeroY, x2: W - PAD.r, y2: zeroY, stroke: '#3A3A45', 'stroke-width': 1.5 }));
+
+  // Cumulative line (overlay)
+  const cum = FIN.cumulative;
+  const cumMin = Math.min(...cum), cumMax = Math.max(...cum);
+  const cumRange = cumMax - cumMin || 1;
+  const cumY = v => PAD.t + cH - ((v - minVal) / range) * cH;
+  const pts = cum.map((v, i) => {
+    const clampV = Math.max(v, minVal);
+    return (PAD.l + i * (cW / 26) + barW / 2) + ',' + cumY(clampV);
+  }).join(' ');
+  svg.appendChild(svgEl('polyline', { points: pts, fill: 'none', stroke: '#FFC400', 'stroke-width': 1.5, 'stroke-dasharray': '3,2', opacity: 0.7 }));
+
+  // Annotation: Year 1 ITC
+  const annX = PAD.l + 1 * (cW / 26) + barW / 2;
+  const annY = yScale(200000);
+  svg.appendChild(svgEl('text', { x: annX, y: annY - 6, 'text-anchor': 'middle', fill: '#00D26A', 'font-size': 8, 'font-weight': 700 }, '+$243K'));
+  svg.appendChild(svgEl('text', { x: annX, y: annY - 14, 'text-anchor': 'middle', fill: '#6B5A3F', 'font-size': 7 }, 'ITC'));
+}
+
+function drawSavingsChart() {
+  const svg = document.getElementById('chart-savings');
+  if (!svg) return;
+  svg.innerHTML = '';
+  const W = 560, H = 200, PAD = { t: 10, r: 10, b: 28, l: 58 };
+  const cW = W - PAD.l - PAD.r, cH = H - PAD.t - PAD.b;
+  const savings = FIN.billSavings.slice(1); // years 1-25
+  const om = FIN.omCost.slice(1);
+  // Cap year 15 O&M spike for chart readability
+  const omDisplay = om.map((v, i) => i === 14 ? 35000 : v); // show spike capped
+  const maxVal = Math.max(...savings, ...omDisplay);
+  const n = 25;
+  const groupW = cW / n;
+  const barW = groupW * 0.38;
+  const yScale = v => PAD.t + cH - (v / maxVal) * cH;
+
+  // Grid
+  [10000, 20000, 30000].forEach(v => {
+    if (v > maxVal) return;
+    const y = yScale(v);
+    svg.appendChild(svgEl('line', { x1: PAD.l, y1: y, x2: W - PAD.r, y2: y, stroke: '#2A2A33', 'stroke-width': 1 }));
+    svg.appendChild(svgEl('text', { x: PAD.l - 4, y: y + 4, 'text-anchor': 'end', fill: '#6B5A3F', 'font-size': 9 }, '$' + (v / 1000).toFixed(0) + 'K'));
+  });
+
+  savings.forEach((s, i) => {
+    const gX = PAD.l + i * groupW;
+    // Savings bar
+    svg.appendChild(svgEl('rect', { x: gX + 1, y: yScale(s), width: barW, height: cH - (yScale(s) - PAD.t), fill: '#00D26A', opacity: 0.75 }));
+    // O&M bar
+    const omV = omDisplay[i];
+    svg.appendChild(svgEl('rect', { x: gX + barW + 2, y: yScale(omV), width: barW, height: cH - (yScale(omV) - PAD.t), fill: om[i] > 30000 ? '#FF9E1B' : '#C8341A', opacity: i === 14 ? 1 : 0.7 }));
+    // X label every 5 years
+    if ((i + 1) % 5 === 0 || i === 0) {
+      svg.appendChild(svgEl('text', { x: gX + groupW / 2, y: H - 6, 'text-anchor': 'middle', fill: '#6B5A3F', 'font-size': 9 }, 'Yr' + (i + 1)));
+    }
+  });
+
+  // Year 15 spike label
+  const spikeX = PAD.l + 14 * groupW + barW + 2;
+  svg.appendChild(svgEl('text', { x: spikeX + barW / 2, y: yScale(35000) - 3, 'text-anchor': 'middle', fill: '#FF9E1B', 'font-size': 7.5, 'font-weight': 700 }, 'Gen svc'));
+
+  svg.appendChild(svgEl('line', { x1: PAD.l, y1: PAD.t + cH, x2: W - PAD.r, y2: PAD.t + cH, stroke: '#3A3A45', 'stroke-width': 1 }));
+}
+
+function buildDSCRTable() {
+  const tbody = document.getElementById('dscr-table-body');
+  if (!tbody) return;
+  let html = '';
+  for (let yr = 1; yr <= 10; yr++) {
+    const savings = FIN.billSavings[yr];
+    const gridSvc = Math.round(GRID_SVC_BASE * Math.pow(1.03, yr - 1));
+    const om = FIN.omCost[yr];
+    const noi = savings + gridSvc - om;
+    const ds = yr <= 20 ? DEBT_SERVICE_YR1_20 : DEBT_SERVICE_YR21_25;
+    const dscr = (noi / ds).toFixed(2);
+    const dscrNum = parseFloat(dscr);
+    const dscrColor = dscrNum >= 1.2 ? '#00D26A' : dscrNum >= 1.0 ? '#FF9E1B' : '#C8341A';
+    html += `<tr>
+      <td><b>Yr ${yr}</b></td>
+      <td>$${savings.toLocaleString('en-US',{maximumFractionDigits:0})}</td>
+      <td style="color:var(--teal);">$${gridSvc.toLocaleString()}</td>
+      <td style="color:var(--ember);">$${om.toLocaleString('en-US',{maximumFractionDigits:0})}</td>
+      <td style="color:${noi>0?'var(--good)':'var(--ember)'};">$${noi.toLocaleString('en-US',{maximumFractionDigits:0})}</td>
+      <td>$${ds.toLocaleString()}</td>
+      <td><b style="color:${dscrColor};">${dscr}×</b></td>
+    </tr>`;
+  }
+  tbody.innerHTML = html;
+}
+
+function buildCapexBars() {
+  const container = document.getElementById('capex-bars');
+  if (!container) return;
+  const total = TOTAL_CAPEX;
+  container.innerHTML = CAPEX_BREAKDOWN.map(item => {
+    const pct = (item.val / total * 100).toFixed(1);
+    return `<div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-size:11px;font-weight:700;">${item.label}</span>
+        <span style="font-size:11px;color:var(--ink-3);">$${(item.val/1000).toFixed(0)}K · ${pct}%</span>
+      </div>
+      <div style="height:8px;background:var(--panel-2);border:1px solid var(--line);">
+        <div style="height:100%;width:${pct}%;background:${item.color};"></div>
+      </div>
+    </div>`;
+  }).join('') +
+  `<div style="padding-top:8px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:11px;font-weight:700;">
+    <span>Total Capex</span><span>$854,361</span>
+  </div>
+  <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:4px;">
+    <span style="color:var(--ink-3);">After 30% ITC</span><span style="color:var(--good);">$544,194 net</span>
+  </div>`;
 }
 
 // Init Lucide icons
