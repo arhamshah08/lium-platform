@@ -2419,7 +2419,7 @@ function toast(msg, type) {
 
 // ── Activity log ──
 async function logActivity(action, entityType, entityId, details) {
-  await sb.from('activity_log').insert({ actor_name: actorName, role: actorRole, action, entity_type: entityType, entity_id: entityId || null, details });
+  await sb.from('activity_log').insert({ actor_name: actorName, actor_role: actorRole, action, entity_type: entityType, entity_id: entityId || null, details });
 }
 
 // ── Publish project ──
@@ -2431,13 +2431,13 @@ async function publishProject() {
     location: document.getElementById('proj-location').value,
     developer: document.getElementById('proj-developer').value,
     capex_usd: parseFloat((document.getElementById('proj-capex').value||'').replace(/,/g,'')) || 0,
-    solar_kw: parseFloat(document.getElementById('proj-solar').value) || 0,
+    pv_kw: parseFloat(document.getElementById('proj-solar').value) || 0,
     bess_kwh: parseFloat(document.getElementById('proj-bess').value) || 0,
     generator_kw: parseFloat(document.getElementById('proj-gen').value) || 0,
-    asset_type: document.getElementById('proj-type').value,
+    description: document.getElementById('proj-type').value,
     itc_usd: parseFloat((document.getElementById('proj-itc').value||'').replace(/,/g,'')) || 0,
-    status: 'listed',
-    actor_name: actorName,
+    status: 'enlisted',
+    created_by: actorName,
     lq_score: 87
   }).select().single();
   if (error) { toast('Error: ' + error.message, 'err'); return; }
@@ -2456,11 +2456,11 @@ async function loadMarketplaceProjects() {
   container.innerHTML = data.map(p => `
     <div class="project-card">
       <div class="project-card-head">
-        <div><div class="project-name">${escHtml(p.name)}</div><div class="project-loc">${escHtml(p.location||'')}${p.developer?' · '+escHtml(p.developer):''}${p.actor_name?' · '+escHtml(p.actor_name):''}</div></div>
+        <div><div class="project-name">${escHtml(p.name)}</div><div class="project-loc">${escHtml(p.location||'')}${p.developer?' · '+escHtml(p.developer):''}${p.created_by?' · '+escHtml(p.created_by):''}</div></div>
         <div style="display:flex;gap:8px;align-items:center;"><div class="lq-badge green">LQ ${p.lq_score||'–'}</div><span class="status-pill amber">Seeking Finance</span></div>
       </div>
       <div class="project-specs">
-        ${p.solar_kw?`<div class="spec">Solar <b>${p.solar_kw} kW</b></div>`:''}
+        ${p.pv_kw?`<div class="spec">Solar <b>${p.pv_kw} kW</b></div>`:''}
         ${p.bess_kwh?`<div class="spec">BESS <b>${p.bess_kwh} kWh</b></div>`:''}
         ${p.generator_kw?`<div class="spec">Gen <b>${p.generator_kw} kW</b></div>`:''}
         ${p.capex_usd?`<div class="spec">Capex <b>$${(p.capex_usd/1000).toFixed(0)}K</b></div>`:''}
@@ -2491,14 +2491,13 @@ async function submitOffer() {
     project_id: projectId,
     financier_name: actorName,
     amount_usd: amount,
-    interest_rate: parseFloat(document.getElementById('offer-rate').value) || 5,
+    rate_pct: parseFloat(document.getElementById('offer-rate').value) || 5,
     tranche: document.getElementById('offer-tranche').value,
     term_years: parseInt(document.getElementById('offer-term').value) || 25,
-    min_uptime_pct: parseFloat(document.getElementById('offer-uptime').value) || 80,
     min_lq_score: parseFloat(document.getElementById('offer-lq').value) || 85,
-    disbursement_trigger: document.getElementById('offer-disbursement').value,
-    status: 'pending',
-    actor_name: actorName
+    notes: document.getElementById('offer-disbursement').value,
+    status: 'offered',
+    created_by: actorName
   }).select().single();
   if (error) { toast('Error: ' + error.message, 'err'); return; }
   logActivity('loan_offer_submitted', 'loan_offer', data.id, { amount, financier: actorName });
@@ -2515,20 +2514,20 @@ async function loadDevLoanOffers() {
   if (!container) return;
   if (error || !data.length) { container.innerHTML = '<div style="color:#6B5A3F;font-size:13px;padding:4px 0 8px;">No offers yet — they appear here when financiers submit.</div>'; return; }
   container.innerHTML = data.map(o => `
-    <div class="offer-card ${o.status==='pending'?'highlight':''}">
+    <div class="offer-card ${o.status==='offered'?'highlight':''}">
       <div class="offer-header">
-        <div><div class="offer-from">${escHtml(o.financier_name||o.actor_name||'–')}</div><div style="font-size:10px;color:var(--ink-3);margin-top:2px;text-transform:uppercase;letter-spacing:0.09em;">${escHtml(o.tranche||'')} · ${new Date(o.created_at).toLocaleDateString()}</div></div>
+        <div><div class="offer-from">${escHtml(o.financier_name||o.created_by||'–')}</div><div style="font-size:10px;color:var(--ink-3);margin-top:2px;text-transform:uppercase;letter-spacing:0.09em;">${escHtml(o.tranche||'')} · ${new Date(o.created_at).toLocaleDateString()}</div></div>
         <div style="text-align:right;"><div class="offer-amount">$${Number(o.amount_usd).toLocaleString()}</div><span class="status-pill ${o.status==='accepted'?'green':o.status==='declined'?'':'amber'}">${o.status==='accepted'?'Accepted':o.status==='declined'?'Declined':'Pending Review'}</span></div>
       </div>
       <div class="offer-details">
         <div class="offer-detail"><div class="label">Project</div><div class="value">${escHtml(o.projects?.name||'–')}</div></div>
-        <div class="offer-detail"><div class="label">Rate</div><div class="value">${o.interest_rate}% p.a.</div></div>
-        <div class="offer-detail"><div class="label">Term</div><div class="value">${o.term_years}y</div></div>
+        <div class="offer-detail"><div class="label">Rate</div><div class="value">${o.rate_pct}% p.a.</div></div>
+        <div class="offer-detail"><div class="label">Term</div><div class="value">${o.term_years||'–'}y</div></div>
         <div class="offer-detail"><div class="label">Tranche</div><div class="value">${escHtml(o.tranche||'–')}</div></div>
-        <div class="offer-detail"><div class="label">Min Uptime</div><div class="value">${o.min_uptime_pct||'–'}%</div></div>
         <div class="offer-detail"><div class="label">Min LQ</div><div class="value">${o.min_lq_score||'–'}</div></div>
+        <div class="offer-detail"><div class="label">Notes</div><div class="value">${escHtml(o.notes||'–')}</div></div>
       </div>
-      ${o.status==='pending'?`<div class="offer-actions"><button class="btn btn-primary" onclick="acceptOffer('${o.id}')"><i data-lucide="check-circle"></i> Accept + Sign</button><button class="btn btn-ghost btn-sm" style="color:var(--ember);border-color:var(--ember);" onclick="declineOffer('${o.id}')">Decline</button></div>`:''}
+      ${o.status==='offered'?`<div class="offer-actions"><button class="btn btn-primary" onclick="acceptOffer('${o.id}')"><i data-lucide="check-circle"></i> Accept + Sign</button><button class="btn btn-ghost btn-sm" style="color:var(--ember);border-color:var(--ember);" onclick="declineOffer('${o.id}')">Decline</button></div>`:''}
     </div>`).join('');
   lucide.createIcons();
 }
@@ -2550,21 +2549,21 @@ async function declineOffer(offerId) {
 
 // ── SA: load accepted loans ──
 async function loadSALoans() {
-  const { data, error } = await sb.from('loan_offers').select('*, projects(name, location, solar_kw, bess_kwh, lq_score)').in('status', ['accepted', 'pending']).order('created_at', { ascending: false });
+  const { data, error } = await sb.from('loan_offers').select('*, projects(name, location, pv_kw, bess_kwh, lq_score)').eq('status', 'accepted').order('created_at', { ascending: false });
   const container = document.getElementById('live-sa-loans');
   if (!container) return;
   if (error || !data.length) { container.innerHTML = '<div style="color:#6B5A3F;font-size:13px;padding:4px 0 8px;">No accepted loans yet — appear when developers accept financier offers.</div>'; return; }
   container.innerHTML = data.map(o => `
     <div class="project-card">
       <div class="project-card-head">
-        <div><div class="project-name">${escHtml(o.projects?.name||'–')}</div><div class="project-loc">${escHtml(o.projects?.location||'')} · ${escHtml(o.financier_name||'')}</div></div>
-        <div style="display:flex;gap:8px;align-items:center;"><div class="lq-badge green">LQ ${o.projects?.lq_score||'–'}</div><span class="status-pill ${o.status==='accepted'?'green':'amber'}">${o.status}</span></div>
+        <div><div class="project-name">${escHtml(o.projects?.name||'–')}</div><div class="project-loc">${escHtml(o.projects?.location||'')} · ${escHtml(o.financier_name||o.created_by||'')}</div></div>
+        <div style="display:flex;gap:8px;align-items:center;"><div class="lq-badge green">LQ ${o.projects?.lq_score||'–'}</div><span class="status-pill green">Accepted</span></div>
       </div>
       <div class="project-specs">
         <div class="spec">Amount <b style="color:var(--sun);">$${Number(o.amount_usd).toLocaleString()}</b></div>
-        <div class="spec">Rate <b>${o.interest_rate}%</b></div>
+        <div class="spec">Rate <b>${o.rate_pct}%</b></div>
         <div class="spec">Tranche <b>${escHtml(o.tranche||'–')}</b></div>
-        <div class="spec">Term <b>${o.term_years}y</b></div>
+        <div class="spec">Term <b>${o.term_years||'–'}y</b></div>
       </div>
       <div class="project-footer">
         <button class="btn btn-primary btn-sm" onclick="openStructureForm('${o.id}','${o.project_id}','${escHtml(o.projects?.name||'').replace(/'/g,'')}')">Structure →</button>
@@ -2595,7 +2594,7 @@ async function structureSecurity() {
     const { data: loan } = await sb.from('loan_offers').select('amount_usd').eq('id', loanId).single();
     if (loan) totalAmt = loan.amount_usd;
   }
-  const { data, error } = await sb.from('securities').insert({ project_id: projectId||null, agent_name: actorName, total_amount_usd: totalAmt, senior_a_pct: seniorA, senior_b_pct: seniorB, mezz_pct: mezz, equity_pct: equity, lq_score: 87, status: 'listed', actor_name: actorName }).select().single();
+  const { data, error } = await sb.from('securities').insert({ project_id: projectId||null, loan_offer_id: loanId||null, total_value_usd: totalAmt, senior_a_pct: seniorA, senior_b_pct: seniorB, mezzanine_pct: mezz, equity_pct: equity, lq_score: 87, status: 'structured', created_by: actorName }).select().single();
   if (error) { toast('Error: ' + error.message, 'err'); return; }
   if (loanId) await sb.from('loan_offers').update({ status: 'securitised' }).eq('id', loanId);
   logActivity('security_structured', 'security', data.id, { projectName, totalAmt });
@@ -2614,18 +2613,18 @@ async function loadSecuritiesMarket() {
     container.innerHTML = data.map(s => `
       <div class="project-card" style="${containerId.includes('inv')?'width:calc(33% - 8px);min-width:280px;':''}">
         <div class="project-card-head">
-          <div><div class="project-name">${escHtml(s.projects?.name||'Security')}</div><div class="project-loc">${escHtml(s.projects?.location||'')} · Agent: ${escHtml(s.agent_name||s.actor_name||'–')}</div></div>
-          <div style="display:flex;gap:8px;"><div class="lq-badge green">LQ ${s.lq_score||s.projects?.lq_score||'–'}</div><span class="status-pill green">Listed</span></div>
+          <div><div class="project-name">${escHtml(s.projects?.name||'Security')}</div><div class="project-loc">${escHtml(s.projects?.location||'')} · Agent: ${escHtml(s.created_by||'–')}</div></div>
+          <div style="display:flex;gap:8px;"><div class="lq-badge green">LQ ${s.lq_score||s.projects?.lq_score||'–'}</div><span class="status-pill green">Structured</span></div>
         </div>
         <div class="project-specs">
-          <div class="spec">Total <b style="color:var(--sun);">$${(Number(s.total_amount_usd)/1000).toFixed(0)}K</b></div>
+          <div class="spec">Total <b style="color:var(--sun);">$${(Number(s.total_value_usd)/1000).toFixed(0)}K</b></div>
           <div class="spec">Sr A <b>${s.senior_a_pct}%</b></div>
           <div class="spec">Sr B <b>${s.senior_b_pct}%</b></div>
-          <div class="spec">Mezz <b>${s.mezz_pct}%</b></div>
+          <div class="spec">Mezz <b>${s.mezzanine_pct}%</b></div>
           <div class="spec">Equity <b>${Number(s.equity_pct).toFixed(0)}%</b></div>
         </div>
         <div class="project-footer">
-          <button class="btn btn-primary btn-sm" onclick="investInSecurity('${s.id}','${escHtml(s.projects?.name||'').replace(/'/g,'')}',${s.total_amount_usd})">Invest →</button>
+          <button class="btn btn-primary btn-sm" onclick="investInSecurity('${s.id}','${escHtml(s.projects?.name||'').replace(/'/g,'')}',${s.total_value_usd})">Invest →</button>
           <span class="spec" style="color:var(--ink-3);">${new Date(s.created_at).toLocaleDateString()}</span>
         </div>
       </div>`).join('');
@@ -2639,10 +2638,10 @@ async function investInSecurity(securityId, projectName, totalAmt) {
   const amountNum = parseFloat(rawAmt.replace(/[$,]/g,''));
   if (isNaN(amountNum) || amountNum < 5000) { toast('Minimum investment is $5,000', 'err'); return; }
   const tokens = Math.floor(amountNum / 5000);
-  const { data, error } = await sb.from('investments').insert({ security_id: securityId, investor_name: actorName, amount_usd: amountNum, token_count: tokens, investor_type: actorRole === 'pm' ? 'institutional' : 'retail', actor_name: actorName }).select().single();
+  const { data, error } = await sb.from('investments').insert({ security_id: securityId, amount_usd: amountNum, investor_role: actorRole === 'pm' ? 'institutional' : 'retail', tranche: 'Senior A', created_by: actorName }).select().single();
   if (error) { toast('Error: ' + error.message, 'err'); return; }
-  logActivity('investment_made', 'investment', data.id, { projectName, amountNum, tokens });
-  toast(`Investment confirmed — ${tokens} token${tokens>1?'s':''} issued!`);
+  logActivity('investment_made', 'investment', data.id, { projectName, amountNum });
+  toast(`Investment of $${amountNum.toLocaleString()} confirmed!`);
 }
 
 // ── Utility fn ──
