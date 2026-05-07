@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIUM</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0B0B0E;
+  --panel: #15151A;
+  --panel-2: #1C1C22;
+  --line: #2A2A33;
+  --line-strong: #3A3A45;
+  --ink: #FFFBF0;
+  --ink-2: #B8A77F;
+  --ink-3: #6B5A3F;
+  --ember: #C8341A;
+  --sun: #FFC400;
+  --amber: #FF9E1B;
+  --good: #00D26A;
+  --purple: #7C3AED;
+  --blue: #2563EB;
+  --sidebar-w: 220px;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── App Shell ── */
+.app { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: #08080B;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+}
+.sidebar-brand {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-logo {
+  width: 22px; height: 22px;
+  background: var(--sun);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 900; color: #0B0B0E;
+}
+.brand-name { font-weight: 700; font-size: 13px; color: var(--ink); letter-spacing: -0.01em; }
+.brand-sub { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3); font-weight: 700; }
+
+/* Role selector */
+.role-picker {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.role-picker .label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3); font-weight: 700; margin-bottom: 6px; }
+.role-select {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 10px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Nav */
+.nav-section { padding: 10px 0; }
+.nav-section-label {
+  padding: 0 16px 6px;
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--ink-3);
+}
+.nav-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 16px;
+  font-size: 12.5px; font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 120ms, background 120ms;
+}
+.nav-link:hover { color: var(--ink); background: var(--panel); }
+.nav-link.active {
+  color: var(--ink);
+  background: var(--panel);
+  border-left: 2px solid var(--sun);
+  padding-left: 14px;
+}
+.nav-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--ember);
+  color: var(--ink);
+  font-size: 9px; font-weight: 700;
+  padding: 2px 5px;
+  letter-spacing: 0.05em;
+}
+
+/* Status pill in nav */
+.nav-status {
+  margin-left: auto;
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 2px 6px;
+  border: 1px solid;
+}
+.nav-status.green { color: var(--good); border-color: color-mix(in srgb, var(--good) 35%, transparent); }
+.nav-status.amber { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 35%, transparent); }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+}
+.user-row { display: flex; align-items: center; gap: 8px; }
+.avatar {
+  width: 28px; height: 28px;
+  background: var(--sun); color: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 11px;
+  flex-shrink: 0;
+}
+.user-name { font-size: 12px; font-weight: 700; color: var(--ink); }
+.user-role { font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* ── Main ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Topbar */
+.topbar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+.topbar-sub { font-size: 12px; color: var(--ink-3); }
+.topbar-live {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 10px; font-weight: 700;
+  color: var(--good);
+  text-transform: uppercase; letter-spacing: 0.10em;
+  margin-left: auto;
+}
+.topbar-live::before {
+  content: "";
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--good);
+  animation: pulse 1.6s infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,210,106,.45); }
+  50% { box-shadow: 0 0 0 7px rgba(0,210,106,0); }
+}
+
+/* ── Pages ── */
+.page {
+  padding: 24px;
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+.page.active { display: flex; }
+
+/* Page header */
+.page-head {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 16px;
+}
+.page-head-left { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow {
+  display: inline-block;
+  background: var(--ember);
+  color: var(--ink);
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  padding: 4px 8px;
+}
+.eyebrow.purple { background: var(--purple); }
+.eyebrow.blue { background: var(--blue); }
+.eyebrow.sun { background: var(--sun); color: #0B0B0E; }
+.page-title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+.page-meta { font-size: 12px; color: var(--ink-3); }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  padding: 9px 14px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 120ms;
+}
+.btn-primary { background: var(--sun); color: #0B0B0E; border-color: var(--sun); }
+.btn-primary:hover { background: #FFD740; }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+.btn-ghost:hover { border-color: var(--ink); }
+.btn-ember { background: var(--ember); color: var(--ink); }
+.btn-ember:hover { background: #A02010; }
+.btn-purple { background: var(--purple); color: var(--ink); }
+.btn-purple:hover { background: #6022CC; }
+.btn-sm { padding: 6px 10px; font-size: 10px; }
+.btn-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Status flow pills */
+.flow-steps {
+  display: flex; align-items: center; gap: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 10px 16px;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.flow-step {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  padding: 5px 10px;
+  color: var(--ink-3);
+}
+.flow-step.done { color: var(--good); }
+.flow-step.active { background: var(--panel-2); color: var(--sun); border: 1px solid var(--sun); }
+.flow-step::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.flow-arrow { color: var(--ink-3); font-size: 12px; padding: 0 2px; }
+
+/* ── Cards & Panels ── */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.panel-title {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.10em;
+  color: var(--ember);
+}
+.panel-body { padding: 16px; }
+.panel-body.no-pad { padding: 0; }
+
+/* Table */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th {
+  padding: 9px 14px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.10em;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  background: var(--panel-2);
+}
+.tbl td {
+  padding: 11px 14px;
+  font-size: 12.5px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-2);
+  vertical-align: middle;
+}
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl tr:hover td { background: rgba(255,255,255,0.02); }
+.tbl td .primary { color: var(--ink); font-weight: 700; }
+.tbl td .sub { color: var(--ink-3); font-size: 11px; }
+
+/* Stat pill / status */
+.status-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  border: 1px solid;
+}
+.status-pill.green { color: var(--good); border-color: color-mix(in srgb, var(--good) 30%, transparent); background: color-mix(in srgb, var(--good) 10%, transparent); }
+.status-pill.amber { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 30%, transparent); background: color-mix(in srgb, var(--amber) 10%, transparent); }
+.status-pill.ember { color: var(--ember); border-color: color-mix(in srgb, var(--ember) 30%, transparent); background: color-mix(in srgb, var(--ember) 10%, transparent); }
+.status-pill.purple { color: var(--purple); border-color: color-mix(in srgb, var(--purple) 30%, transparent); background: color-mix(in srgb, var(--purple) 10%, transparent); }
+.status-pill.blue { color: #60A5FA; border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.1); }
+.status-pill::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+/* LQ badge */
+.lq-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px;
+  font-size: 13px; font-weight: 700;
+  border: 1px solid;
+}
+.lq-badge.green { color: var(--good); border-color: color-mix(in srgb, var(--good) 40%, transparent); }
+.lq-badge.amber { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 40%, transparent); }
+.lq-badge.red { color: var(--ember); border-color: color-mix(in srgb, var(--ember) 40%, transparent); }
+
+/* KPI row */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  border: 1px solid var(--line);
+  gap: 1px;
+  background: var(--line);
+}
+.kpi {
+  background: var(--panel);
+  padding: 14px 16px;
+}
+.kpi .k-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.10em; color: var(--ember); margin-bottom: 6px; }
+.kpi .k-val { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; color: var(--ink); font-feature-settings: "tnum" 1; }
+.kpi .k-val small { font-size: 12px; color: var(--ink-3); margin-left: 2px; }
+.kpi .k-delta { font-size: 10px; margin-top: 4px; font-weight: 700; }
+.kpi .k-delta.pos { color: var(--good); }
+.kpi .k-delta.neg { color: var(--amber); }
+
+/* Grid layouts */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.col-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+
+/* Project card */
+.project-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.project-card:hover { border-color: var(--line-strong); }
+.project-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.project-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.project-loc { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+.project-specs { display: flex; gap: 12px; flex-wrap: wrap; }
+.spec { font-size: 11px; color: var(--ink-3); }
+.spec b { color: var(--ink-2); font-weight: 700; }
+.project-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--line); }
+
+/* Offer card */
+.offer-card {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  padding: 16px;
+}
+.offer-card.highlight { border-color: var(--sun); }
+.offer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.offer-from { font-size: 13px; font-weight: 700; color: var(--ink); }
+.offer-amount { font-size: 20px; font-weight: 700; color: var(--sun); font-feature-settings: "tnum" 1; }
+.offer-details { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+.offer-detail .label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.10em; color: var(--ink-3); font-weight: 700; }
+.offer-detail .value { font-size: 13px; font-weight: 700; color: var(--ink-2); margin-top: 3px; }
+.offer-actions { display: flex; gap: 8px; }
+
+/* Token / security card */
+.security-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.security-card:hover { border-color: var(--purple); }
+.security-tag {
+  display: inline-block;
+  background: var(--purple);
+  color: var(--ink);
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.10em;
+  padding: 3px 8px;
+}
+.tranche-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0; }
+.tranche-pill {
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px;
+  border: 1px solid;
+  text-transform: uppercase; letter-spacing: 0.07em;
+}
+.tranche-pill.senior-a { color: var(--good); border-color: color-mix(in srgb, var(--good) 30%, transparent); }
+.tranche-pill.senior-b { color: #60A5FA; border-color: rgba(96,165,250,.3); }
+.tranche-pill.mezz { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 30%, transparent); }
+.tranche-pill.equity { color: var(--ember); border-color: color-mix(in srgb, var(--ember) 30%, transparent); }
+
+/* Token investor card */
+.token-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 18px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.token-card:hover { border-color: var(--line-strong); }
+.token-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+.token-loc { font-size: 11px; color: var(--ink-3); }
+.token-return { font-size: 24px; font-weight: 700; color: var(--sun); }
+.token-return small { font-size: 12px; color: var(--ink-3); }
+.traffic-light { display: flex; gap: 5px; }
+.tl-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid transparent; }
+.tl-dot.active-green { background: var(--good); }
+.tl-dot.inactive { background: var(--line-strong); }
+.tl-dot.active-amber { background: var(--amber); }
+.tl-dot.active-red { background: var(--ember); }
+
+/* Form elements */
+.form-section { display: flex; flex-direction: column; gap: 14px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-row.three { grid-template-columns: repeat(3,1fr); }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--ink-3); }
+.form-input {
+  background: var(--panel-2);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px; font-weight: 600;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 120ms;
+}
+.form-input:focus { border-color: var(--sun); }
+.form-input::placeholder { color: var(--ink-3); }
+.form-select { cursor: pointer; }
+.form-hint { font-size: 10px; color: var(--ink-3); }
+
+/* Telemetry / consent */
+.consent-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.consent-row:last-child { border-bottom: 0; }
+.consent-info { display: flex; flex-direction: column; gap: 3px; }
+.consent-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.consent-detail { font-size: 11px; color: var(--ink-3); }
+.toggle-wrap { display: flex; align-items: center; gap: 10px; }
+.toggle {
+  width: 36px; height: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--panel-2);
+  position: relative; cursor: pointer;
+}
+.toggle.on { background: var(--good); border-color: var(--good); }
+.toggle::after {
+  content: "";
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  position: absolute; top: 2px; left: 2px;
+  transition: transform 200ms;
+}
+.toggle.on::after { background: #fff; transform: translateX(16px); }
+.toggle-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); }
+.toggle.on + .toggle-label { color: var(--good); }
+
+/* Disbursement timeline */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.timeline-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.timeline-item:last-child { border-bottom: 0; }
+.timeline-dot-col { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.timeline-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  background: var(--panel);
+  flex-shrink: 0; margin-top: 4px;
+}
+.timeline-dot.done { background: var(--good); border-color: var(--good); }
+.timeline-dot.active { background: var(--sun); border-color: var(--sun); }
+.timeline-line { width: 1px; flex: 1; background: var(--line); min-height: 20px; }
+.timeline-content { flex: 1; }
+.timeline-event { font-size: 13px; font-weight: 700; color: var(--ink); }
+.timeline-date { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+.timeline-amount { font-size: 15px; font-weight: 700; color: var(--sun); margin-top: 4px; font-feature-settings: "tnum" 1; }
+
+/* Tranche structure builder */
+.tranche-builder { display: flex; flex-direction: column; gap: 10px; }
+.tranche-item {
+  display: grid; grid-template-columns: 1fr 80px 80px 100px 40px;
+  gap: 8px; align-items: center;
+  padding: 10px 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+}
+.tranche-item.header { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.10em; color: var(--ink-3); padding: 6px 12px; }
+
+/* Risk indicator */
+.risk-indicator {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+}
+.risk-dot { width: 10px; height: 10px; border-radius: 50%; }
+.risk-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; }
+.risk-source { font-size: 10px; color: var(--ink-3); margin-left: auto; }
+
+/* Chart placeholder */
+.chart-ph {
+  height: 120px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  display: flex; align-items: flex-end;
+  padding: 8px;
+  gap: 3px;
+}
+.chart-ph-bar { flex: 1; background: var(--sun); opacity: 0.4; border-radius: 1px; }
+.chart-ph-bar:nth-child(3n) { opacity: 0.7; }
+.chart-ph-bar:nth-child(5n) { opacity: 1; }
+
+/* Scan feed */
+.feed { display: flex; flex-direction: column; gap: 0; }
+.feed-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.feed-item:last-child { border-bottom: 0; }
+.feed-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); flex-shrink: 0; margin-top: 4px; }
+.feed-dot.amber { background: var(--amber); }
+.feed-msg { flex: 1; color: var(--ink-2); }
+.feed-msg b { color: var(--ink); }
+.feed-time { font-size: 10px; color: var(--ink-3); flex-shrink: 0; }
+
+/* Dashboard link */
+.dash-link {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--sun) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sun) 25%, transparent);
+  font-size: 12px; font-weight: 700;
+  color: var(--sun);
+  cursor: pointer;
+  text-decoration: none;
+}
+.dash-link svg { width: 14px; height: 14px; }
+
+/* Divider */
+.divider { height: 1px; background: var(--line); }
+
+/* Empty state */
+.empty {
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+.empty svg { width: 32px; height: 32px; margin-bottom: 10px; opacity: 0.4; }
+
+/* Capital stack bar */
+.cap-bar { height: 8px; display: flex; gap: 2px; margin: 8px 0; }
+.cap-bar-seg { height: 100%; }
+
+/* Responsive */
+@media (max-width: 860px) {
+  .sidebar { transform: translateX(-100%); }
+  .main { margin-left: 0; }
+  .two-col, .three-col, .col-2-1 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ═══════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">L</div>
+    <div>
+      <div class="brand-name">LIUM</div>
+      <div class="brand-sub">Capital Markets</div>
+    </div>
+  </div>
+
+  <div class="role-picker">
+    <div class="label">Active Role</div>
+    <select class="role-select" id="roleSelect" onchange="switchRole(this.value)">
+      <option value="developer">Project Developer</option>
+      <option value="financier">Financier</option>
+      <option value="sec-agent">Securitisation Agent</option>
+      <option value="pm">Portfolio Manager</option>
+      <option value="investor">Investor</option>
+    </select>
+  </div>
+
+  <!-- Developer Nav -->
+  <nav class="nav-section" id="nav-developer">
+    <div class="nav-section-label">Developer</div>
+    <a class="nav-link active" onclick="showPage('dev-projects')">
+      <i data-lucide="layout-grid"></i> My Projects
+    </a>
+    <a class="nav-link" onclick="showPage('dev-list')">
+      <i data-lucide="plus-circle"></i> List New Project
+    </a>
+    <a class="nav-link" onclick="showPage('dev-offers')">
+      <i data-lucide="inbox"></i> Loan Offers
+      <span class="nav-badge">2</span>
+    </a>
+    <a class="nav-link" onclick="showPage('dev-consent')">
+      <i data-lucide="shield-check"></i> Telemetry Consent
+    </a>
+    <a class="nav-link" onclick="showPage('dev-disbursements')">
+      <i data-lucide="trending-up"></i> Disbursements
+    </a>
+  </nav>
+
+  <!-- Financier Nav -->
+  <nav class="nav-section" id="nav-financier" style="display:none">
+    <div class="nav-section-label">Financier</div>
+    <a class="nav-link active" onclick="showPage('fin-marketplace')">
+      <i data-lucide="search"></i> Project Marketplace
+    </a>
+    <a class="nav-link" onclick="showPage('fin-offers')">
+      <i data-lucide="file-text"></i> My Loan Offers
+    </a>
+    <a class="nav-link" onclick="showPage('fin-active')">
+      <i data-lucide="activity"></i> Active Loans
+    </a>
+    <a class="nav-link" onclick="showPage('fin-securitise')">
+      <i data-lucide="layers"></i> Enlist for Securitisation
+    </a>
+  </nav>
+
+  <!-- Sec Agent Nav -->
+  <nav class="nav-section" id="nav-sec-agent" style="display:none">
+    <div class="nav-section-label">Securitisation Agent</div>
+    <a class="nav-link active" onclick="showPage('sa-loans')">
+      <i data-lucide="package"></i> Available Loans
+    </a>
+    <a class="nav-link" onclick="showPage('sa-structure')">
+      <i data-lucide="sliders"></i> Structure Security
+    </a>
+    <a class="nav-link" onclick="showPage('sa-book')">
+      <i data-lucide="book-open"></i> Securities Book
+    </a>
+    <a class="nav-link" onclick="showPage('sa-pm-list')">
+      <i data-lucide="building-2"></i> PM Marketplace
+    </a>
+    <a class="nav-link" onclick="showPage('sa-inv-list')">
+      <i data-lucide="coins"></i> Investor Tokens
+    </a>
+  </nav>
+
+  <!-- Portfolio Manager Nav -->
+  <nav class="nav-section" id="nav-pm" style="display:none">
+    <div class="nav-section-label">Portfolio Manager</div>
+    <a class="nav-link active" onclick="showPage('pm-market')">
+      <i data-lucide="bar-chart-2"></i> Securities Market
+    </a>
+    <a class="nav-link" onclick="showPage('pm-portfolio')">
+      <i data-lucide="briefcase"></i> My Portfolio
+    </a>
+    <a class="nav-link" onclick="showPage('pm-performance')">
+      <i data-lucide="trending-up"></i> Performance Feed
+    </a>
+  </nav>
+
+  <!-- Investor Nav -->
+  <nav class="nav-section" id="nav-investor" style="display:none">
+    <div class="nav-section-label">Investor</div>
+    <a class="nav-link active" onclick="showPage('inv-market')">
+      <i data-lucide="grid"></i> Token Marketplace
+    </a>
+    <a class="nav-link" onclick="showPage('inv-tokens')">
+      <i data-lucide="wallet"></i> My Tokens
+    </a>
+    <a class="nav-link" onclick="showPage('inv-returns')">
+      <i data-lucide="trending-up"></i> Returns
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-row">
+      <div class="avatar" id="avatarInitials">AD</div>
+      <div>
+        <div class="user-name" id="userName">Axil Developers</div>
+        <div class="user-role" id="userRole">Developer</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbarTitle">My Projects</div>
+      <div class="topbar-sub" id="topbarSub">Project Developer — Menlo Housing Microgrid</div>
+    </div>
+    <div class="topbar-live">Live Feed</div>
+  </div>
+
+  <!-- ══════════════ DEV: MY PROJECTS ══════════════ -->
+  <section class="page active" id="page-dev-projects">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Project Developer</span>
+        <h1 class="page-title">My Projects</h1>
+        <p class="page-meta">1 active project — Axil Developers</p>
+      </div>
+      <div class="btn-actions">
+        <button class="btn btn-primary" onclick="showPage('dev-list')"><i data-lucide="plus"></i> List New Project</button>
+      </div>
+    </div>
+
+    <!-- Status flow -->
+    <div class="flow-steps">
+      <div class="flow-step done">Enlisted</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step active">Financed</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Securitised</div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Total Capex</div>
+        <div class="k-val">$854<small>K</small></div>
+        <div class="k-delta pos">After ITC: $544K</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">LQ Score <span style="font-size:9px;color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0;"> · via LIUM Energy</span></div>
+        <div class="k-val">87<small>/100</small></div>
+        <div class="k-delta pos">● Securitisable · <a href="lium-energy.html" style="color:inherit;text-decoration:underline;opacity:0.7;">View detail →</a></div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Loan Offers</div>
+        <div class="k-val">2</div>
+        <div class="k-delta pos">New this week</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Disbursed</div>
+        <div class="k-val">$469<small>K</small></div>
+        <div class="k-delta pos">Senior A drawn</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Savings Yr 1</div>
+        <div class="k-val">$9.5<small>K</small></div>
+        <div class="k-delta pos">↑ on target</div>
+      </div>
+    </div>
+
+    <!-- Project card -->
+    <div class="project-card">
+      <div class="project-card-head">
+        <div>
+          <div class="project-name">Menlo Housing Microgrid</div>
+          <div class="project-loc">Menlo Park, CA · BoxPower · Enlisted Feb 2024</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="lq-badge green">LQ 87</div>
+          <span class="status-pill green">Financed</span>
+        </div>
+      </div>
+
+      <div class="project-specs">
+        <div class="spec">Solar PV <b>28.3 kW</b></div>
+        <div class="spec">BESS <b>420 kWh / 105 kW</b></div>
+        <div class="spec">Generator <b>150 kW LPG</b></div>
+        <div class="spec">Capex <b>$854,361</b></div>
+        <div class="spec">ITC <b>$256,308</b></div>
+        <div class="spec">Assets <b>10 physical</b></div>
+      </div>
+
+      <!-- Capital stack bar -->
+      <div>
+        <div style="font-size:10px;color:var(--ink-3);font-weight:700;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:6px;">Capital Stack</div>
+        <div class="cap-bar">
+          <div class="cap-bar-seg" style="flex:55;background:#00D26A;"></div>
+          <div class="cap-bar-seg" style="flex:20;background:#60A5FA;"></div>
+          <div class="cap-bar-seg" style="flex:7;background:#FF9E1B;"></div>
+          <div class="cap-bar-seg" style="flex:18;background:#C8341A;"></div>
+        </div>
+        <div style="display:flex;gap:14px;margin-top:4px;flex-wrap:wrap;">
+          <span class="spec" style="color:#00D26A;">■ Senior A 55% $469K ~5%</span>
+          <span class="spec" style="color:#60A5FA;">■ Senior B 20% $170K ~5.8%</span>
+          <span class="spec" style="color:#FF9E1B;">■ Mezz 7% $59K ~12%</span>
+          <span class="spec" style="color:#C8341A;">■ Equity 18% $153K 18–22% IRR</span>
+        </div>
+      </div>
+
+      <div class="project-footer">
+        <a class="dash-link" href="#" style="text-decoration:none;">
+          <i data-lucide="external-link"></i> Open Full Dashboard →
+        </a>
+        <button class="btn btn-ghost btn-sm" onclick="showPage('dev-offers')">View Loan Offers (2) →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ DEV: LIST NEW PROJECT ══════════════ -->
+  <section class="page" id="page-dev-list">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Project Developer</span>
+        <h1 class="page-title">List New Project</h1>
+        <p class="page-meta">Publish to Beckn Catalog for Financier discovery</p>
+      </div>
+    </div>
+
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Project Details</div>
+        </div>
+        <div class="panel-body">
+          <div class="form-section">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Project Name</label>
+                <input class="form-input" type="text" placeholder="e.g. Menlo Housing Microgrid" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Location</label>
+                <input class="form-input" type="text" placeholder="City, State" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Integrator / Developer</label>
+                <input class="form-input" type="text" placeholder="e.g. BoxPower" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Total Capex ($)</label>
+                <input class="form-input" type="text" placeholder="854,361" />
+              </div>
+            </div>
+            <div class="form-row three">
+              <div class="form-group">
+                <label class="form-label">Solar PV (kW)</label>
+                <input class="form-input" type="text" placeholder="28.3" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">BESS (kWh)</label>
+                <input class="form-input" type="text" placeholder="420" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Generator (kW)</label>
+                <input class="form-input" type="text" placeholder="150" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Asset Type</label>
+                <select class="form-input form-select">
+                  <option>Microgrid (Solar + BESS + Gen)</option>
+                  <option>Solar + Storage</option>
+                  <option>BESS Only</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Federal ITC ($)</label>
+                <input class="form-input" type="text" placeholder="256,308" />
+              </div>
+            </div>
+            <div style="padding-top:8px;border-top:1px solid var(--line);display:flex;gap:8px;">
+              <button class="btn btn-primary"><i data-lucide="send"></i> Publish to Catalog</button>
+              <button class="btn btn-ghost">Save Draft</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">LQ Forecast</div></div>
+          <div class="panel-body">
+            <div style="font-size:11px;color:var(--ink-3);margin-bottom:10px;">Based on entered specs</div>
+            <div class="lq-badge green" style="font-size:22px;padding:8px 14px;">LQ ~87</div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;">
+              <div class="spec">Hardware <b style="color:var(--good);">30/30</b></div>
+              <div class="spec">Financial <b style="color:var(--good);">23/25</b></div>
+              <div class="spec">Compliance <b style="color:var(--amber);">18/25</b></div>
+              <div class="spec">Operations <b style="color:var(--good);">16/20</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Beckn Publish</div></div>
+          <div class="panel-body">
+            <div style="font-size:11px;color:var(--ink-3);">Project will be visible to verified Financiers on the Beckn Catalog. LIUM assigns a unique project token on publish.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ DEV: LOAN OFFERS ══════════════ -->
+  <section class="page" id="page-dev-offers">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Project Developer</span>
+        <h1 class="page-title">Incoming Loan Offers</h1>
+        <p class="page-meta">Menlo Housing Microgrid — 2 offers pending review</p>
+      </div>
+    </div>
+
+    <!-- Offer 1 -->
+    <div class="offer-card highlight">
+      <div class="offer-header">
+        <div>
+          <div class="offer-from">Blue Valley Capital</div>
+          <div style="font-size:10px;color:var(--ink-3);margin-top:2px;text-transform:uppercase;letter-spacing:0.09em;">Senior A Tranche · Received 3 days ago</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="offer-amount">$469,898</div>
+          <span class="status-pill amber">Pending Review</span>
+        </div>
+      </div>
+      <div class="offer-details">
+        <div class="offer-detail">
+          <div class="label">Interest Rate</div>
+          <div class="value">5.0% p.a.</div>
+        </div>
+        <div class="offer-detail">
+          <div class="label">Term</div>
+          <div class="value">25 years</div>
+        </div>
+        <div class="offer-detail">
+          <div class="label">Tranche</div>
+          <div class="value">Senior A (55%)</div>
+        </div>
+        <div class="offer-detail">
+          <div class="label">Guarantee (Pincer)</div>
+          <div class="value">80% uptime / 85% LQ</div>
+        </div>
+        <div class="offer-detail">
+          <div class="label">Vouch Lock</div>
+          <div class="value">Monthly disbursement</div>
+        </div>
+        <div class="offer-detail">
+          <div class="label">Telemetry Required</div>
+          <div class="value">Real-time stream</div>
+        </div>
+      </div>
+      <div class="offer-actions">
+        <button class="btn btn-primary"><i data-lucide="check-circle"></i> Accept + Sign</button>
+        <button class="btn btn-ghost">Request Changes</button>
+        <button class="btn btn-ghost btn-sm" style="color:var(--ember);border-color:var(--ember);">Decline</button>
+      </div>
+    </div>
+
+    <!-- Offer 2 -->
+    <div class="offer-card">
+      <div class="offer-header">
+        <div>
+          <div class="offer-from">Blend Finance</div>
+          <div style="font-size:10px;color:var(--ink-3);margin-top:2px;text-transform:uppercase;letter-spacing:0.09em;">Senior B Tranche · Received 1 day ago</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="offer-amount">$170,872</div>
+          <span class="status-pill amber">Pending Review</span>
+        </div>
+      </div>
+      <div class="offer-details">
+        <div class="offer-detail">
+          <div class="label">Interest Rate</div>
+          <div class="value">5.8% p.a.</div>
+        </div>
+        <div class="offer-detail">
+          <div class="label">Term</div>
+          <div class="value">20 years</div>
+        </div>
+        <div class="offer-detail">
+          <div class="label">Tranche</div>
+          <div class="value">Senior B (20%)</div>
+        </div>
+        <div class="offer-detail">
+          <div class="label">Guarantee (Pincer)</div>
+          <div class="value">75% uptime / 80% LQ</div>
+        </div>
+        <div class="offer-detail">
+          <div class="label">Vouch Lock</div>
+          <div class="value">Quarterly disbursement</div>
+        </div>
+        <div class="offer-detail">
+          <div class="label">Telemetry Required</div>
+          <div class="value">Monthly summary</div>
+        </div>
+      </div>
+      <div class="offer-actions">
+        <button class="btn btn-primary"><i data-lucide="check-circle"></i> Accept + Sign</button>
+        <button class="btn btn-ghost">Request Changes</button>
+        <button class="btn btn-ghost btn-sm" style="color:var(--ember);border-color:var(--ember);">Decline</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ DEV: TELEMETRY CONSENT ══════════════ -->
+  <section class="page" id="page-dev-consent">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Project Developer</span>
+        <h1 class="page-title">Telemetry Consent Manager</h1>
+        <p class="page-meta">Control which Financiers can access live telemetry from Menlo Housing Microgrid</p>
+      </div>
+    </div>
+
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Financier Access Controls</div>
+          <span class="status-pill green">2 Active Grants</span>
+        </div>
+        <div class="panel-body no-pad">
+          <div class="consent-row">
+            <div class="consent-info">
+              <div class="consent-name">Blue Valley Capital</div>
+              <div class="consent-detail">Real-time telemetry stream · All assets · Granted 14 Feb 2024</div>
+            </div>
+            <div class="toggle-wrap">
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+              <div class="toggle-label">Granted</div>
+            </div>
+          </div>
+          <div class="consent-row">
+            <div class="consent-info">
+              <div class="consent-name">Blend Finance</div>
+              <div class="consent-detail">Monthly summary only · BESS + Solar · Granted 18 Feb 2024</div>
+            </div>
+            <div class="toggle-wrap">
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+              <div class="toggle-label">Granted</div>
+            </div>
+          </div>
+          <div class="consent-row">
+            <div class="consent-info">
+              <div class="consent-name">Hammerhead Infrastructures</div>
+              <div class="consent-detail">Equity holder · No telemetry access requested</div>
+            </div>
+            <div class="toggle-wrap">
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+              <div class="toggle-label">Revoked</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">UNITS Access Tokens</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:12px;color:var(--ink-2);">Blue Valley</div>
+                <span class="status-pill green">Active</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:12px;color:var(--ink-2);">Blend Finance</div>
+                <span class="status-pill green">Active</span>
+              </div>
+            </div>
+            <div style="margin-top:12px;font-size:10px;color:var(--ink-3);">Tokens issued by UNITS on consent. Revoke above to invalidate.</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Data Streams</div></div>
+          <div class="panel-body">
+            <div style="font-size:11px;color:var(--ink-3);">Controller · Battery ×2 · BESS Inverter · Solar PV · Generator · Switchgear</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ DEV: DISBURSEMENTS ══════════════ -->
+  <section class="page" id="page-dev-disbursements">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Project Developer</span>
+        <h1 class="page-title">Disbursements</h1>
+        <p class="page-meta">LIUM Vouch — purpose-bound payments received</p>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Total Received</div>
+        <div class="k-val">$469<small>K</small></div>
+        <div class="k-delta pos">Senior A drawn</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Pending Release</div>
+        <div class="k-val">$170<small>K</small></div>
+        <div class="k-delta">Pincer verifying</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Next Trigger</div>
+        <div class="k-val">May<small>'26</small></div>
+        <div class="k-delta pos">LQ ≥80 maintained</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Payment Timeline</div></div>
+      <div class="panel-body no-pad" style="padding:16px;">
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot-col">
+              <div class="timeline-dot done"></div>
+              <div class="timeline-line"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-event">Initial Draw — Senior A</div>
+              <div class="timeline-date">Blue Valley Capital · 15 Feb 2024 · Pincer verified</div>
+              <div class="timeline-amount">+$469,898</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot-col">
+              <div class="timeline-dot active"></div>
+              <div class="timeline-line"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-event">Q1 Performance Draw — Senior B</div>
+              <div class="timeline-date">Blend Finance · Awaiting Pincer trigger · LQ 87 ✓</div>
+              <div class="timeline-amount">+$42,718 (Q1 tranche)</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot-col">
+              <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-event">Q2 Performance Draw</div>
+              <div class="timeline-date">Scheduled May 2026</div>
+              <div class="timeline-amount" style="color:var(--ink-3);">TBD</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ FINANCIER: MARKETPLACE ══════════════ -->
+  <section class="page" id="page-fin-marketplace">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow blue">Financier</span>
+        <h1 class="page-title">Project Marketplace</h1>
+        <p class="page-meta">Beckn Catalog — enlisted microgrid projects seeking financing</p>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Filter</div></div>
+      <div class="panel-body">
+        <div class="form-row" style="grid-template-columns:repeat(4,1fr);">
+          <div class="form-group">
+            <label class="form-label">Capex Range</label>
+            <select class="form-input form-select">
+              <option>Any</option>
+              <option selected>$500K – $1M</option>
+              <option>$1M – $5M</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">LQ Score Min</label>
+            <select class="form-input form-select">
+              <option>Any</option>
+              <option selected>≥ 80 (Securitisable)</option>
+              <option>≥ 65 (Seasoning)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Asset Type</label>
+            <select class="form-input form-select">
+              <option selected>All</option>
+              <option>Solar + BESS</option>
+              <option>Microgrid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input class="form-input" type="text" placeholder="State or region" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project cards -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="project-card">
+        <div class="project-card-head">
+          <div>
+            <div class="project-name">Menlo Housing Microgrid</div>
+            <div class="project-loc">Menlo Park, CA · BoxPower · Axil Developers</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div class="lq-badge green">LQ 87</div>
+            <span class="status-pill amber">Offers Pending</span>
+          </div>
+        </div>
+        <div class="project-specs">
+          <div class="spec">Solar <b>28.3 kW</b></div>
+          <div class="spec">BESS <b>420 kWh</b></div>
+          <div class="spec">Gen <b>150 kW</b></div>
+          <div class="spec">Capex <b>$854K</b></div>
+          <div class="spec">ITC <b>$256K</b></div>
+          <div class="spec">Peak reduction <b>82.5→47.1 kW</b></div>
+        </div>
+        <div class="project-footer">
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary btn-sm" onclick="showPage('fin-offers')"><i data-lucide="file-plus"></i> Offer Loan</button>
+            <button class="btn btn-ghost btn-sm">View Details</button>
+          </div>
+          <span class="spec">Financing gap <b style="color:var(--sun);">$384K remaining</b></span>
+        </div>
+      </div>
+
+      <div class="project-card" style="opacity:0.6;">
+        <div class="project-card-head">
+          <div>
+            <div class="project-name">Oakland DC Microgrid</div>
+            <div class="project-loc">Oakland, CA · SunPower · Hammerhead Infrastructures</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div class="lq-badge amber">LQ 72</div>
+            <span class="status-pill">Seeking Finance</span>
+          </div>
+        </div>
+        <div class="project-specs">
+          <div class="spec">Solar <b>45.0 kW</b></div>
+          <div class="spec">BESS <b>540 kWh</b></div>
+          <div class="spec">Capex <b>$1.1M</b></div>
+        </div>
+        <div class="project-footer">
+          <button class="btn btn-ghost btn-sm">Offer Loan</button>
+          <span class="spec" style="color:var(--amber);">Seasoning — LQ below threshold</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ FINANCIER: MY LOAN OFFERS ══════════════ -->
+  <section class="page" id="page-fin-offers">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow blue">Financier</span>
+        <h1 class="page-title">Offer Loan</h1>
+        <p class="page-meta">Set terms, LIUM Pincer guarantees, and lock funds via LIUM Vouch</p>
+      </div>
+    </div>
+
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Loan Terms — Menlo Housing Microgrid</div></div>
+        <div class="panel-body">
+          <div class="form-section">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Loan Amount ($)</label>
+                <input class="form-input" type="text" value="469,898" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Interest Rate (% p.a.)</label>
+                <input class="form-input" type="text" value="5.0" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Tranche</label>
+                <select class="form-input form-select">
+                  <option selected>Senior A (55%)</option>
+                  <option>Senior B (20%)</option>
+                  <option>Mezzanine (7%)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Term (years)</label>
+                <input class="form-input" type="text" value="25" />
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.10em;color:var(--ember);font-weight:700;">LIUM Pincer — Performance Guarantees</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Min Uptime (%)</label>
+                <input class="form-input" type="text" value="80" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Min LQ Score</label>
+                <input class="form-input" type="text" value="85" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Disbursement Trigger</label>
+              <select class="form-input form-select">
+                <option>Monthly (on Pincer verification)</option>
+                <option>Quarterly</option>
+                <option>Annual</option>
+              </select>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.10em;color:var(--blue);font-weight:700;">LIUM Vouch — Fund Lock</div>
+            <div class="form-group">
+              <label class="form-label">Lock Funds in Vouch</label>
+              <select class="form-input form-select">
+                <option>Yes — purpose-bound escrow</option>
+                <option>No</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:8px;padding-top:8px;border-top:1px solid var(--line);">
+              <button class="btn btn-primary"><i data-lucide="send"></i> Submit Offer</button>
+              <button class="btn btn-ghost">Save Draft</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Flow Status</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div class="flow-step done">Offered</div>
+              <div class="flow-step">Accepted</div>
+              <div class="flow-step">Active</div>
+              <div class="flow-step">Securitised</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Project LQ</div></div>
+          <div class="panel-body">
+            <div class="lq-badge green" style="font-size:20px;padding:8px 14px;">LQ 87</div>
+            <div style="margin-top:8px;font-size:11px;color:var(--good);">● Securitisable threshold met</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ FINANCIER: ACTIVE LOANS ══════════════ -->
+  <section class="page" id="page-fin-active">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow blue">Financier</span>
+        <h1 class="page-title">Active Loans</h1>
+        <p class="page-meta">Live telemetry streams + Pincer verification status</p>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">Total Deployed</div><div class="k-val">$469<small>K</small></div><div class="k-delta pos">1 active loan</div></div>
+      <div class="kpi"><div class="k-label">LQ (Live)</div><div class="k-val">87</div><div class="k-delta pos">● Above threshold</div></div>
+      <div class="kpi"><div class="k-label">Uptime (30d)</div><div class="k-val">98.2<small>%</small></div><div class="k-delta pos">↑ Pincer OK</div></div>
+      <div class="kpi"><div class="k-label">Next Disburse</div><div class="k-val">May<small>'26</small></div><div class="k-delta pos">On track</div></div>
+    </div>
+
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Menlo Housing Microgrid — Live Telemetry</div>
+          <span class="status-pill green">Streaming</span>
+        </div>
+        <div class="panel-body">
+          <div class="chart-ph">
+            <div class="chart-ph-bar" style="height:60%;"></div>
+            <div class="chart-ph-bar" style="height:72%;"></div>
+            <div class="chart-ph-bar" style="height:55%;"></div>
+            <div class="chart-ph-bar" style="height:80%;"></div>
+            <div class="chart-ph-bar" style="height:90%;"></div>
+            <div class="chart-ph-bar" style="height:85%;"></div>
+            <div class="chart-ph-bar" style="height:92%;"></div>
+            <div class="chart-ph-bar" style="height:88%;"></div>
+            <div class="chart-ph-bar" style="height:95%;"></div>
+            <div class="chart-ph-bar" style="height:100%;background:var(--good);opacity:1;"></div>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:10px;">
+            <span class="spec">SOC <b style="color:var(--good);">78%</b></span>
+            <span class="spec">Solar <b style="color:var(--sun);">21.4 kW</b></span>
+            <span class="spec">Load <b style="color:var(--ink-2);">34.1 kW</b></span>
+            <span class="spec">CO₂ saved <b style="color:var(--good);">14.55%</b></span>
+          </div>
+          <div class="feed" style="margin-top:12px;">
+            <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>BESS</b> SoC 78% — within Pincer bounds</div><div class="feed-time">Just now</div></div>
+            <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>Solar PV</b> output 21.4 kW — clear sky</div><div class="feed-time">2m ago</div></div>
+            <div class="feed-item"><div class="feed-dot amber"></div><div class="feed-msg"><b>Generator</b> on standby — low generation</div><div class="feed-time">8m ago</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">LIUM Pincer</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;"><span class="spec">Uptime</span><b style="color:var(--good);">98.2% ✓</b></div>
+              <div style="display:flex;justify-content:space-between;"><span class="spec">LQ Score</span><b style="color:var(--good);">87 ✓</b></div>
+              <div style="display:flex;justify-content:space-between;"><span class="spec">Guarantee</span><b style="color:var(--good);">Verified</b></div>
+              <div style="display:flex;justify-content:space-between;"><span class="spec">Vouch Status</span><b style="color:var(--sun);">Release Pending</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Actions</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;">
+            <button class="btn btn-primary btn-sm" onclick="showPage('fin-securitise')"><i data-lucide="layers"></i> Enlist for Securitisation →</button>
+            <a class="dash-link" href="lium-energy.html" style="font-size:11px;"><i data-lucide="external-link"></i> Open LIUM Energy →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ FINANCIER: ENLIST SECURITISATION ══════════════ -->
+  <section class="page" id="page-fin-securitise">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow blue">Financier</span>
+        <h1 class="page-title">Enlist for Securitisation</h1>
+        <p class="page-meta">Publish loan to Securitisation Agent marketplace on Beckn Catalog</p>
+      </div>
+    </div>
+
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Select Loans to Enlist</div></div>
+        <div class="panel-body no-pad">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Project</th><th>Amount</th><th>Tranche</th><th>LQ</th><th>Status</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="primary">Menlo Housing MG</span><span class="sub">Blue Valley · 5.0%</span></td>
+                <td><span class="primary">$469,898</span></td>
+                <td><span class="tranche-pill senior-a">Senior A</span></td>
+                <td><span class="lq-badge green" style="font-size:11px;padding:2px 7px;">87</span></td>
+                <td><span class="status-pill green">Active</span></td>
+                <td><button class="btn btn-primary btn-sm">Enlist →</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Flow Progress</div></div>
+        <div class="panel-body">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="flow-step done">Offered</div>
+            <div class="flow-step done">Accepted</div>
+            <div class="flow-step done">Active</div>
+            <div class="flow-step active">Securitised</div>
+          </div>
+          <div style="margin-top:12px;font-size:11px;color:var(--ink-3);">Enlisting publishes loan package to Securities Agent discovery feed.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ SEC AGENT: AVAILABLE LOANS ══════════════ -->
+  <section class="page" id="page-sa-loans">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow purple">Sec. Agent</span>
+        <h1 class="page-title">Available Loan Packages</h1>
+        <p class="page-meta">Beckn Catalog — loans enlisted for securitisation by Financiers</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Loan Feed</div></div>
+      <div class="panel-body no-pad">
+        <table class="tbl">
+          <thead>
+            <tr><th>Project</th><th>Financier</th><th>Amount</th><th>Rate</th><th>Tranche</th><th>LQ</th><th>Risk Ind.</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="primary">Menlo Housing MG</span><span class="sub">Menlo Park, CA · BoxPower</span></td>
+              <td><span class="primary">Blue Valley</span></td>
+              <td><span class="primary">$469,898</span></td>
+              <td><span class="primary">5.0%</span></td>
+              <td><span class="tranche-pill senior-a">Senior A</span></td>
+              <td><div class="lq-badge green" style="font-size:11px;padding:2px 7px;">87</div></td>
+              <td><div class="risk-indicator" style="padding:3px 8px;"><div class="risk-dot" style="background:var(--good);"></div><div class="risk-label" style="font-size:10px;color:var(--good);">Low</div></div></td>
+              <td><button class="btn btn-purple btn-sm" onclick="showPage('sa-structure')">Structure →</button></td>
+            </tr>
+            <tr>
+              <td><span class="primary">Menlo Housing MG</span><span class="sub">Menlo Park, CA · BoxPower</span></td>
+              <td><span class="primary">Blend Finance</span></td>
+              <td><span class="primary">$170,872</span></td>
+              <td><span class="primary">5.8%</span></td>
+              <td><span class="tranche-pill senior-b">Senior B</span></td>
+              <td><div class="lq-badge green" style="font-size:11px;padding:2px 7px;">87</div></td>
+              <td><div class="risk-indicator" style="padding:3px 8px;"><div class="risk-dot" style="background:var(--good);"></div><div class="risk-label" style="font-size:10px;color:var(--good);">Low</div></div></td>
+              <td><button class="btn btn-purple btn-sm" onclick="showPage('sa-structure')">Structure →</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ SEC AGENT: STRUCTURE SECURITY ══════════════ -->
+  <section class="page" id="page-sa-structure">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow purple">Sec. Agent</span>
+        <h1 class="page-title">Structure Security</h1>
+        <p class="page-meta">Menlo Housing Microgrid — combined loan package $640,770</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Tranche Structure</div></div>
+        <div class="panel-body">
+          <div class="tranche-builder">
+            <div class="tranche-item header">
+              <span>Tranche</span><span>Alloc %</span><span>Amount</span><span>Target Yield</span><span></span>
+            </div>
+            <div class="tranche-item">
+              <span class="tranche-pill senior-a">Senior A</span>
+              <input class="form-input" style="padding:5px;" value="55" />
+              <span style="font-size:12px;color:var(--good);">$352K</span>
+              <input class="form-input" style="padding:5px;" value="5.0%" />
+              <button class="btn btn-ghost btn-sm" style="padding:4px 6px;">×</button>
+            </div>
+            <div class="tranche-item">
+              <span class="tranche-pill senior-b">Senior B</span>
+              <input class="form-input" style="padding:5px;" value="20" />
+              <span style="font-size:12px;color:#60A5FA;">$128K</span>
+              <input class="form-input" style="padding:5px;" value="5.8%" />
+              <button class="btn btn-ghost btn-sm" style="padding:4px 6px;">×</button>
+            </div>
+            <div class="tranche-item">
+              <span class="tranche-pill mezz">Mezzanine</span>
+              <input class="form-input" style="padding:5px;" value="7" />
+              <span style="font-size:12px;color:var(--amber);">$44.9K</span>
+              <input class="form-input" style="padding:5px;" value="12%" />
+              <button class="btn btn-ghost btn-sm" style="padding:4px 6px;">×</button>
+            </div>
+            <div class="tranche-item">
+              <span class="tranche-pill equity">Equity</span>
+              <input class="form-input" style="padding:5px;" value="18" />
+              <span style="font-size:12px;color:var(--ember);">$115K</span>
+              <input class="form-input" style="padding:5px;" value="18–22% IRR</input>
+              <button class="btn btn-ghost btn-sm" style="padding:4px 6px;">×</button>
+            </div>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px;">
+            <button class="btn btn-primary" onclick="showPage('sa-book')"><i data-lucide="send"></i> Tokenise + List</button>
+            <button class="btn btn-ghost">Save Draft</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Risk Indicator</div></div>
+          <div class="panel-body">
+            <div style="font-size:11px;color:var(--ink-3);margin-bottom:10px;">Attach provenanced risk feed from trusted provider</div>
+            <div class="risk-indicator">
+              <div class="risk-dot" style="background:var(--good);"></div>
+              <div>
+                <div class="risk-label" style="color:var(--good);">LOW RISK</div>
+                <div style="font-size:10px;color:var(--ink-3);">Source: kWh Electric Telemetry Feed</div>
+              </div>
+              <span class="status-pill green" style="margin-left:auto;">Attached</span>
+            </div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:10px;width:100%;">Change Provider →</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Underlying Assets</div></div>
+          <div class="panel-body">
+            <div style="font-size:11px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px;">
+              <div>Microgrid Controller <b style="color:var(--ink-2);">$158,621</b></div>
+              <div>Generator <b style="color:var(--ink-2);">$279,718</b></div>
+              <div>Battery ×2 <b style="color:var(--ink-2);">$202,336</b></div>
+              <div>BESS Inverter <b style="color:var(--ink-2);">$58,368</b></div>
+              <div>Solar PV <b style="color:var(--ink-2);">$47,325</b></div>
+              <div style="color:var(--ink-3);">+ 5 more assets</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ SEC AGENT: SECURITIES BOOK ══════════════ -->
+  <section class="page" id="page-sa-book">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow purple">Sec. Agent</span>
+        <h1 class="page-title">Securities Book</h1>
+        <p class="page-meta">Live monitoring of structured + listed securities</p>
+      </div>
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step done">Structured</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step active">Listed</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Partially Sold</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Fully Subscribed</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">LIUM-SEC-001 · Menlo Housing MG</div>
+        <span class="status-pill purple">Listed</span>
+      </div>
+      <div class="panel-body">
+        <div class="kpi-row" style="background:transparent;border:0;gap:16px;">
+          <div><div class="k-label">Total Size</div><div class="k-val" style="font-size:18px;">$640<small>K</small></div></div>
+          <div><div class="k-label">Sold</div><div class="k-val" style="font-size:18px;">$352<small>K</small></div></div>
+          <div><div class="k-label">Remaining</div><div class="k-val" style="font-size:18px;">$288<small>K</small></div></div>
+          <div><div class="k-label">LQ (Live)</div><div class="k-val" style="font-size:18px;color:var(--good);">87</div></div>
+          <div><div class="k-label">Risk Ind.</div><div style="margin-top:6px;"><span class="status-pill green">Low</span></div></div>
+        </div>
+        <div class="tranche-row" style="margin-top:12px;">
+          <span class="tranche-pill senior-a">Senior A — 55%</span>
+          <span class="tranche-pill senior-b">Senior B — 20%</span>
+          <span class="tranche-pill mezz">Mezzanine — 7%</span>
+          <span class="tranche-pill equity">Equity — 18%</span>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px;">
+          <button class="btn btn-ghost btn-sm" onclick="showPage('sa-pm-list')">List to PM Market →</button>
+          <button class="btn btn-ghost btn-sm" onclick="showPage('sa-inv-list')">List to Investor Market →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ SEC AGENT: PM LISTING ══════════════ -->
+  <section class="page" id="page-sa-pm-list">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow purple">Sec. Agent</span>
+        <h1 class="page-title">List to PM Marketplace</h1>
+        <p class="page-meta">Whole security offering — institutional buyers</p>
+      </div>
+    </div>
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Offering Details</div></div>
+        <div class="panel-body">
+          <div class="form-section">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Security ID</label>
+                <input class="form-input" type="text" value="LIUM-SEC-001" readonly />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Offering Size ($)</label>
+                <input class="form-input" type="text" value="640,770" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Min Offtake ($)</label>
+                <input class="form-input" type="text" value="100,000" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Offering Type</label>
+                <select class="form-input form-select"><option>Whole Security</option></select>
+              </div>
+            </div>
+            <button class="btn btn-primary"><i data-lucide="send"></i> Publish to PM Marketplace</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Summary</div></div>
+        <div class="panel-body">
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Underlying</span><b>Menlo Housing MG</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">LQ Score</span><b style="color:var(--good);">87</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Risk</span><b style="color:var(--good);">Low</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Tranches</span><b>4 (A/B/Mezz/Eq)</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ SEC AGENT: INVESTOR TOKEN LISTING ══════════════ -->
+  <section class="page" id="page-sa-inv-list">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow purple">Sec. Agent</span>
+        <h1 class="page-title">List Investor Tokens</h1>
+        <p class="page-meta">Fractional tokens — retail investors via UNITS</p>
+      </div>
+    </div>
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Token Configuration</div></div>
+        <div class="panel-body">
+          <div class="form-section">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Token Name</label>
+                <input class="form-input" type="text" value="LIUM-MNL-001" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Token Size ($)</label>
+                <input class="form-input" type="text" value="5,000" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Total Tokens</label>
+                <input class="form-input" type="text" value="128" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Min Investment ($)</label>
+                <input class="form-input" type="text" value="5,000" />
+              </div>
+            </div>
+            <button class="btn btn-primary"><i data-lucide="coins"></i> Mint + List Tokens</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Projected Returns</div></div>
+        <div class="panel-body">
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Token Price</span><b>$5,000</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Proj. Yield</span><b style="color:var(--sun);">8–12% p.a.</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">LQ Badge</span><div class="lq-badge green" style="font-size:10px;padding:1px 6px;">87</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ PORTFOLIO MANAGER: SECURITIES MARKET ══════════════ -->
+  <section class="page" id="page-pm-market">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow sun">Portfolio Manager</span>
+        <h1 class="page-title">Securities Marketplace</h1>
+        <p class="page-meta">Institutional — structured securities with live LQ + risk indicators</p>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Filter</div></div>
+      <div class="panel-body">
+        <div class="form-row" style="grid-template-columns:repeat(4,1fr);">
+          <div class="form-group">
+            <label class="form-label">Min Yield (%)</label>
+            <select class="form-input form-select"><option>Any</option><option selected>≥ 5%</option><option>≥ 8%</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Min LQ Score</label>
+            <select class="form-input form-select"><option>Any</option><option selected>≥ 80</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tranche Type</label>
+            <select class="form-input form-select"><option selected>All</option><option>Senior A</option><option>Senior B</option><option>Mezzanine</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Geography</label>
+            <input class="form-input" type="text" placeholder="State or country" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security cards -->
+    <div class="two-col">
+      <div class="security-card" style="cursor:pointer;" onclick="showPage('pm-portfolio')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="security-tag">LIUM-SEC-001</div>
+            <div style="font-size:14px;font-weight:700;color:var(--ink);margin-top:8px;">Menlo Housing Microgrid</div>
+            <div style="font-size:11px;color:var(--ink-3);">Menlo Park, CA · BoxPower</div>
+          </div>
+          <div class="lq-badge green">LQ 87</div>
+        </div>
+        <div class="tranche-row">
+          <span class="tranche-pill senior-a">Senior A 55%</span>
+          <span class="tranche-pill senior-b">Senior B 20%</span>
+          <span class="tranche-pill mezz">Mezz 7%</span>
+          <span class="tranche-pill equity">Equity 18%</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 0;border-top:1px solid var(--line);">
+          <div><div class="k-label">Size</div><div style="font-size:14px;font-weight:700;color:var(--ink);">$640K</div></div>
+          <div><div class="k-label">Blended Yield</div><div style="font-size:14px;font-weight:700;color:var(--sun);">6.8%</div></div>
+          <div><div class="k-label">Risk</div><div class="risk-indicator" style="padding:4px 8px;margin-top:4px;"><div class="risk-dot" style="background:var(--good);"></div><div class="risk-label" style="font-size:10px;color:var(--good);">Low</div></div></div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();showPage('pm-portfolio')"><i data-lucide="shopping-cart"></i> Offtake</button>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();">View Detail</button>
+        </div>
+      </div>
+
+      <div class="security-card" style="opacity:0.5;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="security-tag" style="background:var(--blue);">LIUM-SEC-002</div>
+            <div style="font-size:14px;font-weight:700;color:var(--ink);margin-top:8px;">Oakland DC Microgrid</div>
+            <div style="font-size:11px;color:var(--ink-3);">Oakland, CA · SunPower</div>
+          </div>
+          <div class="lq-badge amber">LQ 72</div>
+        </div>
+        <div class="tranche-row">
+          <span class="tranche-pill senior-a">Senior A 60%</span>
+          <span class="tranche-pill mezz">Mezz 15%</span>
+          <span class="tranche-pill equity">Equity 25%</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 0;border-top:1px solid var(--line);">
+          <div><div class="k-label">Size</div><div style="font-size:14px;font-weight:700;color:var(--ink);">$1.1M</div></div>
+          <div><div class="k-label">Blended Yield</div><div style="font-size:14px;font-weight:700;color:var(--sun);">7.4%</div></div>
+          <div><div class="k-label">Risk</div><div class="risk-indicator" style="padding:4px 8px;margin-top:4px;"><div class="risk-dot" style="background:var(--amber);"></div><div class="risk-label" style="font-size:10px;color:var(--amber);">Med</div></div></div>
+        </div>
+        <div style="font-size:11px;color:var(--amber);padding:4px 0;">LQ below 80 — seasoning period</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ PORTFOLIO MANAGER: PORTFOLIO ══════════════ -->
+  <section class="page" id="page-pm-portfolio">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow sun">Portfolio Manager</span>
+        <h1 class="page-title">My Portfolio</h1>
+        <p class="page-meta">Institutional holdings — live LQ performance feed</p>
+      </div>
+      <button class="btn btn-primary" onclick="showPage('pm-market')"><i data-lucide="plus"></i> Browse More</button>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">Total AUM</div><div class="k-val">$352<small>K</small></div><div class="k-delta pos">1 security</div></div>
+      <div class="kpi"><div class="k-label">Avg Yield</div><div class="k-val">5.0<small>%</small></div><div class="k-delta pos">Senior A tranche</div></div>
+      <div class="kpi"><div class="k-label">LQ Score</div><div class="k-val">87</div><div class="k-delta pos">● Above threshold</div></div>
+      <div class="kpi"><div class="k-label">Risk</div><div class="k-val" style="color:var(--good);font-size:14px;margin-top:8px;">Low</div><div class="k-delta pos">kWh feed</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Holdings</div></div>
+      <div class="panel-body no-pad">
+        <table class="tbl">
+          <thead><tr><th>Security</th><th>Tranche</th><th>Held</th><th>Yield</th><th>LQ</th><th>Risk</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="primary">Menlo Housing MG</span><span class="sub">LIUM-SEC-001 · Menlo Park, CA</span></td>
+              <td><span class="tranche-pill senior-a">Senior A</span></td>
+              <td><span class="primary">$352,000</span></td>
+              <td><span class="primary">5.0%</span></td>
+              <td><div class="lq-badge green" style="font-size:11px;padding:2px 7px;">87</div></td>
+              <td><span class="status-pill green">Low</span></td>
+              <td><span class="status-pill purple">Active</span></td>
+              <td>
+                <div style="display:flex;gap:6px;">
+                  <button class="btn btn-ghost btn-sm" onclick="showPage('pm-performance')">Perf →</button>
+                  <a class="dash-link" style="font-size:10px;padding:5px 8px;"><i data-lucide="external-link"></i> Dashboard</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ PORTFOLIO MANAGER: PERFORMANCE ══════════════ -->
+  <section class="page" id="page-pm-performance">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow sun">Portfolio Manager</span>
+        <h1 class="page-title">Performance Feed</h1>
+        <p class="page-meta">Menlo Housing MG — live risk + LQ updates</p>
+      </div>
+    </div>
+
+    <div class="col-2-1">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="kpi-row">
+          <div class="kpi"><div class="k-label">LQ (Live)</div><div class="k-val">87</div><div class="k-delta pos">↑ +2 this month</div></div>
+          <div class="kpi"><div class="k-label">Uptime</div><div class="k-val">98.2<small>%</small></div><div class="k-delta pos">30-day avg</div></div>
+          <div class="kpi"><div class="k-label">LCOE</div><div class="k-val">$0.054<small>/kWh</small></div><div class="k-delta">PV estimate</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">LQ History</div></div>
+          <div class="panel-body">
+            <div class="chart-ph">
+              <div class="chart-ph-bar" style="height:80%;background:var(--good);opacity:0.5;"></div>
+              <div class="chart-ph-bar" style="height:82%;background:var(--good);opacity:0.6;"></div>
+              <div class="chart-ph-bar" style="height:79%;background:var(--amber);opacity:0.7;"></div>
+              <div class="chart-ph-bar" style="height:85%;background:var(--good);opacity:0.8;"></div>
+              <div class="chart-ph-bar" style="height:87%;background:var(--good);opacity:1;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-3);margin-top:6px;">
+              <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span>
+            </div>
+          </div>
+        </div>
+        <div class="feed panel">
+          <div class="panel-head"><div class="panel-title">Risk Updates</div></div>
+          <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>Risk indicator</b> updated — Low (kWh telemetry)</div><div class="feed-time">1h ago</div></div>
+          <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>LQ</b> maintained ≥ 85 threshold</div><div class="feed-time">3h ago</div></div>
+          <div class="feed-item"><div class="feed-dot amber"></div><div class="feed-msg"><b>Generator</b> runtime +12h — scheduled test</div><div class="feed-time">1d ago</div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Asset Detail</div></div>
+          <div class="panel-body">
+            <a class="dash-link" href="lium-energy.html"><i data-lucide="external-link"></i> View Asset Detail on LIUM Energy →</a>
+            <div style="margin-top:12px;font-size:11px;color:var(--ink-3);">Opens Operator Dashboard with full DER telemetry, capital stack, and 25-year cashflow model.</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Verifiable Credentials</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--ink-3);">
+              <div style="display:flex;justify-content:space-between;"><span>DeDI Registry</span><span class="status-pill green">Verified</span></div>
+              <div style="display:flex;justify-content:space-between;"><span>OpenCred Attestation</span><span class="status-pill green">Valid</span></div>
+              <div style="display:flex;justify-content:space-between;"><span>BoxPower Integration</span><span class="status-pill green">Active</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ INVESTOR: TOKEN MARKETPLACE ══════════════ -->
+  <section class="page" id="page-inv-market">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow" style="background:var(--purple);">Investor</span>
+        <h1 class="page-title">Token Marketplace</h1>
+        <p class="page-meta">Fractional microgrid investments — minimum $5,000</p>
+      </div>
+    </div>
+
+    <div class="three-col">
+      <div class="token-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="token-name">Menlo Housing Microgrid</div>
+            <div class="token-loc">Menlo Park, CA · BoxPower</div>
+          </div>
+          <div class="traffic-light">
+            <div class="tl-dot active-green"></div>
+            <div class="tl-dot inactive"></div>
+            <div class="tl-dot inactive"></div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--line);padding-top:10px;">
+          <div class="token-return">8–12%<small> p.a.</small></div>
+          <div style="display:flex;gap:14px;margin-top:6px;">
+            <span class="spec">Min <b style="color:var(--sun);">$5,000</b></span>
+            <span class="spec">28.3 kW Solar</span>
+            <span class="spec">420 kWh BESS</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line);">
+          <button class="btn btn-primary btn-sm" onclick="showPage('inv-tokens')"><i data-lucide="coins"></i> Invest $5,000</button>
+          <button class="btn btn-ghost btn-sm">Learn More →</button>
+        </div>
+      </div>
+
+      <div class="token-card" style="opacity:0.6;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="token-name">Oakland DC Microgrid</div>
+            <div class="token-loc">Oakland, CA · SunPower</div>
+          </div>
+          <div class="traffic-light">
+            <div class="tl-dot inactive"></div>
+            <div class="tl-dot active-amber"></div>
+            <div class="tl-dot inactive"></div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--line);padding-top:10px;">
+          <div class="token-return">10–15%<small> p.a.</small></div>
+          <div style="display:flex;gap:14px;margin-top:6px;">
+            <span class="spec">Min <b style="color:var(--sun);">$5,000</b></span>
+            <span class="spec">45 kW Solar</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line);">
+          <button class="btn btn-ghost btn-sm" disabled>Seasoning</button>
+          <button class="btn btn-ghost btn-sm">Learn More →</button>
+        </div>
+      </div>
+
+      <div class="token-card" style="opacity:0.4;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="token-name">Coming Soon</div>
+            <div class="token-loc">Multiple locations</div>
+          </div>
+          <div class="traffic-light">
+            <div class="tl-dot inactive"></div>
+            <div class="tl-dot inactive"></div>
+            <div class="tl-dot inactive"></div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--line);padding-top:10px;">
+          <div style="font-size:12px;color:var(--ink-3);">New projects enlisting — check back soon</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ INVESTOR: MY TOKENS ══════════════ -->
+  <section class="page" id="page-inv-tokens">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow" style="background:var(--purple);">Investor</span>
+        <h1 class="page-title">My Tokens</h1>
+        <p class="page-meta">Holdings and current value</p>
+      </div>
+      <button class="btn btn-ghost" onclick="showPage('inv-market')"><i data-lucide="plus"></i> Browse More</button>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">Invested</div><div class="k-val">$10<small>K</small></div><div class="k-delta pos">2 tokens</div></div>
+      <div class="kpi"><div class="k-label">Current Value</div><div class="k-val">$10.8<small>K</small></div><div class="k-delta pos">↑ +8%</div></div>
+      <div class="kpi"><div class="k-label">Returns Paid</div><div class="k-val">$480</div><div class="k-delta pos">Q1 distribution</div></div>
+      <div class="kpi"><div class="k-label">LQ Status</div><div style="margin-top:6px;"><div class="traffic-light"><div class="tl-dot active-green"></div><div class="tl-dot inactive"></div><div class="tl-dot inactive"></div></div></div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Token Holdings</div></div>
+      <div class="panel-body no-pad">
+        <table class="tbl">
+          <thead><tr><th>Token</th><th>Project</th><th>Invested</th><th>Current</th><th>Return</th><th>LQ</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="primary">LIUM-MNL-001</span><span class="sub">Token #047</span></td>
+              <td><span class="primary">Menlo Housing MG</span><span class="sub">Menlo Park, CA</span></td>
+              <td>$5,000</td>
+              <td style="color:var(--good);">$5,400</td>
+              <td style="color:var(--sun);">$240</td>
+              <td>
+                <div class="traffic-light"><div class="tl-dot active-green"></div><div class="tl-dot inactive"></div><div class="tl-dot inactive"></div></div>
+              </td>
+              <td><button class="btn btn-ghost btn-sm">View Token</button></td>
+            </tr>
+            <tr>
+              <td><span class="primary">LIUM-MNL-001</span><span class="sub">Token #048</span></td>
+              <td><span class="primary">Menlo Housing MG</span><span class="sub">Menlo Park, CA</span></td>
+              <td>$5,000</td>
+              <td style="color:var(--good);">$5,400</td>
+              <td style="color:var(--sun);">$240</td>
+              <td>
+                <div class="traffic-light"><div class="tl-dot active-green"></div><div class="tl-dot inactive"></div><div class="tl-dot inactive"></div></div>
+              </td>
+              <td><button class="btn btn-ghost btn-sm">View Token</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ INVESTOR: RETURNS ══════════════ -->
+  <section class="page" id="page-inv-returns">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow" style="background:var(--purple);">Investor</span>
+        <h1 class="page-title">Returns Summary</h1>
+        <p class="page-meta">Distributions received from LIUM Vouch</p>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">Total Paid</div><div class="k-val">$480</div><div class="k-delta pos">YTD</div></div>
+      <div class="kpi"><div class="k-label">Next Payment</div><div class="k-val">Jun<small>'26</small></div><div class="k-delta pos">Vouch auto-release</div></div>
+      <div class="kpi"><div class="k-label">Annualised</div><div class="k-val">9.6<small>%</small></div><div class="k-delta pos">vs 8% target</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Payment History</div></div>
+      <div class="panel-body no-pad" style="padding:16px;">
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot-col"><div class="timeline-dot done"></div><div class="timeline-line"></div></div>
+            <div class="timeline-content">
+              <div class="timeline-event">Q1 Distribution</div>
+              <div class="timeline-date">Menlo Housing MG · Tokens #047 + #048 · 1 Apr 2026</div>
+              <div class="timeline-amount">+$480</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot-col"><div class="timeline-dot active"></div></div>
+            <div class="timeline-content">
+              <div class="timeline-event">Q2 Distribution (upcoming)</div>
+              <div class="timeline-date">Scheduled 1 Jul 2026 · Pincer verification pending</div>
+              <div class="timeline-amount" style="color:var(--ink-3);">~$240 est.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<script>
+// ── Role + page navigation ──
+const rolePages = {
+  developer: { default: 'dev-projects', nav: 'nav-developer', user: { initials: 'AD', name: 'Axil Developers', role: 'Developer' } },
+  financier: { default: 'fin-marketplace', nav: 'nav-financier', user: { initials: 'BV', name: 'Blue Valley Capital', role: 'Financier' } },
+  'sec-agent': { default: 'sa-loans', nav: 'nav-sec-agent', user: { initials: 'SA', name: 'Securities Agent', role: 'Sec. Agent' } },
+  pm: { default: 'pm-market', nav: 'nav-pm', user: { initials: 'PM', name: 'BlackRock Energy', role: 'Portfolio Mgr' } },
+  investor: { default: 'inv-market', nav: 'nav-investor', user: { initials: 'RJ', name: 'Retail Investor', role: 'Investor' } },
+};
+
+let currentRole = 'developer';
+
+function switchRole(role) {
+  currentRole = role;
+  // Hide all navs
+  Object.values(rolePages).forEach(r => {
+    const el = document.getElementById(r.nav);
+    if (el) el.style.display = 'none';
+  });
+  // Show this role's nav
+  const cfg = rolePages[role];
+  document.getElementById(cfg.nav).style.display = 'block';
+  // Update user info
+  document.getElementById('avatarInitials').textContent = cfg.user.initials;
+  document.getElementById('userName').textContent = cfg.user.name;
+  document.getElementById('userRole').textContent = cfg.user.role;
+  // Navigate to default page
+  showPage(cfg.default);
+}
+
+function showPage(pageId) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // Show target
+  const page = document.getElementById('page-' + pageId);
+  if (page) page.classList.add('active');
+  // Update nav active states
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.remove('active');
+    const onclick = l.getAttribute('onclick');
+    if (onclick && onclick.includes("'" + pageId + "'")) {
+      l.classList.add('active');
+    }
+  });
+  // Update topbar
+  const titles = {
+    'dev-projects': ['My Projects', 'Project Developer — Menlo Housing Microgrid'],
+    'dev-list': ['List New Project', 'Publish to Beckn Catalog'],
+    'dev-offers': ['Incoming Loan Offers', 'Project Developer — 2 pending'],
+    'dev-consent': ['Telemetry Consent', 'Manage Financier access'],
+    'dev-disbursements': ['Disbursements', 'LIUM Vouch — payment history'],
+    'fin-marketplace': ['Project Marketplace', 'Financier — Beckn Catalog feed'],
+    'fin-offers': ['Offer Loan', 'Set terms + Pincer + Vouch'],
+    'fin-active': ['Active Loans', 'Financier — live telemetry'],
+    'fin-securitise': ['Enlist for Securitisation', 'Financier → Securities Agent'],
+    'sa-loans': ['Available Loan Packages', 'Sec. Agent — Beckn discovery'],
+    'sa-structure': ['Structure Security', 'Set tranches + risk indicator'],
+    'sa-book': ['Securities Book', 'Listed securities — live LQ'],
+    'sa-pm-list': ['List to PM Marketplace', 'Institutional offering'],
+    'sa-inv-list': ['List Investor Tokens', 'Retail fractional — UNITS mint'],
+    'pm-market': ['Securities Marketplace', 'Portfolio Manager — institutional'],
+    'pm-portfolio': ['My Portfolio', 'Holdings + LQ performance'],
+    'pm-performance': ['Performance Feed', 'Live risk + LQ updates'],
+    'inv-market': ['Token Marketplace', 'Fractional investments — min $5K'],
+    'inv-tokens': ['My Tokens', 'Holdings and returns'],
+    'inv-returns': ['Returns Summary', 'Distributions from LIUM Vouch'],
+  };
+  const t = titles[pageId];
+  if (t) {
+    document.getElementById('topbarTitle').textContent = t[0];
+    document.getElementById('topbarSub').textContent = t[1];
+  }
+}
+
+// Init Lucide icons
+lucide.createIcons();
+</script>
+
+<template id="__bundler_thumbnail" data-bg-color="#0B0B0E">
+  <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="260" fill="#0B0B0E"/>
+    <!-- Sidebar -->
+    <rect x="0" y="0" width="72" height="260" fill="#08080B" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="8" y="10" width="16" height="16" fill="#FFC400"/>
+    <text x="16" y="22" font-family="sans-serif" font-size="8" font-weight="900" fill="#0B0B0E" text-anchor="middle">L</text>
+    <rect x="8" y="34" width="55" height="7" rx="1" fill="#15151A" stroke="#3A3A45" stroke-width="1"/>
+    <rect x="8" y="52" width="45" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="8" y="62" width="50" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="8" y="72" width="40" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="6" y="82" width="55" height="5" fill="#15151A" stroke="#FFC400" stroke-width="1"/>
+    <rect x="8" y="92" width="48" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="8" y="102" width="42" height="5" rx="1" fill="#2A2A33"/>
+    <!-- Topbar -->
+    <rect x="72" y="0" width="328" height="28" fill="#0B0B0E" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="82" y="9" width="80" height="7" rx="1" fill="#FFFBF0" opacity="0.8"/>
+    <rect x="330" y="10" width="50" height="6" rx="1" fill="#00D26A" opacity="0.6"/>
+    <!-- KPI strip -->
+    <rect x="72" y="28" width="328" height="40" fill="#15151A" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="82" y="34" width="45" height="6" rx="1" fill="#C8341A" opacity="0.7"/>
+    <rect x="82" y="44" width="35" height="12" rx="1" fill="#FFFBF0" opacity="0.9"/>
+    <rect x="142" y="34" width="45" height="6" rx="1" fill="#C8341A" opacity="0.7"/>
+    <rect x="142" y="44" width="30" height="12" rx="1" fill="#00D26A" opacity="0.7"/>
+    <rect x="202" y="34" width="45" height="6" rx="1" fill="#C8341A" opacity="0.7"/>
+    <rect x="202" y="44" width="20" height="12" rx="1" fill="#FFFBF0" opacity="0.9"/>
+    <rect x="262" y="34" width="45" height="6" rx="1" fill="#C8341A" opacity="0.7"/>
+    <rect x="262" y="44" width="38" height="12" rx="1" fill="#FFC400" opacity="0.7"/>
+    <!-- Main content area - project card -->
+    <rect x="82" y="80" width="200" height="90" fill="#15151A" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="92" y="90" width="100" height="8" rx="1" fill="#FFFBF0" opacity="0.8"/>
+    <rect x="92" y="102" width="70" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="92" y="112" width="180" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="92" y="121" width="160" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="92" y="134" width="80" height="22" rx="1" fill="#FFC400" opacity="0.15" stroke="#FFC400" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="132" y="148" font-family="sans-serif" font-size="7" font-weight="700" fill="#FFC400" text-anchor="middle">Dashboard →</text>
+    <!-- LQ badge -->
+    <rect x="260" y="86" width="32" height="14" rx="1" fill="#00D26A" opacity="0.15" stroke="#00D26A" stroke-width="1" stroke-opacity="0.5"/>
+    <text x="276" y="96" font-family="sans-serif" font-size="7" font-weight="700" fill="#00D26A" text-anchor="middle">LQ 87</text>
+    <!-- Side panel -->
+    <rect x="294" y="80" width="106" height="90" fill="#15151A" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="300" y="90" width="50" height="5" rx="1" fill="#C8341A" opacity="0.7"/>
+    <rect x="300" y="100" width="90" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="300" y="110" width="80" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="300" y="120" width="85" height="5" rx="1" fill="#2A2A33"/>
+    <!-- Capital stack bar -->
+    <rect x="82" y="182" width="318" height="20" fill="#15151A" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="92" y="188" width="110" height="8" fill="#00D26A" opacity="0.7"/>
+    <rect x="204" y="188" width="40" height="8" fill="#60A5FA" opacity="0.7"/>
+    <rect x="246" y="188" width="14" height="8" fill="#FF9E1B" opacity="0.7"/>
+    <rect x="262" y="188" width="36" height="8" fill="#C8341A" opacity="0.7"/>
+  </svg>
+</template>
+
+</body>
+</html>

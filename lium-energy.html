@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIUM Energy</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0B0B0E;
+  --panel: #15151A;
+  --panel-2: #1C1C22;
+  --line: #2A2A33;
+  --line-strong: #3A3A45;
+  --ink: #FFFBF0;
+  --ink-2: #B8A77F;
+  --ink-3: #6B5A3F;
+  --ember: #C8341A;
+  --sun: #FFC400;
+  --amber: #FF9E1B;
+  --good: #00D26A;
+  --blue: #2563EB;
+  --teal: #0D9488;
+  --sidebar-w: 220px;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: #08080B;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+}
+.sidebar-brand {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-logo {
+  width: 22px; height: 22px;
+  background: var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 900; color: #fff;
+}
+.brand-name { font-weight: 700; font-size: 13px; color: var(--ink); letter-spacing: -0.01em; }
+.brand-sub { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3); font-weight: 700; }
+
+.role-picker {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.role-picker .label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3); font-weight: 700; margin-bottom: 6px; }
+.role-select {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 10px;
+  cursor: pointer;
+  outline: none;
+}
+
+.nav-section { padding: 10px 0; }
+.nav-section-label {
+  padding: 0 16px 6px;
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--ink-3);
+}
+.nav-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 16px;
+  font-size: 12.5px; font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 120ms, background 120ms;
+}
+.nav-link:hover { color: var(--ink); background: var(--panel); }
+.nav-link.active {
+  color: var(--ink);
+  background: var(--panel);
+  border-left: 2px solid var(--teal);
+  padding-left: 14px;
+}
+.nav-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--ember);
+  color: var(--ink);
+  font-size: 9px; font-weight: 700;
+  padding: 2px 5px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+}
+.user-row { display: flex; align-items: center; gap: 8px; }
+.avatar {
+  width: 28px; height: 28px;
+  background: var(--teal); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 11px;
+  flex-shrink: 0;
+}
+.user-name { font-size: 12px; font-weight: 700; color: var(--ink); }
+.user-role { font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* ── Main ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+.topbar-sub { font-size: 12px; color: var(--ink-3); }
+.topbar-live {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 10px; font-weight: 700;
+  color: var(--teal);
+  text-transform: uppercase; letter-spacing: 0.10em;
+  margin-left: auto;
+}
+.topbar-live::before {
+  content: "";
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: pulse 1.6s infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(13,148,136,.45); }
+  50%      { box-shadow: 0 0 0 7px rgba(13,148,136,0); }
+}
+
+/* ── Pages ── */
+.page { padding: 24px; display: none; flex-direction: column; gap: 20px; flex: 1; }
+.page.active { display: flex; }
+
+.page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.page-head-left { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow {
+  display: inline-block;
+  background: var(--teal);
+  color: #fff;
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  padding: 4px 8px;
+}
+.eyebrow.utility { background: var(--blue); }
+.page-title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+.page-meta { font-size: 12px; color: var(--ink-3); }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  padding: 9px 14px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 120ms;
+}
+.btn-primary { background: var(--teal); color: #fff; }
+.btn-primary:hover { background: #0B7A71; }
+.btn-utility { background: var(--blue); color: #fff; }
+.btn-utility:hover { background: #1D4ED8; }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+.btn-ghost:hover { border-color: var(--ink); }
+.btn-ember { background: var(--ember); color: var(--ink); }
+.btn-sm { padding: 6px 10px; font-size: 10px; }
+.btn-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Flow steps */
+.flow-steps {
+  display: flex; align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 10px 16px;
+  flex-wrap: wrap; gap: 4px;
+}
+.flow-step {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  padding: 5px 10px;
+  color: var(--ink-3);
+}
+.flow-step.done { color: var(--good); }
+.flow-step.active { background: var(--panel-2); color: var(--teal); border: 1px solid var(--teal); }
+.flow-step::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.flow-arrow { color: var(--ink-3); font-size: 12px; padding: 0 2px; }
+
+/* ── Panel ── */
+.panel { background: var(--panel); border: 1px solid var(--line); }
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.panel-title {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.10em;
+  color: var(--ember);
+}
+.panel-body { padding: 16px; }
+.panel-body.no-pad { padding: 0; }
+
+/* Table */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th {
+  padding: 9px 14px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.10em;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  background: var(--panel-2);
+}
+.tbl td {
+  padding: 11px 14px;
+  font-size: 12.5px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-2);
+  vertical-align: middle;
+}
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl tr:hover td { background: rgba(255,255,255,0.02); }
+.tbl td .primary { color: var(--ink); font-weight: 700; }
+.tbl td .sub { color: var(--ink-3); font-size: 11px; }
+
+/* Status pills */
+.status-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  border: 1px solid;
+}
+.status-pill::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.status-pill.green  { color: var(--good);  border-color: color-mix(in srgb, var(--good) 30%, transparent);  background: color-mix(in srgb, var(--good) 10%, transparent); }
+.status-pill.amber  { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 30%, transparent); background: color-mix(in srgb, var(--amber) 10%, transparent); }
+.status-pill.ember  { color: var(--ember); border-color: color-mix(in srgb, var(--ember) 30%, transparent); background: color-mix(in srgb, var(--ember) 10%, transparent); }
+.status-pill.teal   { color: var(--teal);  border-color: color-mix(in srgb, var(--teal) 30%, transparent);  background: color-mix(in srgb, var(--teal) 10%, transparent); }
+.status-pill.blue   { color: #60A5FA; border-color: rgba(96,165,250,.3); background: rgba(96,165,250,.1); }
+
+/* KPI row */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  border: 1px solid var(--line);
+  gap: 1px;
+  background: var(--line);
+}
+.kpi { background: var(--panel); padding: 14px 16px; }
+.kpi .k-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.10em; color: var(--ember); margin-bottom: 6px; }
+.kpi .k-val { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; color: var(--ink); font-feature-settings: "tnum" 1; }
+.kpi .k-val small { font-size: 12px; color: var(--ink-3); margin-left: 2px; }
+.kpi .k-delta { font-size: 10px; margin-top: 4px; font-weight: 700; }
+.kpi .k-delta.pos { color: var(--good); }
+.kpi .k-delta.neg { color: var(--amber); }
+
+/* Grid layouts */
+.two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.col-2-1   { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+.col-1-2   { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
+
+/* Form */
+.form-section { display: flex; flex-direction: column; gap: 14px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-row.three { grid-template-columns: repeat(3,1fr); }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--ink-3); }
+.form-input {
+  background: var(--panel-2);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px; font-weight: 600;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 120ms;
+}
+.form-input:focus { border-color: var(--teal); }
+.form-input::placeholder { color: var(--ink-3); }
+.form-select { cursor: pointer; }
+.form-hint { font-size: 10px; color: var(--ink-3); }
+
+/* Request card */
+.request-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.request-card.urgent { border-color: var(--amber); }
+.request-card.active-dispatch { border-color: var(--teal); }
+.request-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.request-id { font-size: 11px; font-weight: 700; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.09em; }
+.request-utility { font-size: 14px; font-weight: 700; color: var(--ink); margin-top: 2px; }
+.request-amount { font-size: 22px; font-weight: 700; color: var(--teal); font-feature-settings: "tnum" 1; }
+.request-specs { display: flex; gap: 14px; flex-wrap: wrap; }
+.spec { font-size: 11px; color: var(--ink-3); }
+.spec b { color: var(--ink-2); font-weight: 700; }
+.request-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+
+/* Revenue allocation */
+.alloc-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.alloc-row:last-child { border-bottom: 0; }
+.alloc-name { font-size: 13px; font-weight: 700; color: var(--ink); flex: 1; }
+.alloc-pct { font-size: 11px; color: var(--ink-3); }
+.alloc-bar-wrap { flex: 2; height: 6px; background: var(--panel-2); }
+.alloc-bar { height: 100%; background: var(--teal); }
+.alloc-amount { font-size: 14px; font-weight: 700; color: var(--sun); font-feature-settings: "tnum" 1; width: 70px; text-align: right; }
+
+/* Feed */
+.feed { display: flex; flex-direction: column; }
+.feed-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.feed-item:last-child { border-bottom: 0; }
+.feed-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); flex-shrink: 0; margin-top: 4px; }
+.feed-dot.amber { background: var(--amber); }
+.feed-dot.teal  { background: var(--teal); }
+.feed-msg { flex: 1; color: var(--ink-2); }
+.feed-msg b { color: var(--ink); }
+.feed-time { font-size: 10px; color: var(--ink-3); flex-shrink: 0; }
+
+/* Map placeholder */
+.map-ph {
+  height: 200px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.map-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.5;
+}
+.map-node {
+  position: absolute;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 2px solid;
+}
+.map-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--ink-3); z-index: 1; }
+
+/* Timeline */
+.timeline { display: flex; flex-direction: column; }
+.timeline-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.timeline-item:last-child { border-bottom: 0; }
+.timeline-dot-col { display: flex; flex-direction: column; align-items: center; }
+.timeline-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--line-strong); background: var(--panel); flex-shrink: 0; margin-top: 4px; }
+.timeline-dot.done   { background: var(--good);  border-color: var(--good); }
+.timeline-dot.active { background: var(--teal);  border-color: var(--teal); }
+.timeline-line { width: 1px; flex: 1; background: var(--line); min-height: 20px; }
+.timeline-content { flex: 1; }
+.timeline-event  { font-size: 13px; font-weight: 700; color: var(--ink); }
+.timeline-detail { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+.timeline-amount { font-size: 15px; font-weight: 700; color: var(--sun); margin-top: 4px; font-feature-settings: "tnum" 1; }
+
+/* Dispatch countdown */
+.dispatch-clock {
+  background: var(--panel-2);
+  border: 1px solid var(--teal);
+  padding: 20px;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.dispatch-kw { font-size: 48px; font-weight: 700; color: var(--teal); line-height: 1; font-feature-settings: "tnum" 1; }
+.dispatch-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3); }
+.dispatch-duration { font-size: 16px; font-weight: 700; color: var(--sun); }
+
+/* Dashboard link */
+.dash-link {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--teal) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal) 25%, transparent);
+  font-size: 12px; font-weight: 700;
+  color: var(--teal);
+  cursor: pointer;
+  text-decoration: none;
+}
+.dash-link svg { width: 14px; height: 14px; }
+
+/* Chart placeholder */
+.chart-ph {
+  height: 100px;
+  background: var(--panel-2);
+  display: flex; align-items: flex-end;
+  padding: 8px; gap: 3px;
+}
+.chart-ph-bar { flex: 1; background: var(--teal); opacity: 0.4; }
+.chart-ph-bar:nth-child(3n) { opacity: 0.7; }
+.chart-ph-bar:nth-child(5n) { opacity: 1; }
+
+.divider { height: 1px; background: var(--line); }
+
+@media (max-width: 860px) {
+  .sidebar { transform: translateX(-100%); }
+  .main { margin-left: 0; }
+  .two-col, .col-2-1, .col-1-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ═══════════════════════════
+     SIDEBAR
+═══════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">E</div>
+    <div>
+      <div class="brand-name">LIUM</div>
+      <div class="brand-sub">Energy</div>
+    </div>
+  </div>
+
+  <div class="role-picker">
+    <div class="label">Active Role</div>
+    <select class="role-select" id="roleSelect" onchange="switchRole(this.value)">
+      <option value="utility">Utility / EdgeGrid</option>
+      <option value="microgrid">Microgrid / DC Operator</option>
+      <option value="risk-provider">Risk Provider</option>
+    </select>
+  </div>
+
+  <!-- Utility Nav -->
+  <nav class="nav-section" id="nav-utility">
+    <div class="nav-section-label">Utility / EdgeGrid</div>
+    <a class="nav-link active" onclick="showPage('util-post')">
+      <i data-lucide="send"></i> Post Flexibility Need
+    </a>
+    <a class="nav-link" onclick="showPage('util-browse')">
+      <i data-lucide="search"></i> Available Capacity
+    </a>
+    <a class="nav-link" onclick="showPage('util-dispatch')">
+      <i data-lucide="zap"></i> Active Dispatch
+      <span class="nav-badge">1</span>
+    </a>
+    <a class="nav-link" onclick="showPage('util-revenue')">
+      <i data-lucide="coins"></i> Revenue Allocation
+    </a>
+  </nav>
+
+  <!-- Microgrid Nav -->
+  <nav class="nav-section" id="nav-microgrid" style="display:none">
+    <div class="nav-section-label">Microgrid / DC Operator</div>
+    <a class="nav-link active" onclick="showPage('mg-requests')">
+      <i data-lucide="inbox"></i> Incoming Requests
+      <span class="nav-badge">1</span>
+    </a>
+    <a class="nav-link" onclick="showPage('mg-delivery')">
+      <i data-lucide="check-circle"></i> Delivery Confirmation
+    </a>
+    <a class="nav-link" onclick="showPage('mg-revenue')">
+      <i data-lucide="trending-up"></i> Revenue Received
+    </a>
+    <a class="nav-link" onclick="showPage('mg-capacity')">
+      <i data-lucide="battery-charging"></i> My Capacity
+    </a>
+  </nav>
+
+  <!-- Risk Provider Nav -->
+  <nav class="nav-section" id="nav-risk-provider" style="display:none">
+    <div class="nav-section-label">Risk Provider</div>
+    <a class="nav-link active" onclick="showPage('rp-telemetry')">
+      <i data-lucide="activity"></i> Telemetry Feed
+    </a>
+    <a class="nav-link" onclick="showPage('rp-scoring')">
+      <i data-lucide="shield-check"></i> Risk Scoring
+    </a>
+    <a class="nav-link" onclick="showPage('rp-financials')">
+      <i data-lucide="bar-chart-2"></i> Project Financials
+    </a>
+    <a class="nav-link" onclick="showPage('rp-submit')">
+      <i data-lucide="send"></i> Submit Indicator
+      <span class="nav-badge">1</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-row">
+      <div class="avatar" id="avatarInitials">EG</div>
+      <div>
+        <div class="user-name" id="userName">PG&amp;E EdgeGrid</div>
+        <div class="user-role" id="userRole">Utility</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════
+     MAIN
+═══════════════════════════ -->
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbarTitle">Post Flexibility Need</div>
+      <div class="topbar-sub" id="topbarSub">Utility / EdgeGrid — PG&amp;E</div>
+    </div>
+    <div class="topbar-live">Grid Live</div>
+  </div>
+
+  <!-- ══════════ UTILITY: POST FLEXIBILITY NEED ══════════ -->
+  <section class="page active" id="page-util-post">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow utility">Utility / EdgeGrid</span>
+        <h1 class="page-title">Post Flexibility Need</h1>
+        <p class="page-meta">Publish ancillary capacity request to LIUM microgrid network</p>
+      </div>
+    </div>
+
+    <!-- Flow steps -->
+    <div class="flow-steps">
+      <div class="flow-step active">Post Need</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">LIUM Dispatch</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Delivery Confirmed</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Revenue Allocated</div>
+    </div>
+
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Flexibility Request</div>
+          <span class="status-pill amber">Draft</span>
+        </div>
+        <div class="panel-body">
+          <div class="form-section">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Service Type</label>
+                <select class="form-input form-select">
+                  <option selected>Load Curtailment</option>
+                  <option>Frequency Regulation</option>
+                  <option>Voltage Support</option>
+                  <option>Spinning Reserve</option>
+                  <option>Peak Shaving</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Capacity Required (kW)</label>
+                <input class="form-input" type="text" placeholder="e.g. 50" value="50" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Duration (hours)</label>
+                <input class="form-input" type="text" placeholder="e.g. 4" value="4" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Offered Price ($/MWh)</label>
+                <input class="form-input" type="text" placeholder="e.g. 120" value="120" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Start Window</label>
+                <input class="form-input" type="datetime-local" value="2026-05-08T14:00" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Region / Node</label>
+                <select class="form-input form-select">
+                  <option selected>Bay Area — PGE_BAYAREA</option>
+                  <option>Sacramento — PGE_SAC</option>
+                  <option>Peninsula — PGE_PEN</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Notes</label>
+              <input class="form-input" type="text" placeholder="e.g. Peak demand event, CAISO dispatch signal" />
+              <div class="form-hint">Optional. LIUM will route to nearest eligible microgrids.</div>
+            </div>
+            <div class="divider"></div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-utility" onclick="showPage('util-browse')"><i data-lucide="send"></i> Post Need</button>
+              <button class="btn btn-ghost">Preview Matching</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <!-- Summary -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Request Summary</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--ink-3);">Capacity</span>
+                <b style="color:var(--teal);">50 kW</b>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--ink-3);">Duration</span>
+                <b>4 hours</b>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--ink-3);">Total Energy</span>
+                <b>200 kWh</b>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--ink-3);">Offered Price</span>
+                <b style="color:var(--sun);">$120/MWh</b>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--ink-3);">Total Value</span>
+                <b style="color:var(--sun);">$24.00</b>
+              </div>
+              <div class="divider"></div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--ink-3);">Eligible Microgrids</span>
+                <b style="color:var(--good);">3 nearby</b>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map placeholder -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Coverage Map</div></div>
+          <div class="panel-body" style="padding:0;">
+            <div class="map-ph">
+              <div class="map-grid"></div>
+              <!-- Microgrid nodes -->
+              <div class="map-node" style="top:40%;left:50%;background:var(--teal);border-color:var(--teal);"></div>
+              <div class="map-node" style="top:55%;left:60%;background:var(--good);border-color:var(--good);"></div>
+              <div class="map-node" style="top:35%;left:65%;background:var(--amber);border-color:var(--amber);"></div>
+              <div class="map-label">Bay Area · 3 microgrids in range</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid context -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Grid Context</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;">
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--ink-3);">CAISO Signal</span>
+                <span class="status-pill amber">Flex Alert</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--ink-3);">Grid Frequency</span>
+                <b>59.98 Hz</b>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--ink-3);">Load Zone</span>
+                <b>PGE_BAYAREA</b>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ UTILITY: AVAILABLE CAPACITY ══════════ -->
+  <section class="page" id="page-util-browse">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow utility">Utility / EdgeGrid</span>
+        <h1 class="page-title">Available Microgrid Capacity</h1>
+        <p class="page-meta">Registered microgrids offering flexibility in your zone</p>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">Available Capacity</div><div class="k-val">135<small>kW</small></div><div class="k-delta pos">3 microgrids</div></div>
+      <div class="kpi"><div class="k-label">Your Need</div><div class="k-val">50<small>kW</small></div><div class="k-delta pos">Bay Area · 4h</div></div>
+      <div class="kpi"><div class="k-label">Avg Price</div><div class="k-val">$108<small>/MWh</small></div><div class="k-delta pos">Below your offer</div></div>
+      <div class="kpi"><div class="k-label">Est. Cost</div><div class="k-val">$21.6</div><div class="k-delta pos">200 kWh · 4h</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Eligible Microgrids</div>
+        <button class="btn btn-utility btn-sm" onclick="showPage('util-dispatch')"><i data-lucide="zap"></i> Request Dispatch</button>
+      </div>
+      <div class="panel-body no-pad">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Microgrid</th>
+              <th>Location</th>
+              <th>Capacity</th>
+              <th>BESS SoC</th>
+              <th>Response Time</th>
+              <th>Price ($/MWh)</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <span class="primary">Menlo Housing MG</span>
+                <span class="sub">BoxPower · Axil Developers</span>
+              </td>
+              <td><span class="primary">Menlo Park, CA</span></td>
+              <td><span class="primary" style="color:var(--teal);">47.1 kW</span></td>
+              <td>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <div style="width:60px;height:6px;background:var(--panel-2);">
+                    <div style="width:78%;height:100%;background:var(--good);"></div>
+                  </div>
+                  <span style="font-size:11px;color:var(--good);font-weight:700;">78%</span>
+                </div>
+              </td>
+              <td><span class="primary">&lt; 5 min</span></td>
+              <td><span class="primary" style="color:var(--sun);">$95/MWh</span></td>
+              <td><span class="status-pill green">Available</span></td>
+              <td>
+                <button class="btn btn-primary btn-sm" onclick="showPage('util-dispatch')">Dispatch →</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="primary">East Palo Alto MG</span>
+                <span class="sub">SunPower · Hammerhead Infra</span>
+              </td>
+              <td><span class="primary">E. Palo Alto, CA</span></td>
+              <td><span class="primary" style="color:var(--teal);">50.0 kW</span></td>
+              <td>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <div style="width:60px;height:6px;background:var(--panel-2);">
+                    <div style="width:62%;height:100%;background:var(--amber);"></div>
+                  </div>
+                  <span style="font-size:11px;color:var(--amber);font-weight:700;">62%</span>
+                </div>
+              </td>
+              <td><span class="primary">&lt; 10 min</span></td>
+              <td><span class="primary" style="color:var(--sun);">$110/MWh</span></td>
+              <td><span class="status-pill green">Available</span></td>
+              <td>
+                <button class="btn btn-primary btn-sm">Dispatch →</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="primary">Oakland DC MG</span>
+                <span class="sub">SunPower · Blend Finance</span>
+              </td>
+              <td><span class="primary">Oakland, CA</span></td>
+              <td><span class="primary" style="color:var(--ink-3);">38.0 kW</span></td>
+              <td>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <div style="width:60px;height:6px;background:var(--panel-2);">
+                    <div style="width:40%;height:100%;background:var(--ember);"></div>
+                  </div>
+                  <span style="font-size:11px;color:var(--ember);font-weight:700;">40%</span>
+                </div>
+              </td>
+              <td><span class="primary">20–30 min</span></td>
+              <td><span class="primary" style="color:var(--sun);">$120/MWh</span></td>
+              <td><span class="status-pill amber">Low SoC</span></td>
+              <td>
+                <button class="btn btn-ghost btn-sm" disabled>Not eligible</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ UTILITY: ACTIVE DISPATCH ══════════ -->
+  <section class="page" id="page-util-dispatch">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow utility">Utility / EdgeGrid</span>
+        <h1 class="page-title">Active Dispatch</h1>
+        <p class="page-meta">LIUM orchestrating delivery — real-time tracking</p>
+      </div>
+    </div>
+
+    <!-- Flow -->
+    <div class="flow-steps">
+      <div class="flow-step done">Post Need</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step done">LIUM Dispatch</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step active">Delivery in Progress</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Revenue Allocated</div>
+    </div>
+
+    <div class="col-2-1">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <!-- Active event card -->
+        <div class="request-card active-dispatch">
+          <div class="request-header">
+            <div>
+              <div class="request-id">GS-2026-0047 · Load Curtailment</div>
+              <div class="request-utility">PG&amp;E Bay Area Flex Alert</div>
+            </div>
+            <div style="text-align:right;">
+              <span class="status-pill teal">Dispatching</span>
+            </div>
+          </div>
+
+          <div class="dispatch-clock">
+            <div class="dispatch-label">Delivering</div>
+            <div class="dispatch-kw">47.1 kW</div>
+            <div class="dispatch-duration">3h 22m remaining</div>
+          </div>
+
+          <div class="request-specs">
+            <div class="spec">Source <b>Menlo Housing MG</b></div>
+            <div class="spec">Requested <b>50 kW</b></div>
+            <div class="spec">Delivering <b style="color:var(--teal);">47.1 kW</b></div>
+            <div class="spec">Price <b style="color:var(--sun);">$95/MWh</b></div>
+            <div class="spec">Duration <b>4h</b></div>
+            <div class="spec">Total <b style="color:var(--sun);">$17.89</b></div>
+          </div>
+        </div>
+
+        <!-- Live telemetry chart -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Delivery Telemetry</div>
+            <span class="status-pill green">Streaming</span>
+          </div>
+          <div class="panel-body">
+            <div class="chart-ph">
+              <div class="chart-ph-bar" style="height:85%;"></div>
+              <div class="chart-ph-bar" style="height:90%;"></div>
+              <div class="chart-ph-bar" style="height:88%;"></div>
+              <div class="chart-ph-bar" style="height:93%;"></div>
+              <div class="chart-ph-bar" style="height:95%;"></div>
+              <div class="chart-ph-bar" style="height:100%;opacity:1;"></div>
+            </div>
+            <div style="display:flex;gap:16px;margin-top:8px;font-size:11px;">
+              <span class="spec">Avg power <b style="color:var(--teal);">47.1 kW</b></span>
+              <span class="spec">Energy delivered <b style="color:var(--sun);">62.9 kWh</b></span>
+              <span class="spec">CO₂ offset <b style="color:var(--good);">44.1 kg</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">LIUM Orchestration</div></div>
+          <div class="panel-body">
+            <div class="feed">
+              <div class="feed-item"><div class="feed-dot teal"></div><div class="feed-msg"><b>LIUM</b> dispatched Menlo Housing MG</div><div class="feed-time">37m ago</div></div>
+              <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>DC Operator</b> confirmed dispatch acceptance</div><div class="feed-time">36m ago</div></div>
+              <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>BESS</b> discharging at 47.1 kW</div><div class="feed-time">35m ago</div></div>
+              <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>Telemetry</b> feed verified — on target</div><div class="feed-time">5m ago</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">On Completion</div></div>
+          <div class="panel-body">
+            <div style="font-size:11px;color:var(--ink-3);">LIUM will confirm delivery to EdgeGrid. Revenue pool allocates via UNITS to DC Operator and Microgrid Developer.</div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:10px;width:100%;" onclick="showPage('util-revenue')">Manage Revenue Pool →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ UTILITY: REVENUE ALLOCATION ══════════ -->
+  <section class="page" id="page-util-revenue">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow utility">Utility / EdgeGrid</span>
+        <h1 class="page-title">Revenue Allocation</h1>
+        <p class="page-meta">Confirm distribution pool — UNITS distributes to participants via LIUM</p>
+      </div>
+    </div>
+
+    <!-- Flow complete -->
+    <div class="flow-steps">
+      <div class="flow-step done">Post Need</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step done">LIUM Dispatch</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step done">Delivery Confirmed</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step active">Allocate Revenue</div>
+    </div>
+
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Revenue Pool — GS-2026-0047</div>
+          <span class="status-pill green">Confirmed</span>
+        </div>
+        <div class="panel-body no-pad">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.10em;color:var(--ink-3);">Total Pool</div>
+              <div style="font-size:28px;font-weight:700;color:var(--sun);font-feature-settings:'tnum' 1;margin-top:4px;">$17.89</div>
+            </div>
+            <div style="text-align:right;font-size:11px;color:var(--ink-3);">
+              <div>47.1 kW × 3.8h × $0.095/kWh</div>
+              <div>Delivery confirmed 7 May 2026</div>
+            </div>
+          </div>
+
+          <div class="alloc-row">
+            <div class="alloc-name">
+              DC Operator
+              <div class="alloc-pct" style="font-size:10px;color:var(--ink-3);">Menlo Housing · Energy delivery</div>
+            </div>
+            <div class="alloc-bar-wrap">
+              <div class="alloc-bar" style="width:60%;"></div>
+            </div>
+            <div style="font-size:10px;color:var(--ink-3);width:30px;">60%</div>
+            <div class="alloc-amount">$10.73</div>
+          </div>
+          <div class="alloc-row">
+            <div class="alloc-name">
+              Microgrid Developer (Axil)
+              <div class="alloc-pct" style="font-size:10px;color:var(--ink-3);">Asset deployment revenue</div>
+            </div>
+            <div class="alloc-bar-wrap">
+              <div class="alloc-bar" style="width:30%;background:var(--amber);"></div>
+            </div>
+            <div style="font-size:10px;color:var(--ink-3);width:30px;">30%</div>
+            <div class="alloc-amount">$5.37</div>
+          </div>
+          <div class="alloc-row">
+            <div class="alloc-name">
+              LIUM Protocol Fee
+              <div class="alloc-pct" style="font-size:10px;color:var(--ink-3);">Orchestration + UNITS settlement</div>
+            </div>
+            <div class="alloc-bar-wrap">
+              <div class="alloc-bar" style="width:10%;background:var(--ember);"></div>
+            </div>
+            <div style="font-size:10px;color:var(--ink-3);width:30px;">10%</div>
+            <div class="alloc-amount">$1.79</div>
+          </div>
+        </div>
+        <div style="padding:14px 16px;border-top:1px solid var(--line);">
+          <button class="btn btn-utility"><i data-lucide="send"></i> Confirm Revenue Pool</button>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Settlement</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Settlement via</span><b>UNITS Tokenisation</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Distribution</span><b>Instant on confirm</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Verifiable Proof</span><span class="status-pill green">DeDI Attested</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Event History</div></div>
+          <div class="panel-body" style="padding:0;">
+            <div class="feed">
+              <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>GS-2026-0047</b> Confirmed delivery</div><div class="feed-time">Today</div></div>
+              <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>GS-2026-0031</b> $14.20 distributed</div><div class="feed-time">2d ago</div></div>
+              <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>GS-2026-0018</b> $22.40 distributed</div><div class="feed-time">1w ago</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ MICROGRID: INCOMING REQUESTS ══════════ -->
+  <section class="page" id="page-mg-requests">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Microgrid / DC Operator</span>
+        <h1 class="page-title">Incoming Requests</h1>
+        <p class="page-meta">Flexibility dispatch requests from Utility via LIUM</p>
+      </div>
+    </div>
+
+    <!-- Flow -->
+    <div class="flow-steps">
+      <div class="flow-step done">Utility Posts Need</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step active">Review Request</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Accept / Dispatch</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Revenue Received</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">BESS SoC</div><div class="k-val">78<small>%</small></div><div class="k-delta pos">420 kWh available</div></div>
+      <div class="kpi"><div class="k-label">Dispatchable</div><div class="k-val">47.1<small>kW</small></div><div class="k-delta pos">Post peak reduction</div></div>
+      <div class="kpi"><div class="k-label">Pending Requests</div><div class="k-val">1</div><div class="k-delta pos">New today</div></div>
+      <div class="kpi"><div class="k-label">Revenue (MTD)</div><div class="k-val">$38.6</div><div class="k-delta pos">3 events</div></div>
+    </div>
+
+    <!-- Active request card -->
+    <div class="request-card urgent">
+      <div class="request-header">
+        <div>
+          <div class="request-id">GS-2026-0047 · Load Curtailment</div>
+          <div class="request-utility">PG&amp;E Bay Area — EdgeGrid</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="request-amount">$17.89</div>
+          <span class="status-pill amber">Awaiting Response</span>
+        </div>
+      </div>
+
+      <div class="request-specs">
+        <div class="spec">Capacity needed <b>50 kW</b></div>
+        <div class="spec">Your capacity <b style="color:var(--teal);">47.1 kW</b></div>
+        <div class="spec">Duration <b>4 hours</b></div>
+        <div class="spec">Price offered <b style="color:var(--sun);">$95/MWh</b></div>
+        <div class="spec">Start window <b>Today 14:00</b></div>
+        <div class="spec">Response deadline <b style="color:var(--amber);">13:45 (15 min)</b></div>
+      </div>
+
+      <!-- Capacity check -->
+      <div style="background:var(--panel-2);border:1px solid var(--line);padding:12px;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink-3);margin-bottom:8px;">BESS Capacity Check</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <span class="spec">Current SoC <b style="color:var(--good);">78% (327.6 kWh)</b></span>
+          <span class="spec">Required for 4h @ 47kW <b>188 kWh</b></span>
+          <span class="spec">Post-dispatch SoC <b style="color:var(--amber);">33%</b></span>
+          <span class="spec">Solar charging <b style="color:var(--sun);">21.4 kW active</b></span>
+        </div>
+      </div>
+
+      <div class="request-footer">
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" onclick="showPage('mg-delivery')"><i data-lucide="check-circle"></i> Accept Request</button>
+          <button class="btn btn-ghost" style="color:var(--ember);border-color:var(--ember);">Decline</button>
+          <button class="btn btn-ghost btn-sm">Negotiate</button>
+        </div>
+        <a class="dash-link" style="font-size:11px;padding:8px 12px;"><i data-lucide="external-link"></i> View Asset →</a>
+      </div>
+    </div>
+
+    <!-- Past requests -->
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Recent Requests</div></div>
+      <div class="panel-body no-pad">
+        <table class="tbl">
+          <thead><tr><th>Request ID</th><th>Utility</th><th>Capacity</th><th>Duration</th><th>Value</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="primary">GS-2026-0031</span></td>
+              <td><span class="primary">PG&amp;E EdgeGrid</span></td>
+              <td>40 kW</td>
+              <td>3h</td>
+              <td style="color:var(--sun);">$14.20</td>
+              <td><span class="status-pill green">Delivered</span></td>
+            </tr>
+            <tr>
+              <td><span class="primary">GS-2026-0018</span></td>
+              <td><span class="primary">PG&amp;E EdgeGrid</span></td>
+              <td>50 kW</td>
+              <td>4h</td>
+              <td style="color:var(--sun);">$22.40</td>
+              <td><span class="status-pill green">Delivered</span></td>
+            </tr>
+            <tr>
+              <td><span class="primary">GS-2026-0009</span></td>
+              <td><span class="primary">SCE EdgeGrid</span></td>
+              <td>30 kW</td>
+              <td>2h</td>
+              <td style="color:var(--ink-3);">$8.10</td>
+              <td><span class="status-pill ember">Declined</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ MICROGRID: DELIVERY CONFIRMATION ══════════ -->
+  <section class="page" id="page-mg-delivery">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Microgrid / DC Operator</span>
+        <h1 class="page-title">Delivery Confirmation</h1>
+        <p class="page-meta">GS-2026-0047 — dispatching now</p>
+      </div>
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step done">Utility Posts Need</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step done">Accepted</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step active">Delivering</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Revenue Received</div>
+    </div>
+
+    <div class="col-2-1">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <!-- Live dispatch panel -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Live Dispatch — Menlo Housing MG</div>
+            <span class="status-pill teal">Active</span>
+          </div>
+          <div class="panel-body">
+            <div class="dispatch-clock">
+              <div class="dispatch-label">Discharging BESS</div>
+              <div class="dispatch-kw">47.1 kW</div>
+              <div class="dispatch-duration">3h 22m · 62.9 kWh delivered</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;">
+              <div>
+                <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.10em;color:var(--ember);">BESS SoC</div>
+                <div style="font-size:18px;font-weight:700;color:var(--amber);margin-top:4px;">55%</div>
+              </div>
+              <div>
+                <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.10em;color:var(--ember);">Solar</div>
+                <div style="font-size:18px;font-weight:700;color:var(--sun);margin-top:4px;">21.4 kW</div>
+              </div>
+              <div>
+                <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.10em;color:var(--ember);">Net export</div>
+                <div style="font-size:18px;font-weight:700;color:var(--teal);margin-top:4px;">25.7 kW</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live chart -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Output (Last 30 min)</div></div>
+          <div class="panel-body">
+            <div class="chart-ph" style="height:80px;">
+              <div class="chart-ph-bar" style="height:90%;"></div>
+              <div class="chart-ph-bar" style="height:92%;"></div>
+              <div class="chart-ph-bar" style="height:88%;"></div>
+              <div class="chart-ph-bar" style="height:95%;"></div>
+              <div class="chart-ph-bar" style="height:100%;opacity:1;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Events -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Dispatch Log</div></div>
+          <div class="panel-body" style="padding:0;">
+            <div class="feed">
+              <div class="feed-item"><div class="feed-dot teal"></div><div class="feed-msg"><b>Accepted</b> GS-2026-0047</div><div class="feed-time">37m ago</div></div>
+              <div class="feed-item"><div class="feed-dot teal"></div><div class="feed-msg"><b>LIUM</b> confirmed dispatch instruction</div><div class="feed-time">36m ago</div></div>
+              <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>BESS</b> began discharging — 47.1 kW</div><div class="feed-time">35m ago</div></div>
+              <div class="feed-item"><div class="feed-dot"></div><div class="feed-msg"><b>Telemetry</b> stream active to utility</div><div class="feed-time">34m ago</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Delivery Summary</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Request</span><b>GS-2026-0047</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Utility</span><b>PG&amp;E EdgeGrid</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Committed</span><b style="color:var(--teal);">47.1 kW / 4h</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Delivered so far</span><b style="color:var(--sun);">62.9 kWh</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Revenue earned</span><b style="color:var(--sun);">$5.98 so far</b></div>
+              <div class="divider"></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Full delivery value</span><b style="color:var(--sun);">~$10.73</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">On Completion</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;">
+            <div style="font-size:11px;color:var(--ink-3);">LIUM Pincer will verify delivery against telemetry. UNITS distributes revenue automatically.</div>
+            <button class="btn btn-primary btn-sm" onclick="showPage('mg-revenue')">Confirm Delivery Manually →</button>
+            <a class="dash-link" style="font-size:11px;"><i data-lucide="external-link"></i> View Asset Dashboard →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ MICROGRID: REVENUE RECEIVED ══════════ -->
+  <section class="page" id="page-mg-revenue">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Microgrid / DC Operator</span>
+        <h1 class="page-title">Revenue Received</h1>
+        <p class="page-meta">Grid services income distributed via UNITS</p>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">Total MTD</div><div class="k-val">$38.6</div><div class="k-delta pos">3 events</div></div>
+      <div class="kpi"><div class="k-label">Pending</div><div class="k-val">$10.73</div><div class="k-delta">Delivery in progress</div></div>
+      <div class="kpi"><div class="k-label">Events YTD</div><div class="k-val">12</div><div class="k-delta pos">↑ vs 8 last year</div></div>
+      <div class="kpi"><div class="k-label">Annualised</div><div class="k-val">$463</div><div class="k-delta pos">Revenue stream</div></div>
+    </div>
+
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Revenue History</div></div>
+        <div class="panel-body" style="padding:16px;">
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot-col"><div class="timeline-dot active"></div><div class="timeline-line"></div></div>
+              <div class="timeline-content">
+                <div class="timeline-event">GS-2026-0047 — Load Curtailment (in progress)</div>
+                <div class="timeline-detail">PG&amp;E Bay Area · 47.1 kW × 4h · 7 May 2026</div>
+                <div class="timeline-amount">+$10.73 (pending)</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot-col"><div class="timeline-dot done"></div><div class="timeline-line"></div></div>
+              <div class="timeline-content">
+                <div class="timeline-event">GS-2026-0031 — Load Curtailment</div>
+                <div class="timeline-detail">PG&amp;E Bay Area · 40 kW × 3h · 5 May 2026</div>
+                <div class="timeline-amount">+$14.20</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot-col"><div class="timeline-dot done"></div><div class="timeline-line"></div></div>
+              <div class="timeline-content">
+                <div class="timeline-event">GS-2026-0018 — Peak Shaving</div>
+                <div class="timeline-detail">PG&amp;E Bay Area · 50 kW × 4h · 1 May 2026</div>
+                <div class="timeline-amount">+$22.40</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot-col"><div class="timeline-dot done"></div></div>
+              <div class="timeline-content">
+                <div class="timeline-event">GS-2026-0009 — Frequency Regulation</div>
+                <div class="timeline-detail">SCE EdgeGrid · 30 kW × 2h · 24 Apr 2026</div>
+                <div class="timeline-amount" style="color:var(--ink-3);">Declined</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">UNITS Settlement</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Settlement layer</span><b>UNITS Tokenisation</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">My share</span><b style="color:var(--sun);">60% of pool</b></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">VC attestation</span><span class="status-pill green">DeDI</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Asset Performance</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;">
+            <div style="font-size:11px;color:var(--ink-3);">Grid services revenue adds to asset NPV and improves LQ financial component.</div>
+            <a class="dash-link" style="font-size:11px;"><i data-lucide="external-link"></i> View Full Dashboard →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ MICROGRID: MY CAPACITY ══════════ -->
+  <section class="page" id="page-mg-capacity">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Microgrid / DC Operator</span>
+        <h1 class="page-title">My Capacity</h1>
+        <p class="page-meta">Menlo Housing Microgrid — availability profile</p>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">BESS SoC</div><div class="k-val">78<small>%</small></div><div class="k-delta pos">327.6 kWh</div></div>
+      <div class="kpi"><div class="k-label">Dispatchable</div><div class="k-val">47.1<small>kW</small></div><div class="k-delta pos">Peak reduction saved</div></div>
+      <div class="kpi"><div class="k-label">Solar (live)</div><div class="k-val">21.4<small>kW</small></div><div class="k-delta pos">Clear sky</div></div>
+      <div class="kpi"><div class="k-label">Generator</div><div class="k-val">150<small>kW</small></div><div class="k-delta">Standby — reserve</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Availability Schedule</div></div>
+        <div class="panel-body">
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.10em;color:var(--ink-3);margin-bottom:4px;">Today — 7 May 2026</div>
+            <div style="display:flex;gap:2px;height:32px;align-items:flex-end;">
+              <!-- Time blocks 6am–10pm -->
+              <div style="flex:1;height:60%;background:var(--good);opacity:0.7;" title="06:00"></div>
+              <div style="flex:1;height:80%;background:var(--good);opacity:0.8;" title="08:00"></div>
+              <div style="flex:1;height:90%;background:var(--good);" title="10:00"></div>
+              <div style="flex:1;height:100%;background:var(--teal);border:1px solid var(--teal);" title="12:00 — Dispatch window"></div>
+              <div style="flex:1;height:100%;background:var(--teal);border:1px solid var(--teal);" title="14:00 — NOW"></div>
+              <div style="flex:1;height:70%;background:var(--amber);opacity:0.7;" title="16:00 — Low SoC after dispatch"></div>
+              <div style="flex:1;height:50%;background:var(--amber);opacity:0.5;" title="18:00"></div>
+              <div style="flex:1;height:30%;background:var(--ember);opacity:0.5;" title="20:00 — reserve only"></div>
+            </div>
+            <div style="display:flex;gap:0;font-size:9px;color:var(--ink-3);">
+              <span style="flex:1;">06:00</span>
+              <span style="flex:1;">08:00</span>
+              <span style="flex:1;">10:00</span>
+              <span style="flex:1;">12:00</span>
+              <span style="flex:1;">14:00</span>
+              <span style="flex:1;">16:00</span>
+              <span style="flex:1;">18:00</span>
+              <span style="flex:1;">20:00</span>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:4px;font-size:10px;">
+              <span style="color:var(--good);">■ Full</span>
+              <span style="color:var(--teal);">■ Dispatching</span>
+              <span style="color:var(--amber);">■ Low SoC</span>
+              <span style="color:var(--ember);">■ Reserve only</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Asset Register</div></div>
+        <div class="panel-body" style="padding:0;">
+          <table class="tbl" style="font-size:11px;">
+            <thead><tr><th>Asset</th><th>Value</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>BESS ×2 (Battery)</td><td>$202,336</td><td><span class="status-pill teal">Dispatching</span></td></tr>
+              <tr><td>BESS Inverter (PCS)</td><td>$58,368</td><td><span class="status-pill teal">Active</span></td></tr>
+              <tr><td>Solar PV (28.3 kW)</td><td>$47,325</td><td><span class="status-pill green">Generating</span></td></tr>
+              <tr><td>Generator (150 kW)</td><td>$279,718</td><td><span class="status-pill">Standby</span></td></tr>
+              <tr><td>Controller</td><td>$158,621</td><td><span class="status-pill green">Online</span></td></tr>
+            </tbody>
+          </table>
+          <div style="padding:12px;">
+            <a class="dash-link" style="font-size:11px;"><i data-lucide="external-link"></i> Full Asset Detail →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ RISK PROVIDER: TELEMETRY FEED ══════════ -->
+  <section class="page" id="page-rp-telemetry">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Risk Provider</span>
+        <h1 class="page-title">Telemetry Feed</h1>
+        <p class="page-meta">Menlo Housing Microgrid — live device stream · Auth token active</p>
+      </div>
+      <div class="page-head-right">
+        <span class="status-pill teal">● Stream Active</span>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">Devices Online</div><div class="k-val">10</div><div class="k-delta pos">All reporting</div></div>
+      <div class="kpi"><div class="k-label">Avg Health</div><div class="k-val">87</div><div class="k-delta pos">Above threshold</div></div>
+      <div class="kpi"><div class="k-label">BESS SoC</div><div class="k-val">78<small>%</small></div><div class="k-delta pos">327.6 kWh available</div></div>
+      <div class="kpi"><div class="k-label">Solar Output</div><div class="k-val">21.4<small>kW</small></div><div class="k-delta pos">Clear sky</div></div>
+    </div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Live Device Stream</div><span class="status-pill teal" style="font-size:10px;">IEEE 2030.5</span></div>
+        <div class="panel-body" style="padding:0;">
+          <table class="tbl" style="font-size:11px;">
+            <thead><tr><th>Device</th><th>kW</th><th>V</th><th>Hz</th><th>SoC</th><th>Temp °C</th><th>Health</th></tr></thead>
+            <tbody>
+              <tr><td>☀️ Solar PV</td><td style="color:var(--good);">+21.4</td><td>240.1</td><td>60.001</td><td>—</td><td>32.1</td><td><span style="color:var(--good);font-weight:700;">94</span></td></tr>
+              <tr><td>🔋 Battery #1</td><td style="color:var(--teal);">+12.8</td><td>239.8</td><td>60.000</td><td>78%</td><td>28.4</td><td><span style="color:var(--good);font-weight:700;">91</span></td></tr>
+              <tr><td>🔋 Battery #2</td><td style="color:var(--teal);">+12.8</td><td>239.8</td><td>60.000</td><td>78%</td><td>28.6</td><td><span style="color:var(--good);font-weight:700;">91</span></td></tr>
+              <tr><td>⚡ BESS Inverter</td><td style="color:var(--teal);">+25.6</td><td>240.0</td><td>60.000</td><td>—</td><td>41.2</td><td><span style="color:var(--good);font-weight:700;">88</span></td></tr>
+              <tr><td>🔌 Generator</td><td>0.0</td><td>—</td><td>—</td><td>—</td><td>24.0</td><td><span style="color:var(--ink-2);font-weight:700;">82</span></td></tr>
+              <tr><td>🎛️ Controller</td><td>+0.1</td><td>240.0</td><td>60.000</td><td>—</td><td>35.0</td><td><span style="color:var(--good);font-weight:700;">89</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">LQ per Device</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-3);margin-bottom:4px;">Hardware · Financial · Compliance · Ops</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12px;">☀️ Solar PV</span><div style="display:flex;gap:6px;font-size:11px;"><span style="color:var(--good);">HW 94</span><span style="color:var(--good);">Fin 88</span><span style="color:var(--good);">Comp 100</span><span style="color:var(--good);">Ops 91</span></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12px;">🔋 Battery ×2</span><div style="display:flex;gap:6px;font-size:11px;"><span style="color:var(--good);">HW 91</span><span style="color:var(--good);">Fin 85</span><span style="color:var(--good);">Comp 100</span><span style="color:var(--teal);">Ops 86</span></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12px;">🔌 Generator</span><div style="display:flex;gap:6px;font-size:11px;"><span style="color:var(--ink-2);">HW 82</span><span style="color:var(--amber);">Fin 71</span><span style="color:var(--good);">Comp 100</span><span style="color:var(--ink-2);">Ops 80</span></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12px;">⚡ Inverter</span><div style="display:flex;gap:6px;font-size:11px;"><span style="color:var(--good);">HW 88</span><span style="color:var(--good);">Fin 85</span><span style="color:var(--good);">Comp 100</span><span style="color:var(--teal);">Ops 87</span></div></div>
+          <div style="border-top:1px solid var(--line);padding-top:10px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;font-weight:700;">Portfolio LQ</span>
+            <span style="font-size:18px;font-weight:700;color:var(--good);">87</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ RISK PROVIDER: RISK SCORING ══════════ -->
+  <section class="page" id="page-rp-scoring">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Risk Provider</span>
+        <h1 class="page-title">Risk Scoring</h1>
+        <p class="page-meta">Compute provenanced risk indicator from verified telemetry</p>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">LQ Score</div><div class="k-val" style="color:var(--good);">87</div><div class="k-delta pos">Securitisable</div></div>
+      <div class="kpi"><div class="k-label">Risk Rating</div><div class="k-val" style="color:var(--good);">Low</div><div class="k-delta pos">All thresholds met</div></div>
+      <div class="kpi"><div class="k-label">Credentials</div><div class="k-val">34</div><div class="k-delta pos">All verified</div></div>
+      <div class="kpi"><div class="k-label">Last Update</div><div class="k-val" style="font-size:16px;">Live</div><div class="k-delta">Continuous stream</div></div>
+    </div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">LQ Breakdown</div><span style="font-size:10px;color:var(--ink-3);">Weighted composite</span></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;">Hardware Health</span><span style="font-size:12px;font-weight:700;color:var(--good);">91 · 30%</span></div>
+            <div style="height:6px;background:var(--line);border-radius:3px;"><div style="width:91%;height:6px;background:var(--good);border-radius:3px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;">Financial Performance</span><span style="font-size:12px;font-weight:700;color:var(--good);">84 · 25%</span></div>
+            <div style="height:6px;background:var(--line);border-radius:3px;"><div style="width:84%;height:6px;background:var(--good);border-radius:3px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;">Compliance</span><span style="font-size:12px;font-weight:700;color:var(--good);">100 · 25%</span></div>
+            <div style="height:6px;background:var(--line);border-radius:3px;"><div style="width:100%;height:6px;background:var(--good);border-radius:3px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;">Operational</span><span style="font-size:12px;font-weight:700;color:var(--good);">86 · 20%</span></div>
+            <div style="height:6px;background:var(--line);border-radius:3px;"><div style="width:86%;height:6px;background:var(--good);border-radius:3px;"></div></div>
+          </div>
+          <div style="border-top:1px solid var(--line);padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-weight:700;">Composite LQ</span>
+            <span style="font-size:28px;font-weight:700;color:var(--good);">87</span>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Verifiable Credentials</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:10px;color:var(--ink-3);margin-bottom:4px;">34 credentials across 10 devices — all Verified</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);"><span>Manufacturer Nameplate ×10</span><span style="color:var(--good);">✓ DERSec Registry</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);"><span>SunSpec Certifications ×6</span><span style="color:var(--good);">✓ SunSpec Alliance</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);"><span>Commissioning Reports ×10</span><span style="color:var(--good);">✓ BoxPower Inc.</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);"><span>Grid Interconnection ×4</span><span style="color:var(--good);">✓ PG&amp;E</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);"><span>UL Safety Certificates ×3</span><span style="color:var(--good);">✓ UL Solutions</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;"><span>IEC 62443 Cyber Compliance</span><span style="color:var(--good);">✓ TÜV Rheinland</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ RISK PROVIDER: PROJECT FINANCIALS ══════════ -->
+  <section class="page" id="page-rp-financials">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Risk Provider</span>
+        <h1 class="page-title">Project Financials</h1>
+        <p class="page-meta">Menlo Housing Microgrid · BoxPower REopt model · 25-year horizon</p>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">Total Capex</div><div class="k-val">$854K</div><div class="k-delta">Hardware + soft costs</div></div>
+      <div class="kpi"><div class="k-label">After ITC (30%)</div><div class="k-val">$544K</div><div class="k-delta pos">ITC $256K saved</div></div>
+      <div class="kpi"><div class="k-label">NPV (25yr)</div><div class="k-val" style="color:var(--amber);">-$653K</div><div class="k-delta">LCC $1.46M vs BAU $0.81M</div></div>
+      <div class="kpi"><div class="k-label">Yr 1 Savings</div><div class="k-val">$9.5K</div><div class="k-delta pos">Bill $42.4K vs $51.9K BAU</div></div>
+    </div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Cost Breakdown</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);"><span>Battery Storage (BESS ×2)</span><span style="font-weight:700;">$398,861 · 46.7%</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);"><span>Standby Generator (150kW LPG)</span><span style="font-weight:700;">$211,568 · 24.8%</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);"><span>Construction &amp; Commissioning</span><span style="font-weight:700;">$155,982 · 18.3%</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);"><span>Solar PV System (28.3kW)</span><span style="font-weight:700;">$35,791 · 4.2%</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);"><span>Soft Costs (PM + Eng + Permits)</span><span style="font-weight:700;">$52,159 · 6.1%</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:8px 0;"><span style="font-weight:700;">Total Capex</span><span style="font-weight:700;color:var(--sun);">$854,361</span></div>
+          <div style="border-top:1px solid var(--line);padding-top:8px;font-size:11px;color:var(--ink-3);">Annual O&amp;M: $10,901 · PV LCOE: $0.0544/kWh</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Capital Stack</div><span style="font-size:10px;color:var(--ink-3);">ERC-3525 Tranches</span></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-left:3px solid #7C3AED;background:var(--panel-2);"><div><div style="font-size:12px;font-weight:700;color:#a78bfa;">Senior A — 55%</div><div style="font-size:11px;color:var(--ink-3);">Blue Valley · ~5.0% · 1st priority</div></div><div style="font-weight:700;">$469,898</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-left:3px solid #2563EB;background:var(--panel-2);"><div><div style="font-size:12px;font-weight:700;color:#60a5fa;">Senior B — 20%</div><div style="font-size:11px;color:var(--ink-3);">Blend Finance · ~5.8% · 2nd priority</div></div><div style="font-weight:700;">$170,872</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-left:3px solid #0891B2;background:var(--panel-2);"><div><div style="font-size:12px;font-weight:700;color:#22d3ee;">Mezzanine — 7%</div><div style="font-size:11px;color:var(--ink-3);">Axil Developers · ~12%</div></div><div style="font-weight:700;">$59,805</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-left:3px solid #059669;background:var(--panel-2);"><div><div style="font-size:12px;font-weight:700;color:#34d399;">Equity — 18%</div><div style="font-size:11px;color:var(--ink-3);">Hammerhead · 18–22% IRR · residual</div></div><div style="font-weight:700;">$153,785</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ RISK PROVIDER: SUBMIT INDICATOR ══════════ -->
+  <section class="page" id="page-rp-submit">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Risk Provider</span>
+        <h1 class="page-title">Submit Risk Indicator</h1>
+        <p class="page-meta">Provenanced risk indicator → fed to LIUM → attached to security tokens</p>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Compose Indicator</div></div>
+        <div class="panel-body">
+          <div class="form-section">
+            <div class="form-row">
+              <label class="form-label">Project</label>
+              <input class="form-input" value="Menlo Housing Microgrid — LIUM-PT-MENLO-001" readonly>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Composite LQ Score</label>
+              <input class="form-input" value="87" readonly style="color:var(--good);font-weight:700;">
+            </div>
+            <div class="form-row">
+              <label class="form-label">Risk Rating</label>
+              <select class="form-input"><option>Low</option><option>Medium</option><option>High</option></select>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Basis</label>
+              <input class="form-input" value="IEEE 2030.5 telemetry · 34 VCs · BoxPower REopt financials">
+            </div>
+            <div class="form-row">
+              <label class="form-label">Validity Period</label>
+              <input class="form-input" value="24 hours">
+            </div>
+            <button class="btn-primary" style="margin-top:8px;">Submit to LIUM →</button>
+            <div style="font-size:10px;color:var(--ink-3);margin-top:6px;">Score will be attached to security tokens via UNITS. Visible on LIUM as a live feed.</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Submission History</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;">
+          <div style="padding:10px;background:var(--panel-2);border-radius:4px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;font-weight:700;">LQ 87 · Low Risk</span><span class="status-pill green">Accepted</span></div>
+            <div style="font-size:11px;color:var(--ink-3);">Submitted 2 hours ago · Attached to LIUM-PT-MENLO-001</div>
+          </div>
+          <div style="padding:10px;background:var(--panel-2);border-radius:4px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;font-weight:700;">LQ 86 · Low Risk</span><span class="status-pill green">Accepted</span></div>
+            <div style="font-size:11px;color:var(--ink-3);">Submitted 26 hours ago · Expired</div>
+          </div>
+          <div style="padding:10px;background:var(--panel-2);border-radius:4px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;font-weight:700;">LQ 84 · Low Risk</span><span class="status-pill green">Accepted</span></div>
+            <div style="font-size:11px;color:var(--ink-3);">Submitted 50 hours ago · Expired</div>
+          </div>
+          <div style="border-top:1px solid var(--line);padding-top:8px;font-size:11px;color:var(--ink-3);">All indicators cryptographically signed · Proof anchored to LIUM Ledger</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<script>
+const roleConfig = {
+  utility:        { nav: 'nav-utility',       default: 'util-post',    initials: 'EG', name: 'PG&E EdgeGrid',      role: 'Utility' },
+  microgrid:      { nav: 'nav-microgrid',     default: 'mg-requests',  initials: 'AX', name: 'Axil Developers',    role: 'DC Operator' },
+  'risk-provider':{ nav: 'nav-risk-provider', default: 'rp-telemetry', initials: 'RP', name: 'Trusted Risk Prov.', role: 'Risk Provider' },
+};
+
+function switchRole(role) {
+  Object.values(roleConfig).forEach(r => {
+    const el = document.getElementById(r.nav);
+    if (el) el.style.display = 'none';
+  });
+  const cfg = roleConfig[role];
+  document.getElementById(cfg.nav).style.display = 'block';
+  document.getElementById('avatarInitials').textContent = cfg.initials;
+  document.getElementById('userName').textContent = cfg.name;
+  document.getElementById('userRole').textContent = cfg.role;
+  showPage(cfg.default);
+}
+
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + pageId);
+  if (page) page.classList.add('active');
+
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.remove('active');
+    const oc = l.getAttribute('onclick');
+    if (oc && oc.includes("'" + pageId + "'")) l.classList.add('active');
+  });
+
+  const titles = {
+    'util-post':     ['Post Flexibility Need', 'Utility / EdgeGrid — PG&E'],
+    'util-browse':   ['Available Microgrid Capacity', 'Bay Area · 3 microgrids online'],
+    'util-dispatch': ['Active Dispatch', 'GS-2026-0047 — delivering now'],
+    'util-revenue':  ['Revenue Allocation', 'Confirm distribution pool'],
+    'mg-requests':   ['Incoming Requests', 'Microgrid / DC Operator — Menlo Housing MG'],
+    'mg-delivery':   ['Delivery Confirmation', 'GS-2026-0047 — dispatching now'],
+    'mg-revenue':    ['Revenue Received', 'Grid services income — UNITS settlement'],
+    'mg-capacity':   ['My Capacity', 'Menlo Housing Microgrid — availability'],
+  };
+  const t = titles[pageId];
+  if (t) {
+    document.getElementById('topbarTitle').textContent = t[0];
+    document.getElementById('topbarSub').textContent = t[1];
+  }
+}
+
+lucide.createIcons();
+</script>
+
+<template id="__bundler_thumbnail" data-bg-color="#0B0B0E">
+  <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="260" fill="#0B0B0E"/>
+    <!-- Sidebar -->
+    <rect x="0" y="0" width="72" height="260" fill="#08080B" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="8" y="10" width="16" height="16" fill="#0D9488"/>
+    <text x="16" y="22" font-family="sans-serif" font-size="8" font-weight="900" fill="#fff" text-anchor="middle">G</text>
+    <rect x="8" y="34" width="55" height="7" rx="1" fill="#15151A" stroke="#3A3A45" stroke-width="1"/>
+    <rect x="6" y="52" width="55" height="5" fill="#15151A" stroke="#0D9488" stroke-width="1"/>
+    <rect x="8" y="62" width="50" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="8" y="72" width="40" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="8" y="82" width="48" height="5" rx="1" fill="#2A2A33"/>
+    <!-- Topbar -->
+    <rect x="72" y="0" width="328" height="28" fill="#0B0B0E" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="82" y="9" width="90" height="7" rx="1" fill="#FFFBF0" opacity="0.8"/>
+    <rect x="325" y="10" width="55" height="6" rx="1" fill="#0D9488" opacity="0.6"/>
+    <!-- Flow steps -->
+    <rect x="72" y="28" width="328" height="22" fill="#15151A" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="82" y="33" width="50" height="10" rx="1" fill="#0D9488" opacity="0.2" stroke="#0D9488" stroke-width="1" stroke-opacity="0.5"/>
+    <rect x="140" y="33" width="50" height="10" rx="1" fill="#2A2A33"/>
+    <rect x="198" y="33" width="70" height="10" rx="1" fill="#2A2A33"/>
+    <rect x="276" y="33" width="60" height="10" rx="1" fill="#2A2A33"/>
+    <!-- Dispatch clock -->
+    <rect x="82" y="62" width="200" height="110" fill="#1C1C22" stroke="#0D9488" stroke-width="1"/>
+    <text x="182" y="100" font-family="sans-serif" font-size="9" font-weight="700" fill="#6B5A3F" text-anchor="middle">DELIVERING</text>
+    <text x="182" y="128" font-family="sans-serif" font-size="32" font-weight="700" fill="#0D9488" text-anchor="middle">47kW</text>
+    <text x="182" y="148" font-family="sans-serif" font-size="9" font-weight="700" fill="#FFC400" text-anchor="middle">3h 22m remaining</text>
+    <rect x="82" y="62" width="200" height="14" fill="#15151A" stroke="#0D9488" stroke-width="1"/>
+    <text x="90" y="73" font-family="sans-serif" font-size="7" font-weight="700" fill="#C8341A" letter-spacing="0.1em">ACTIVE DISPATCH</text>
+    <!-- Side KPIs -->
+    <rect x="294" y="62" width="106" height="50" fill="#15151A" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="300" y="70" width="40" height="5" rx="1" fill="#C8341A" opacity="0.7"/>
+    <rect x="300" y="79" width="30" height="12" rx="1" fill="#FFFBF0" opacity="0.9"/>
+    <rect x="340" y="70" width="40" height="5" rx="1" fill="#C8341A" opacity="0.7"/>
+    <rect x="340" y="79" width="35" height="12" rx="1" fill="#0D9488" opacity="0.6"/>
+    <rect x="294" y="118" width="106" height="54" fill="#15151A" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="300" y="125" width="50" height="5" rx="1" fill="#C8341A" opacity="0.7"/>
+    <rect x="300" y="134" width="90" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="300" y="143" width="80" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="300" y="152" width="85" height="5" rx="1" fill="#2A2A33"/>
+    <!-- Revenue bar -->
+    <rect x="82" y="182" width="318" height="30" fill="#15151A" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="92" y="190" width="60" height="5" rx="1" fill="#C8341A" opacity="0.7"/>
+    <rect x="92" y="199" width="120" height="6" fill="#0D9488" opacity="0.7"/>
+    <rect x="214" y="199" width="60" height="6" fill="#FF9E1B" opacity="0.7"/>
+    <rect x="276" y="199" width="20" height="6" fill="#C8341A" opacity="0.5"/>
+    <!-- Feed items -->
+    <rect x="82" y="222" width="318" height="28" fill="#15151A" stroke="#2A2A33" stroke-width="1"/>
+    <circle cx="92" cy="232" r="3" fill="#0D9488"/>
+    <rect x="102" y="228" width="120" height="5" rx="1" fill="#2A2A33"/>
+    <rect x="102" y="237" width="90" height="4" rx="1" fill="#1C1C22"/>
+    <circle cx="92" cy="242" r="3" fill="#00D26A"/>
+  </svg>
+</template>
+
+</body>
+</html>
