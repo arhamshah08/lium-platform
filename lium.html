@@ -2279,40 +2279,17 @@ body {
     </div>
 
     <div class="kpi-row">
-      <div class="kpi"><div class="k-label">Invested</div><div class="k-val">$10<small>K</small></div><div class="k-delta pos">2 tokens</div></div>
-      <div class="kpi"><div class="k-label">Current Value</div><div class="k-val">$10.8<small>K</small></div><div class="k-delta pos">↑ +8%</div></div>
-      <div class="kpi"><div class="k-label">Returns Paid</div><div class="k-val">$480</div><div class="k-delta pos">Q1 distribution</div></div>
+      <div class="kpi"><div class="k-label">Total Invested</div><div class="k-val" id="inv-total-invested">—</div><div class="k-delta pos" id="inv-token-count">—</div></div>
       <div class="kpi"><div class="k-label">LQ Status</div><div style="margin-top:6px;"><div class="traffic-light"><div class="tl-dot active-green"></div><div class="tl-dot inactive"></div><div class="tl-dot inactive"></div></div></div></div>
     </div>
 
     <div class="panel">
-      <div class="panel-head"><div class="panel-title">Token Holdings</div></div>
+      <div class="panel-head"><div class="panel-title">My Investments</div></div>
       <div class="panel-body no-pad">
         <table class="tbl">
-          <thead><tr><th>Token</th><th>Project</th><th>Invested</th><th>Current</th><th>Return</th><th>LQ</th><th></th></tr></thead>
-          <tbody>
-            <tr>
-              <td><span class="primary">LIUM-MNL-001</span><span class="sub">Token #047</span></td>
-              <td><span class="primary">Menlo Housing MG</span><span class="sub">Menlo Park, CA</span></td>
-              <td>$5,000</td>
-              <td style="color:var(--good);">$5,400</td>
-              <td style="color:var(--sun);">$240</td>
-              <td>
-                <div class="traffic-light"><div class="tl-dot active-green"></div><div class="tl-dot inactive"></div><div class="tl-dot inactive"></div></div>
-              </td>
-              <td><button class="btn btn-ghost btn-sm">View Token</button></td>
-            </tr>
-            <tr>
-              <td><span class="primary">LIUM-MNL-001</span><span class="sub">Token #048</span></td>
-              <td><span class="primary">Menlo Housing MG</span><span class="sub">Menlo Park, CA</span></td>
-              <td>$5,000</td>
-              <td style="color:var(--good);">$5,400</td>
-              <td style="color:var(--sun);">$240</td>
-              <td>
-                <div class="traffic-light"><div class="tl-dot active-green"></div><div class="tl-dot inactive"></div><div class="tl-dot inactive"></div></div>
-              </td>
-              <td><button class="btn btn-ghost btn-sm">View Token</button></td>
-            </tr>
+          <thead><tr><th>Project</th><th>Amount</th><th>Tranche</th><th>Role</th><th>LQ</th><th>Date</th></tr></thead>
+          <tbody id="live-inv-tokens">
+            <tr><td colspan="6" style="color:#6B5A3F;font-size:13px;padding:16px;">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -2361,6 +2338,22 @@ body {
   </section>
 
 </main>
+</div>
+
+<!-- Investment modal -->
+<div id="invest-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:1000;display:none;align-items:center;justify-content:center;">
+  <div style="background:#15151A;border:1px solid #3A3A45;padding:32px;max-width:380px;width:90%;">
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:#6B5A3F;font-weight:700;margin-bottom:8px;">Invest</div>
+    <div style="font-size:20px;font-weight:700;letter-spacing:-0.02em;color:#FFFBF0;margin-bottom:4px;" id="invest-modal-title"></div>
+    <div style="font-size:12px;color:#6B5A3F;margin-bottom:20px;">Minimum $5,000 · Senior A tranche</div>
+    <input type="hidden" id="invest-security-id" />
+    <label style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#6B5A3F;font-weight:700;display:block;margin-bottom:6px;">Amount ($)</label>
+    <input id="invest-amount" type="number" min="5000" step="1000" placeholder="5000" onkeydown="if(event.key==='Enter')confirmInvestment()" style="width:100%;background:#1C1C22;border:1px solid #3A3A45;color:#FFFBF0;font-family:'DM Sans',sans-serif;font-size:18px;font-weight:700;padding:11px 14px;margin-bottom:14px;outline:none;box-sizing:border-box;" />
+    <div style="display:flex;gap:8px;">
+      <button onclick="confirmInvestment()" style="flex:1;background:#7C3AED;color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.10em;padding:12px;border:none;cursor:pointer;">Confirm Investment →</button>
+      <button onclick="document.getElementById('invest-modal').style.display='none'" style="background:transparent;border:1px solid #3A3A45;color:#6B5A3F;font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;padding:12px 16px;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <!-- Name capture modal -->
@@ -2632,16 +2625,57 @@ async function loadSecuritiesMarket() {
   });
 }
 
-async function investInSecurity(securityId, projectName, totalAmt) {
-  const rawAmt = prompt(`Invest in ${projectName}\nMinimum: $5,000. Enter amount ($):`);
-  if (!rawAmt) return;
+function investInSecurity(securityId, projectName, totalAmt) {
+  document.getElementById('invest-modal-title').textContent = projectName;
+  document.getElementById('invest-security-id').value = securityId;
+  document.getElementById('invest-amount').value = '';
+  document.getElementById('invest-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('invest-amount').focus(), 50);
+}
+
+async function confirmInvestment() {
+  const securityId = document.getElementById('invest-security-id').value;
+  const rawAmt = document.getElementById('invest-amount').value;
   const amountNum = parseFloat(rawAmt.replace(/[$,]/g,''));
   if (isNaN(amountNum) || amountNum < 5000) { toast('Minimum investment is $5,000', 'err'); return; }
-  const tokens = Math.floor(amountNum / 5000);
-  const { data, error } = await sb.from('investments').insert({ security_id: securityId, amount_usd: amountNum, investor_role: actorRole === 'pm' ? 'institutional' : 'retail', tranche: 'Senior A', created_by: actorName }).select().single();
+  const projectName = document.getElementById('invest-modal-title').textContent;
+  document.getElementById('invest-modal').style.display = 'none';
+  const { data, error } = await sb.from('investments').insert({
+    security_id: securityId,
+    amount_usd: amountNum,
+    investor_role: actorRole === 'pm' ? 'institutional' : 'retail',
+    tranche: 'Senior A',
+    created_by: actorName
+  }).select().single();
   if (error) { toast('Error: ' + error.message, 'err'); return; }
   logActivity('investment_made', 'investment', data.id, { projectName, amountNum });
   toast(`Investment of $${amountNum.toLocaleString()} confirmed!`);
+  showPage('inv-tokens');
+}
+
+async function loadMyTokens() {
+  const { data, error } = await sb.from('investments')
+    .select('*, securities(total_value_usd, senior_a_pct, projects(name, location, lq_score))')
+    .eq('created_by', actorName)
+    .order('created_at', { ascending: false });
+  const container = document.getElementById('live-inv-tokens');
+  if (!container) return;
+  if (error || !data || !data.length) {
+    container.innerHTML = '<div style="color:#6B5A3F;font-size:13px;padding:8px 0 4px;">No investments yet — browse the marketplace to invest.</div>';
+    return;
+  }
+  const totalInvested = data.reduce((s, i) => s + Number(i.amount_usd), 0);
+  document.getElementById('inv-total-invested').textContent = '$' + (totalInvested/1000).toFixed(1) + 'K';
+  document.getElementById('inv-token-count').textContent = data.length + ' investment' + (data.length>1?'s':'');
+  container.innerHTML = data.map(inv => `
+    <tr>
+      <td><span class="primary">${escHtml(inv.securities?.projects?.name || '–')}</span><span class="sub">${escHtml(inv.securities?.projects?.location || '')}</span></td>
+      <td style="color:var(--sun);">$${Number(inv.amount_usd).toLocaleString()}</td>
+      <td>${escHtml(inv.tranche || 'Senior A')}</td>
+      <td>${escHtml(inv.investor_role || '–')}</td>
+      <td><div class="traffic-light"><div class="tl-dot active-green"></div><div class="tl-dot inactive"></div><div class="tl-dot inactive"></div></div></td>
+      <td style="color:var(--ink-3);font-size:11px;">${new Date(inv.created_at).toLocaleDateString()}</td>
+    </tr>`).join('');
 }
 
 // ── Utility fn ──
@@ -2698,6 +2732,7 @@ function showPage(pageId) {
   if (pageId === 'sa-loans') loadSALoans();
   if (pageId === 'pm-market' || pageId === 'sa-pm-list' || pageId === 'sa-inv-list') loadSecuritiesMarket();
   if (pageId === 'inv-market') loadSecuritiesMarket();
+  if (pageId === 'inv-tokens') loadMyTokens();
 
   // Update topbar
   const titles = {
