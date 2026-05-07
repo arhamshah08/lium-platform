@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIUM Energy — Platform</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0B0B0E;
+  color: #FFFBF0;
+  font-family: "DM Sans", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+.wrap { max-width: 760px; width: 100%; }
+.eyebrow {
+  display: inline-block;
+  background: #C8341A;
+  color: #FFFBF0;
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  padding: 4px 10px;
+  margin-bottom: 18px;
+}
+h1 { font-size: 42px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 10px; }
+.sub { font-size: 15px; color: #6B5A3F; margin-bottom: 48px; }
+
+.apps { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.app-card {
+  background: #15151A;
+  border: 1px solid #2A2A33;
+  padding: 28px;
+  display: flex; flex-direction: column; gap: 16px;
+  transition: border-color 160ms;
+  text-decoration: none; color: inherit;
+  cursor: pointer;
+}
+.app-card:hover { border-color: #3A3A45; }
+.app-card:hover .arrow { transform: translateX(4px); }
+.app-icon {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 900;
+}
+.app-icon.a { background: #FFC400; color: #0B0B0E; }
+.app-icon.b { background: #0D9488; color: #fff; }
+.app-name { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+.app-desc { font-size: 13px; color: #6B5A3F; line-height: 1.5; }
+.role-list { display: flex; flex-direction: column; gap: 4px; }
+.role-item {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 700;
+  color: #B8A77F;
+}
+.role-dot { width: 6px; height: 6px; border-radius: 50%; }
+.role-dot.a { background: #FFC400; }
+.role-dot.b { background: #0D9488; }
+.app-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid #2A2A33;
+  padding-top: 14px;
+  margin-top: auto;
+}
+.open-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: #6B5A3F; }
+.arrow { transition: transform 160ms; font-size: 18px; }
+.arrow.a { color: #FFC400; }
+.arrow.b { color: #0D9488; }
+.divider { border: 0; border-top: 1px solid #2A2A33; margin: 40px 0 24px; }
+.footer-note { font-size: 11px; color: #2A2A33; text-align: center; }
+@media (max-width: 600px) {
+  .apps { grid-template-columns: 1fr; }
+  h1 { font-size: 30px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">LIUM Energy</div>
+  <h1>MicroGrid Securitisation Platform</h1>
+  <p class="sub">Two applications. One infrastructure layer.</p>
+
+  <div class="apps">
+    <!-- App A -->
+    <a class="app-card" href="LIUM Capital Markets.html">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="app-icon a">A</div>
+        <div>
+          <div class="app-name">Capital Markets</div>
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.10em;color:#6B5A3F;font-weight:700;">App A</div>
+        </div>
+      </div>
+      <div class="app-desc">Role-based platform for financing, securitisation, and investment in microgrid projects. Five roles, three marketplace layers.</div>
+      <div class="role-list">
+        <div class="role-item"><div class="role-dot a"></div>Project Developer — seeking financing</div>
+        <div class="role-item"><div class="role-dot a"></div>Financier — finding projects, offering loans</div>
+        <div class="role-item"><div class="role-dot a"></div>Securitisation Agent — structuring securities</div>
+        <div class="role-item"><div class="role-dot a"></div>Portfolio Manager — institutional offtake</div>
+        <div class="role-item"><div class="role-dot a"></div>Investor — fractional tokens ($5K min)</div>
+      </div>
+      <div class="app-footer">
+        <div class="open-label">Open App A</div>
+        <div class="arrow a">→</div>
+      </div>
+    </a>
+
+    <!-- App B -->
+    <a class="app-card" href="LIUM Grid Services Exchange.html">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="app-icon b">B</div>
+        <div>
+          <div class="app-name">Grid Services Exchange</div>
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.10em;color:#6B5A3F;font-weight:700;">App B</div>
+        </div>
+      </div>
+      <div class="app-desc">Flexibility marketplace between utilities and microgrid operators. Dispatch, delivery confirmation, and revenue distribution via UNITS.</div>
+      <div class="role-list">
+        <div class="role-item"><div class="role-dot b"></div>Utility / EdgeGrid — posting flexibility needs</div>
+        <div class="role-item"><div class="role-dot b"></div>Microgrid / DC Operator — fulfilling requests</div>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:#2A2A33;">↓</div>
+      <div class="app-footer">
+        <div class="open-label">Open App B</div>
+        <div class="arrow b">→</div>
+      </div>
+    </a>
+  </div>
+
+  <hr class="divider">
+  <div class="footer-note">Menlo Housing Microgrid · Menlo Park, CA · BoxPower · $854K capex · LQ 87</div>
+</div>
+<script>lucide.createIcons();</script>
+
+<template id="__bundler_thumbnail" data-bg-color="#0B0B0E">
+  <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="260" fill="#0B0B0E"/>
+    <!-- LIUM wordmark area -->
+    <rect x="160" y="60" width="80" height="8" rx="1" fill="#C8341A"/>
+    <rect x="120" y="80" width="160" height="28" rx="1" fill="#FFFBF0" opacity="0.08"/>
+    <text x="200" y="101" font-family="sans-serif" font-size="18" font-weight="700" fill="#FFFBF0" text-anchor="middle" opacity="0.9">LIUM</text>
+    <!-- App A card -->
+    <rect x="40" y="130" width="140" height="90" rx="1" fill="#15151A" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="40" y="130" width="22" height="22" fill="#FFC400"/>
+    <text x="51" y="146" font-family="sans-serif" font-size="11" font-weight="900" fill="#0B0B0E" text-anchor="middle">A</text>
+    <rect x="68" y="136" width="60" height="7" rx="1" fill="#FFFBF0" opacity="0.7"/>
+    <rect x="50" y="158" width="110" height="4" rx="1" fill="#2A2A33"/>
+    <rect x="50" y="166" width="90" height="4" rx="1" fill="#2A2A33"/>
+    <rect x="50" y="174" width="100" height="4" rx="1" fill="#2A2A33"/>
+    <rect x="50" y="182" width="80" height="4" rx="1" fill="#2A2A33"/>
+    <rect x="50" y="196" width="110" height="14" rx="1" fill="#FFC400" opacity="0.15"/>
+    <text x="105" y="207" font-family="sans-serif" font-size="8" font-weight="700" fill="#FFC400" text-anchor="middle">OPEN APP A →</text>
+    <!-- App B card -->
+    <rect x="220" y="130" width="140" height="90" rx="1" fill="#15151A" stroke="#2A2A33" stroke-width="1"/>
+    <rect x="220" y="130" width="22" height="22" fill="#0D9488"/>
+    <text x="231" y="146" font-family="sans-serif" font-size="11" font-weight="900" fill="#fff" text-anchor="middle">B</text>
+    <rect x="248" y="136" width="72" height="7" rx="1" fill="#FFFBF0" opacity="0.7"/>
+    <rect x="230" y="158" width="110" height="4" rx="1" fill="#2A2A33"/>
+    <rect x="230" y="166" width="95" height="4" rx="1" fill="#2A2A33"/>
+    <rect x="230" y="174" width="105" height="4" rx="1" fill="#2A2A33"/>
+    <rect x="230" y="196" width="110" height="14" rx="1" fill="#0D9488" opacity="0.15"/>
+    <text x="285" y="207" font-family="sans-serif" font-size="8" font-weight="700" fill="#0D9488" text-anchor="middle">OPEN APP B →</text>
+  </svg>
+</template>
+</body>
+</html>
