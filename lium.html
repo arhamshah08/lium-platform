@@ -2027,7 +2027,7 @@ body {
 
     <!-- Security seed cards -->
     <div class="two-col">
-      <div class="security-card" style="cursor:pointer;" onclick="showPage('pm-portfolio')">
+      <div class="security-card" style="cursor:pointer;" onclick="offtakeSecurity('static-menlo','Menlo Housing Microgrid',640000)">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
           <div>
             <div class="security-tag">LIUM-SEC-001</div>
@@ -2048,7 +2048,7 @@ body {
           <div><div class="k-label">Risk</div><div class="risk-indicator" style="padding:4px 8px;margin-top:4px;"><div class="risk-dot" style="background:var(--good);"></div><div class="risk-label" style="font-size:10px;color:var(--good);">Low</div></div></div>
         </div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();showPage('pm-portfolio')"><i data-lucide="shopping-cart"></i> Offtake</button>
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();offtakeSecurity('static-menlo','Menlo Housing Microgrid',640000)"><i data-lucide="shopping-cart"></i> Offtake</button>
           <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();">View Detail</button>
         </div>
       </div>
@@ -2183,6 +2183,52 @@ body {
     </div>
   </section>
 
+  <!-- ══════════════ PM: OFFTAKE SECURITY ══════════════ -->
+  <section class="page" id="page-pm-buy">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow sun">Portfolio Manager</span>
+        <h1 class="page-title">Institutional Offtake</h1>
+        <p class="page-meta" id="pm-buy-meta">Confirm allocation and tranche selection</p>
+      </div>
+      <button class="btn btn-ghost" onclick="showPage('pm-market')"><i data-lucide="arrow-left"></i> Back to Marketplace</button>
+    </div>
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Offtake — <span id="pm-buy-name">–</span></div></div>
+        <div class="panel-body">
+          <input type="hidden" id="pm-buy-security-id" />
+          <div class="form-section">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Allocation Amount ($)</label>
+                <input id="pm-buy-amount" class="form-input" type="number" min="50000" step="10000" placeholder="50000" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tranche</label>
+                <select id="pm-buy-tranche" class="form-input form-select">
+                  <option>Senior A</option>
+                  <option>Senior B</option>
+                  <option>Mezzanine</option>
+                  <option>Equity</option>
+                </select>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div id="pm-buy-summary" style="margin-bottom:16px;"></div>
+            <button class="btn btn-primary" onclick="confirmOfftake()"><i data-lucide="check"></i> Confirm Offtake</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel" id="pm-buy-side">
+        <div class="panel-head"><div class="panel-title">Security Details</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:11px;color:var(--ink-3);">Select a security from the marketplace to see details here.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ══════════════ INVESTOR: TOKEN MARKETPLACE ══════════════ -->
   <section class="page" id="page-inv-market">
     <div class="page-head">
@@ -2218,7 +2264,7 @@ body {
           </div>
         </div>
         <div style="display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line);">
-          <button class="btn btn-primary btn-sm" onclick="showPage('inv-tokens')"><i data-lucide="coins"></i> Invest $5,000</button>
+          <button class="btn btn-primary btn-sm" onclick="investInSecurity('static-menlo','Menlo Housing Microgrid',640000)"><i data-lucide="coins"></i> Invest</button>
           <button class="btn btn-ghost btn-sm">Learn More →</button>
         </div>
       </div>
@@ -2262,6 +2308,59 @@ body {
         </div>
         <div style="border-top:1px solid var(--line);padding-top:10px;">
           <div style="font-size:12px;color:var(--ink-3);">New projects enlisting — check back soon</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ INVESTOR: INVEST IN TOKEN ══════════════ -->
+  <section class="page" id="page-inv-buy">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow" style="background:var(--purple);">Investor</span>
+        <h1 class="page-title">Invest in Token</h1>
+        <p class="page-meta">Fractional microgrid investment — minimum $5,000</p>
+      </div>
+      <button class="btn btn-ghost" onclick="showPage('inv-market')"><i data-lucide="arrow-left"></i> Back to Marketplace</button>
+    </div>
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Investment — <span id="inv-buy-name">–</span></div></div>
+        <div class="panel-body">
+          <input type="hidden" id="inv-buy-security-id" />
+          <div class="form-section">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Investment Amount ($)</label>
+                <input id="inv-buy-amount" class="form-input" type="number" min="5000" step="1000" placeholder="5000" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tranche</label>
+                <select id="inv-buy-tranche" class="form-input form-select">
+                  <option>Senior A</option>
+                  <option>Senior B</option>
+                  <option>Mezzanine</option>
+                </select>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.10em;color:var(--purple);font-weight:700;">Token Details</div>
+            <div id="inv-buy-summary" style="margin:12px 0 16px;"></div>
+            <div class="divider"></div>
+            <button class="btn btn-primary" onclick="confirmInvestment()"><i data-lucide="coins"></i> Confirm Investment</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Why Invest?</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:12px;">
+          <div style="font-size:13px;color:var(--ink-2);line-height:1.6;">Fractional tokens give you direct exposure to a real microgrid asset — solar, battery, and generator — with revenue from PPA contracts and grid flexibility payments.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="spec">Est. yield <b style="color:var(--sun);">8–12% p.a.</b></div>
+            <div class="spec">Asset-backed <b>real infrastructure</b></div>
+            <div class="spec">LQ score <b style="color:var(--good);">87 — Strong</b></div>
+            <div class="spec">Quarterly distributions</div>
+          </div>
         </div>
       </div>
     </div>
@@ -2341,20 +2440,6 @@ body {
 </div>
 
 <!-- Investment modal -->
-<div id="invest-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:1000;display:none;align-items:center;justify-content:center;">
-  <div style="background:#15151A;border:1px solid #3A3A45;padding:32px;max-width:380px;width:90%;">
-    <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:#6B5A3F;font-weight:700;margin-bottom:8px;">Invest</div>
-    <div style="font-size:20px;font-weight:700;letter-spacing:-0.02em;color:#FFFBF0;margin-bottom:4px;" id="invest-modal-title"></div>
-    <div style="font-size:12px;color:#6B5A3F;margin-bottom:20px;">Minimum $5,000 · Senior A tranche</div>
-    <input type="hidden" id="invest-security-id" />
-    <label style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#6B5A3F;font-weight:700;display:block;margin-bottom:6px;">Amount ($)</label>
-    <input id="invest-amount" type="number" min="5000" step="1000" placeholder="5000" onkeydown="if(event.key==='Enter')confirmInvestment()" style="width:100%;background:#1C1C22;border:1px solid #3A3A45;color:#FFFBF0;font-family:'DM Sans',sans-serif;font-size:18px;font-weight:700;padding:11px 14px;margin-bottom:14px;outline:none;box-sizing:border-box;" />
-    <div style="display:flex;gap:8px;">
-      <button onclick="confirmInvestment()" style="flex:1;background:#7C3AED;color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.10em;padding:12px;border:none;cursor:pointer;">Confirm Investment →</button>
-      <button onclick="document.getElementById('invest-modal').style.display='none'" style="background:transparent;border:1px solid #3A3A45;color:#6B5A3F;font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;padding:12px 16px;cursor:pointer;">Cancel</button>
-    </div>
-  </div>
-</div>
 
 <!-- Name capture modal -->
 <div id="name-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:1000;display:flex;align-items:center;justify-content:center;">
@@ -2599,12 +2684,17 @@ async function structureSecurity() {
 // ── PM + Investor: load securities ──
 async function loadSecuritiesMarket() {
   const { data, error } = await sb.from('securities').select('*, projects(name, location, lq_score)').order('created_at', { ascending: false });
-  ['live-securities-pm', 'live-securities-inv'].forEach(containerId => {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    if (error || !data.length) { container.innerHTML = '<div style="color:#6B5A3F;font-size:13px;padding:4px 0 8px;">No securities listed yet — appear when agent tokenises a loan.</div>'; return; }
-    container.innerHTML = data.map(s => `
-      <div class="project-card" style="${containerId.includes('inv')?'width:calc(33% - 8px);min-width:280px;':''}">
+  const pmContainer = document.getElementById('live-securities-pm');
+  const invContainer = document.getElementById('live-securities-inv');
+  const empty = '<div style="color:#6B5A3F;font-size:13px;padding:4px 0 8px;">No securities listed yet — appear when agent tokenises a loan.</div>';
+  if (error || !data || !data.length) {
+    if (pmContainer) pmContainer.innerHTML = empty;
+    if (invContainer) invContainer.innerHTML = empty;
+    return;
+  }
+  if (pmContainer) {
+    pmContainer.innerHTML = data.map(s => `
+      <div class="project-card">
         <div class="project-card-head">
           <div><div class="project-name">${escHtml(s.projects?.name||'Security')}</div><div class="project-loc">${escHtml(s.projects?.location||'')} · Agent: ${escHtml(s.created_by||'–')}</div></div>
           <div style="display:flex;gap:8px;"><div class="lq-badge green">LQ ${s.lq_score||s.projects?.lq_score||'–'}</div><span class="status-pill green">Structured</span></div>
@@ -2617,40 +2707,100 @@ async function loadSecuritiesMarket() {
           <div class="spec">Equity <b>${Number(s.equity_pct).toFixed(0)}%</b></div>
         </div>
         <div class="project-footer">
-          <button class="btn btn-primary btn-sm" onclick="investInSecurity('${s.id}','${escHtml(s.projects?.name||'').replace(/'/g,'')}',${s.total_value_usd})">Invest →</button>
+          <button class="btn btn-primary btn-sm" onclick="offtakeSecurity('${s.id}','${escHtml(s.projects?.name||'').replace(/'/g,'')}',${s.total_value_usd})"><i data-lucide="shopping-cart"></i> Offtake →</button>
           <span class="spec" style="color:var(--ink-3);">${new Date(s.created_at).toLocaleDateString()}</span>
         </div>
       </div>`).join('');
-    lucide.createIcons();
-  });
+  }
+  if (invContainer) {
+    invContainer.innerHTML = data.map(s => `
+      <div class="project-card" style="width:calc(33% - 8px);min-width:280px;">
+        <div class="project-card-head">
+          <div><div class="project-name">${escHtml(s.projects?.name||'Security')}</div><div class="project-loc">${escHtml(s.projects?.location||'')} · Agent: ${escHtml(s.created_by||'–')}</div></div>
+          <div style="display:flex;gap:8px;"><div class="lq-badge green">LQ ${s.lq_score||s.projects?.lq_score||'–'}</div><span class="status-pill green">Structured</span></div>
+        </div>
+        <div class="project-specs">
+          <div class="spec">Total <b style="color:var(--sun);">$${(Number(s.total_value_usd)/1000).toFixed(0)}K</b></div>
+          <div class="spec">Sr A <b>${s.senior_a_pct}%</b></div>
+          <div class="spec">Sr B <b>${s.senior_b_pct}%</b></div>
+          <div class="spec">Mezz <b>${s.mezzanine_pct}%</b></div>
+          <div class="spec">Equity <b>${Number(s.equity_pct).toFixed(0)}%</b></div>
+        </div>
+        <div class="project-footer">
+          <button class="btn btn-primary btn-sm" onclick="investInSecurity('${s.id}','${escHtml(s.projects?.name||'').replace(/'/g,'')}',${s.total_value_usd})"><i data-lucide="coins"></i> Invest →</button>
+          <span class="spec" style="color:var(--ink-3);">${new Date(s.created_at).toLocaleDateString()}</span>
+        </div>
+      </div>`).join('');
+  }
+  lucide.createIcons();
 }
 
 function investInSecurity(securityId, projectName, totalAmt) {
-  document.getElementById('invest-modal-title').textContent = projectName;
-  document.getElementById('invest-security-id').value = securityId;
-  document.getElementById('invest-amount').value = '';
-  document.getElementById('invest-modal').style.display = 'flex';
-  setTimeout(() => document.getElementById('invest-amount').focus(), 50);
+  document.getElementById('inv-buy-security-id').value = securityId;
+  document.getElementById('inv-buy-name').textContent = projectName;
+  document.getElementById('inv-buy-amount').value = '';
+  document.getElementById('inv-buy-summary').innerHTML = `
+    <div class="project-specs">
+      <div class="spec">Total Value <b style="color:var(--sun);">$${(Number(totalAmt)/1000).toFixed(0)}K</b></div>
+      <div class="spec">Min Investment <b style="color:var(--sun);">$5,000</b></div>
+      <div class="spec">Est. Yield <b>8–12% p.a.</b></div>
+      <div class="spec">Distributions <b>Quarterly</b></div>
+    </div>`;
+  showPage('inv-buy');
+  setTimeout(() => document.getElementById('inv-buy-amount').focus(), 100);
+}
+
+function offtakeSecurity(securityId, projectName, totalAmt) {
+  document.getElementById('pm-buy-security-id').value = securityId;
+  document.getElementById('pm-buy-name').textContent = projectName;
+  document.getElementById('pm-buy-amount').value = '';
+  document.getElementById('pm-buy-summary').innerHTML = `
+    <div class="project-specs">
+      <div class="spec">Total Value <b style="color:var(--sun);">$${(Number(totalAmt)/1000).toFixed(0)}K</b></div>
+      <div class="spec">Blended Yield <b style="color:var(--sun);">6.8%</b></div>
+      <div class="spec">Risk Profile <b style="color:var(--good);">Low</b></div>
+      <div class="spec">LQ Score <b style="color:var(--good);">87 — Strong</b></div>
+    </div>`;
+  showPage('pm-buy');
+  setTimeout(() => document.getElementById('pm-buy-amount').focus(), 100);
 }
 
 async function confirmInvestment() {
-  const securityId = document.getElementById('invest-security-id').value;
-  const rawAmt = document.getElementById('invest-amount').value;
-  const amountNum = parseFloat(rawAmt.replace(/[$,]/g,''));
+  const securityId = document.getElementById('inv-buy-security-id').value;
+  const amountNum = parseFloat(document.getElementById('inv-buy-amount').value);
+  const tranche = document.getElementById('inv-buy-tranche').value;
+  const projectName = document.getElementById('inv-buy-name').textContent;
   if (isNaN(amountNum) || amountNum < 5000) { toast('Minimum investment is $5,000', 'err'); return; }
-  const projectName = document.getElementById('invest-modal-title').textContent;
-  document.getElementById('invest-modal').style.display = 'none';
   const { data, error } = await sb.from('investments').insert({
-    security_id: securityId,
+    security_id: securityId === 'static-menlo' ? null : securityId,
     amount_usd: amountNum,
-    investor_role: actorRole === 'pm' ? 'institutional' : 'retail',
-    tranche: 'Senior A',
+    investor_role: 'retail',
+    tranche,
     created_by: actorName
   }).select().single();
   if (error) { toast('Error: ' + error.message, 'err'); return; }
   logActivity('investment_made', 'investment', data.id, { projectName, amountNum });
   toast(`Investment of $${amountNum.toLocaleString()} confirmed!`);
   showPage('inv-tokens');
+}
+
+async function confirmOfftake() {
+  const securityId = document.getElementById('pm-buy-security-id').value;
+  const amountNum = parseFloat(document.getElementById('pm-buy-amount').value);
+  const tranche = document.getElementById('pm-buy-tranche').value;
+  const projectName = document.getElementById('pm-buy-name').textContent;
+  if (isNaN(amountNum) || amountNum < 50000) { toast('Minimum institutional allocation is $50,000', 'err'); return; }
+  const { data, error } = await sb.from('investments').insert({
+    security_id: securityId === 'static-menlo' ? null : securityId,
+    amount_usd: amountNum,
+    investor_role: 'institutional',
+    tranche,
+    created_by: actorName
+  }).select().single();
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+  logActivity('offtake_confirmed', 'investment', data.id, { projectName, amountNum });
+  toast(`Offtake of $${amountNum.toLocaleString()} confirmed!`);
+  showPage('pm-portfolio');
 }
 
 async function loadMyTokens() {
@@ -2733,6 +2883,8 @@ function showPage(pageId) {
   if (pageId === 'pm-market' || pageId === 'sa-pm-list' || pageId === 'sa-inv-list') loadSecuritiesMarket();
   if (pageId === 'inv-market') loadSecuritiesMarket();
   if (pageId === 'inv-tokens') loadMyTokens();
+  if (pageId === 'pm-buy') {} // fields populated by offtakeSecurity()
+  if (pageId === 'inv-buy') {} // fields populated by investInSecurity()
 
   // Update topbar
   const titles = {
@@ -2752,9 +2904,11 @@ function showPage(pageId) {
     'sa-pm-list': ['List to PM Marketplace', 'Institutional offering'],
     'sa-inv-list': ['List Investor Tokens', 'Retail fractional — UNITS mint'],
     'pm-market': ['Securities Marketplace', 'Portfolio Manager — institutional'],
+    'pm-buy': ['Institutional Offtake', 'Confirm allocation and tranche'],
     'pm-portfolio': ['My Portfolio', 'Holdings + LQ performance'],
     'pm-performance': ['Performance Feed', 'Live risk + LQ updates'],
     'inv-market': ['Token Marketplace', 'Fractional investments — min $5K'],
+    'inv-buy': ['Invest in Token', 'Fractional microgrid investment — min $5,000'],
     'inv-tokens': ['My Tokens', 'Holdings and returns'],
     'inv-returns': ['Returns Summary', 'Distributions from LIUM Vouch'],
   };
