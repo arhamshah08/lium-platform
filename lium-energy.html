@@ -6,6 +6,7 @@
 <title>LIUM Energy</title>
 <link rel="stylesheet" href="colors_and_type.css">
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -1421,6 +1422,10 @@ body {
       <div class="kpi"><div class="k-label">At Risk</div><div class="k-val" style="color:var(--ember);">1</div><div class="k-delta neg">LQ &lt; 65</div></div>
     </div>
 
+    <!-- Live projects from LIUM platform -->
+    <div id="live-rp-projects" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;margin-bottom:16px;"></div>
+
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);font-weight:700;margin-bottom:8px;">Seed Projects</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;margin-top:4px;">
 
       <!-- Project 1: Menlo Housing -->
@@ -1788,7 +1793,7 @@ body {
               <label class="form-label">Validity Period</label>
               <input class="form-input" value="24 hours">
             </div>
-            <button class="btn-primary" style="margin-top:8px;">Submit to LIUM →</button>
+            <button class="btn-primary" style="margin-top:8px;" onclick="submitIndicator()">Submit to LIUM →</button>
             <div style="font-size:10px;color:var(--ink-3);margin-top:6px;">Score will be attached to security tokens via UNITS. Visible on LIUM as a live feed.</div>
           </div>
         </div>
@@ -1817,7 +1822,107 @@ body {
 </main>
 </div>
 
+<!-- Name capture modal -->
+<div id="name-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:1000;display:flex;align-items:center;justify-content:center;">
+  <div style="background:#15151A;border:1px solid #3A3A45;padding:36px;max-width:400px;width:90%;">
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:#6B5A3F;font-weight:700;margin-bottom:10px;">LIUM Energy · Operational Layer</div>
+    <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em;color:#FFFBF0;margin-bottom:6px;">Who are you?</div>
+    <div style="font-size:13px;color:#6B5A3F;margin-bottom:22px;">Your name will tag all actions this session — no login required.</div>
+    <input id="name-input" type="text" placeholder="e.g. Alex Rivera" onkeydown="if(event.key==='Enter')saveName()" style="width:100%;background:#1C1C22;border:1px solid #3A3A45;color:#FFFBF0;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:11px 14px;margin-bottom:14px;outline:none;box-sizing:border-box;" autofocus />
+    <button onclick="saveName()" style="width:100%;background:#0D9488;color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.10em;padding:12px;border:none;cursor:pointer;">Enter Platform →</button>
+  </div>
+</div>
+
 <script>
+// ── Supabase ──
+const { createClient } = supabase;
+const sb = createClient('https://aclazhnjwanhtcxmiwlq.supabase.co','sb_publishable_MxV6WySoT0uxxZwGaoKf-A_owGUboCO');
+
+// ── Actor identity ──
+let actorName = localStorage.getItem('lium_actor') || '';
+let actorRole = 'utility';
+
+function saveName() {
+  const n = (document.getElementById('name-input').value || '').trim();
+  if (!n) return;
+  actorName = n;
+  localStorage.setItem('lium_actor', n);
+  document.getElementById('name-modal').style.display = 'none';
+  updateSidebarUser();
+}
+
+function updateSidebarUser() {
+  const parts = actorName.split(' ');
+  const initials = parts.map(w => w[0] || '').join('').toUpperCase().slice(0,2) || 'ME';
+  document.getElementById('avatarInitials').textContent = initials;
+  document.getElementById('userName').textContent = actorName;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (actorName) {
+    document.getElementById('name-modal').style.display = 'none';
+    updateSidebarUser();
+  }
+});
+
+// ── Toast ──
+function toast(msg, type) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  const bg = type === 'err' ? '#C8341A' : '#0D9488';
+  t.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 20px;font-size:12px;font-weight:700;color:#FFFBF0;background:${bg};font-family:"DM Sans",sans-serif;letter-spacing:0.04em;`;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+function escHtml(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Load live projects from LIUM platform ──
+async function loadRPProjects() {
+  const { data, error } = await sb.from('projects').select('*').order('created_at', { ascending: false });
+  const container = document.getElementById('live-rp-projects');
+  if (!container) return;
+  if (error || !data || !data.length) { container.innerHTML = '<div style="color:#6B5A3F;font-size:13px;padding:4px 0 8px;">No projects from LIUM platform yet.</div>'; return; }
+  container.innerHTML = data.map(p => {
+    const lq = p.lq_score || 87;
+    const riskColor = lq >= 80 ? 'var(--good)' : lq >= 65 ? 'var(--amber)' : 'var(--ember)';
+    const riskLabel = lq >= 80 ? 'Securitisable' : lq >= 65 ? 'Seasoning' : 'At Risk';
+    return `
+    <div style="background:var(--panel);border:1px solid var(--line);border-top:3px solid ${riskColor};padding:18px 20px;display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-size:14px;font-weight:700;">${escHtml(p.name)}</div>
+          <div style="font-size:11px;color:var(--ink-3);margin-top:2px;">${escHtml(p.location||'')}${p.developer?' · '+escHtml(p.developer):''} · $${(p.capex_usd/1000).toFixed(0)}K capex</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:28px;font-weight:700;color:${riskColor};line-height:1;">${lq}</div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:${riskColor};">${riskLabel}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${p.solar_kw?`<span style="font-size:10px;padding:3px 8px;border:1px solid var(--line);color:var(--ink-2);">${p.solar_kw}kW PV</span>`:''}
+        ${p.bess_kwh?`<span style="font-size:10px;padding:3px 8px;border:1px solid var(--line);color:var(--ink-2);">${p.bess_kwh}kWh BESS</span>`:''}
+        ${p.generator_kw?`<span style="font-size:10px;padding:3px 8px;border:1px solid var(--line);color:var(--ink-2);">${p.generator_kw}kW Gen</span>`:''}
+      </div>
+      <div style="font-size:10px;color:var(--ink-3);">Listed by ${escHtml(p.actor_name||'–')} · ${new Date(p.created_at).toLocaleDateString()}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Submit risk indicator ──
+async function submitIndicator() {
+  const { error } = await sb.from('activity_log').insert({
+    actor_name: actorName,
+    role: 'risk-provider',
+    action: 'indicator_submitted',
+    entity_type: 'project',
+    entity_id: null,
+    details: { lq_score: 87, risk_rating: 'Low', basis: 'IEEE 2030.5 telemetry', actor: actorName }
+  });
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+  toast('Risk indicator submitted to LIUM!');
+}
+
 const roleConfig = {
   utility:        { nav: 'nav-utility',       default: 'util-post',    initials: 'EG', name: 'PG&E EdgeGrid',      role: 'Utility' },
   microgrid:      { nav: 'nav-microgrid',     default: 'mg-requests',  initials: 'AX', name: 'Axil Developers',    role: 'DC Operator' },
@@ -1825,6 +1930,7 @@ const roleConfig = {
 };
 
 function switchRole(role) {
+  actorRole = role;
   Object.values(roleConfig).forEach(r => {
     const el = document.getElementById(r.nav);
     if (el) el.style.display = 'none';
@@ -1847,6 +1953,9 @@ function showPage(pageId) {
     const oc = l.getAttribute('onclick');
     if (oc && oc.includes("'" + pageId + "'")) l.classList.add('active');
   });
+
+  // Trigger live data loads
+  if (pageId === 'rp-projects') loadRPProjects();
 
   const titles = {
     'util-post':     ['Post Flexibility Need', 'Utility / EdgeGrid — PG&E'],

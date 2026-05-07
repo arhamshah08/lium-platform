@@ -6,6 +6,7 @@
 <title>LIUM</title>
 <link rel="stylesheet" href="colors_and_type.css">
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* ── Reset & Base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -842,41 +843,41 @@ body {
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Project Name</label>
-                <input class="form-input" type="text" placeholder="e.g. Menlo Housing Microgrid" />
+                <input id="proj-name" class="form-input" type="text" placeholder="e.g. Menlo Housing Microgrid" />
               </div>
               <div class="form-group">
                 <label class="form-label">Location</label>
-                <input class="form-input" type="text" placeholder="City, State" />
+                <input id="proj-location" class="form-input" type="text" placeholder="City, State" />
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Integrator / Developer</label>
-                <input class="form-input" type="text" placeholder="e.g. BoxPower" />
+                <input id="proj-developer" class="form-input" type="text" placeholder="e.g. BoxPower" />
               </div>
               <div class="form-group">
                 <label class="form-label">Total Capex ($)</label>
-                <input class="form-input" type="text" placeholder="854,361" />
+                <input id="proj-capex" class="form-input" type="text" placeholder="854,361" />
               </div>
             </div>
             <div class="form-row three">
               <div class="form-group">
                 <label class="form-label">Solar PV (kW)</label>
-                <input class="form-input" type="text" placeholder="28.3" />
+                <input id="proj-solar" class="form-input" type="text" placeholder="28.3" />
               </div>
               <div class="form-group">
                 <label class="form-label">BESS (kWh)</label>
-                <input class="form-input" type="text" placeholder="420" />
+                <input id="proj-bess" class="form-input" type="text" placeholder="420" />
               </div>
               <div class="form-group">
                 <label class="form-label">Generator (kW)</label>
-                <input class="form-input" type="text" placeholder="150" />
+                <input id="proj-gen" class="form-input" type="text" placeholder="150" />
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Asset Type</label>
-                <select class="form-input form-select">
+                <select id="proj-type" class="form-input form-select">
                   <option>Microgrid (Solar + BESS + Gen)</option>
                   <option>Solar + Storage</option>
                   <option>BESS Only</option>
@@ -884,11 +885,11 @@ body {
               </div>
               <div class="form-group">
                 <label class="form-label">Federal ITC ($)</label>
-                <input class="form-input" type="text" placeholder="256,308" />
+                <input id="proj-itc" class="form-input" type="text" placeholder="256,308" />
               </div>
             </div>
             <div style="padding-top:8px;border-top:1px solid var(--line);display:flex;gap:8px;">
-              <button class="btn btn-primary"><i data-lucide="send"></i> Publish to Catalog</button>
+              <button class="btn btn-primary" onclick="publishProject()"><i data-lucide="send"></i> Publish to Catalog</button>
               <button class="btn btn-ghost">Save Draft</button>
             </div>
           </div>
@@ -925,11 +926,14 @@ body {
       <div class="page-head-left">
         <span class="eyebrow">Project Developer</span>
         <h1 class="page-title">Incoming Loan Offers</h1>
-        <p class="page-meta">Menlo Housing Microgrid — 2 offers pending review</p>
+        <p class="page-meta">Menlo Housing Microgrid — offers pending review</p>
       </div>
     </div>
 
-    <!-- Offer 1 -->
+    <!-- Live offers from Supabase -->
+    <div id="live-loan-offers" style="display:flex;flex-direction:column;gap:16px;"></div>
+
+    <!-- Static seed offer 1 -->
     <div class="offer-card highlight">
       <div class="offer-header">
         <div>
@@ -1213,7 +1217,10 @@ body {
       </div>
     </div>
 
-    <!-- Project cards -->
+    <!-- Live projects from Supabase -->
+    <div id="live-projects-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+
+    <!-- Static seed project cards -->
     <div style="display:flex;flex-direction:column;gap:12px;">
       <div class="project-card">
         <div class="project-card-head">
@@ -1279,23 +1286,24 @@ body {
 
     <div class="col-2-1">
       <div class="panel">
-        <div class="panel-head"><div class="panel-title">Loan Terms — Menlo Housing Microgrid</div></div>
+        <div class="panel-head"><div class="panel-title">Loan Terms — <span id="fin-offer-project-name">Select a project from marketplace</span></div></div>
         <div class="panel-body">
           <div class="form-section">
+            <input type="hidden" id="fin-offer-project-id" value="" />
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Loan Amount ($)</label>
-                <input class="form-input" type="text" value="469,898" />
+                <input id="offer-amount" class="form-input" type="text" value="469,898" />
               </div>
               <div class="form-group">
                 <label class="form-label">Interest Rate (% p.a.)</label>
-                <input class="form-input" type="text" value="5.0" />
+                <input id="offer-rate" class="form-input" type="text" value="5.0" />
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Tranche</label>
-                <select class="form-input form-select">
+                <select id="offer-tranche" class="form-input form-select">
                   <option selected>Senior A (55%)</option>
                   <option>Senior B (20%)</option>
                   <option>Mezzanine (7%)</option>
@@ -1303,7 +1311,7 @@ body {
               </div>
               <div class="form-group">
                 <label class="form-label">Term (years)</label>
-                <input class="form-input" type="text" value="25" />
+                <input id="offer-term" class="form-input" type="text" value="25" />
               </div>
             </div>
             <div class="divider"></div>
@@ -1311,16 +1319,16 @@ body {
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Min Uptime (%)</label>
-                <input class="form-input" type="text" value="80" />
+                <input id="offer-uptime" class="form-input" type="text" value="80" />
               </div>
               <div class="form-group">
                 <label class="form-label">Min LQ Score</label>
-                <input class="form-input" type="text" value="85" />
+                <input id="offer-lq" class="form-input" type="text" value="85" />
               </div>
             </div>
             <div class="form-group">
               <label class="form-label">Disbursement Trigger</label>
-              <select class="form-input form-select">
+              <select id="offer-disbursement" class="form-input form-select">
                 <option>Monthly (on Pincer verification)</option>
                 <option>Quarterly</option>
                 <option>Annual</option>
@@ -1336,7 +1344,7 @@ body {
               </select>
             </div>
             <div style="display:flex;gap:8px;padding-top:8px;border-top:1px solid var(--line);">
-              <button class="btn btn-primary"><i data-lucide="send"></i> Submit Offer</button>
+              <button class="btn btn-primary" onclick="submitOffer()"><i data-lucide="send"></i> Submit Offer</button>
               <button class="btn btn-ghost">Save Draft</button>
             </div>
           </div>
@@ -1497,8 +1505,11 @@ body {
       </div>
     </div>
 
+    <!-- Live loans from Supabase -->
+    <div id="live-sa-loans" style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;"></div>
+
     <div class="panel">
-      <div class="panel-head"><div class="panel-title">Loan Feed</div></div>
+      <div class="panel-head"><div class="panel-title">Loan Feed — Seed Data</div></div>
       <div class="panel-body no-pad">
         <table class="tbl">
           <thead>
@@ -1537,9 +1548,11 @@ body {
       <div class="page-head-left">
         <span class="eyebrow purple">Sec. Agent</span>
         <h1 class="page-title">Structure Security</h1>
-        <p class="page-meta">Menlo Housing Microgrid — combined loan package $640,770</p>
+        <p class="page-meta"><span id="sa-project-name">Menlo Housing Microgrid</span> — combined loan package</p>
       </div>
     </div>
+    <input type="hidden" id="sa-loan-id" value="" />
+    <input type="hidden" id="sa-project-id" value="" />
 
     <div class="two-col">
       <div class="panel">
@@ -1551,21 +1564,21 @@ body {
             </div>
             <div class="tranche-item">
               <span class="tranche-pill senior-a">Senior A</span>
-              <input class="form-input" style="padding:5px;" value="55" />
+              <input id="sa-senior-a" class="form-input" style="padding:5px;" value="55" />
               <span style="font-size:12px;color:var(--good);">$352K</span>
               <input class="form-input" style="padding:5px;" value="5.0%" />
               <button class="btn btn-ghost btn-sm" style="padding:4px 6px;">×</button>
             </div>
             <div class="tranche-item">
               <span class="tranche-pill senior-b">Senior B</span>
-              <input class="form-input" style="padding:5px;" value="20" />
+              <input id="sa-senior-b" class="form-input" style="padding:5px;" value="20" />
               <span style="font-size:12px;color:#60A5FA;">$128K</span>
               <input class="form-input" style="padding:5px;" value="5.8%" />
               <button class="btn btn-ghost btn-sm" style="padding:4px 6px;">×</button>
             </div>
             <div class="tranche-item">
               <span class="tranche-pill mezz">Mezzanine</span>
-              <input class="form-input" style="padding:5px;" value="7" />
+              <input id="sa-mezz" class="form-input" style="padding:5px;" value="7" />
               <span style="font-size:12px;color:var(--amber);">$44.9K</span>
               <input class="form-input" style="padding:5px;" value="12%" />
               <button class="btn btn-ghost btn-sm" style="padding:4px 6px;">×</button>
@@ -1579,7 +1592,7 @@ body {
             </div>
           </div>
           <div style="margin-top:12px;display:flex;gap:8px;">
-            <button class="btn btn-primary" onclick="showPage('sa-book')"><i data-lucide="send"></i> Tokenise + List</button>
+            <button class="btn btn-primary" onclick="structureSecurity()"><i data-lucide="send"></i> Tokenise + List</button>
             <button class="btn btn-ghost">Save Draft</button>
           </div>
         </div>
@@ -1803,7 +1816,10 @@ body {
       </div>
     </div>
 
-    <!-- Security cards -->
+    <!-- Live securities from Supabase -->
+    <div id="live-securities-pm" style="display:flex;flex-direction:column;gap:12px;"></div>
+
+    <!-- Security seed cards -->
     <div class="two-col">
       <div class="security-card" style="cursor:pointer;" onclick="showPage('pm-portfolio')">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
@@ -1970,6 +1986,9 @@ body {
         <p class="page-meta">Fractional microgrid investments — minimum $5,000</p>
       </div>
     </div>
+
+    <!-- Live securities from Supabase -->
+    <div id="live-securities-inv" style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px;"></div>
 
     <div class="three-col">
       <div class="token-card">
@@ -2138,7 +2157,291 @@ body {
 </main>
 </div>
 
+<!-- Name capture modal -->
+<div id="name-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:1000;display:flex;align-items:center;justify-content:center;">
+  <div style="background:#15151A;border:1px solid #3A3A45;padding:36px;max-width:400px;width:90%;">
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:#6B5A3F;font-weight:700;margin-bottom:10px;">LIUM · Capital Markets</div>
+    <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em;color:#FFFBF0;margin-bottom:6px;">Who are you?</div>
+    <div style="font-size:13px;color:#6B5A3F;margin-bottom:22px;">Your name will tag all actions this session — no login required.</div>
+    <input id="name-input" type="text" placeholder="e.g. Sarah Chen" onkeydown="if(event.key==='Enter')saveName()" style="width:100%;background:#1C1C22;border:1px solid #3A3A45;color:#FFFBF0;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:11px 14px;margin-bottom:14px;outline:none;box-sizing:border-box;" autofocus />
+    <button onclick="saveName()" style="width:100%;background:#FFC400;color:#0B0B0E;font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.10em;padding:12px;border:none;cursor:pointer;">Enter Platform →</button>
+  </div>
+</div>
+
 <script>
+// ── Supabase ──
+const { createClient } = supabase;
+const sb = createClient('https://aclazhnjwanhtcxmiwlq.supabase.co','sb_publishable_MxV6WySoT0uxxZwGaoKf-A_owGUboCO');
+
+// ── Actor identity ──
+let actorName = localStorage.getItem('lium_actor') || '';
+let actorRole = 'developer';
+
+function saveName() {
+  const n = (document.getElementById('name-input').value || '').trim();
+  if (!n) return;
+  actorName = n;
+  localStorage.setItem('lium_actor', n);
+  document.getElementById('name-modal').style.display = 'none';
+  updateSidebarUser();
+}
+
+function updateSidebarUser() {
+  const parts = actorName.split(' ');
+  const initials = parts.map(w => w[0] || '').join('').toUpperCase().slice(0,2) || 'ME';
+  document.getElementById('avatarInitials').textContent = initials;
+  document.getElementById('userName').textContent = actorName;
+}
+
+// On load — skip modal if name already set
+window.addEventListener('DOMContentLoaded', () => {
+  if (actorName) {
+    document.getElementById('name-modal').style.display = 'none';
+    updateSidebarUser();
+  }
+});
+
+// ── Toast ──
+function toast(msg, type) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  const bg = type === 'err' ? '#C8341A' : '#00D26A';
+  t.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 20px;font-size:12px;font-weight:700;color:#FFFBF0;background:${bg};font-family:"DM Sans",sans-serif;letter-spacing:0.04em;`;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// ── Activity log ──
+async function logActivity(action, entityType, entityId, details) {
+  await sb.from('activity_log').insert({ actor_name: actorName, role: actorRole, action, entity_type: entityType, entity_id: entityId || null, details });
+}
+
+// ── Publish project ──
+async function publishProject() {
+  const name = (document.getElementById('proj-name').value || '').trim();
+  if (!name) { toast('Project name required', 'err'); return; }
+  const { data, error } = await sb.from('projects').insert({
+    name,
+    location: document.getElementById('proj-location').value,
+    developer: document.getElementById('proj-developer').value,
+    capex_usd: parseFloat((document.getElementById('proj-capex').value||'').replace(/,/g,'')) || 0,
+    solar_kw: parseFloat(document.getElementById('proj-solar').value) || 0,
+    bess_kwh: parseFloat(document.getElementById('proj-bess').value) || 0,
+    generator_kw: parseFloat(document.getElementById('proj-gen').value) || 0,
+    asset_type: document.getElementById('proj-type').value,
+    itc_usd: parseFloat((document.getElementById('proj-itc').value||'').replace(/,/g,'')) || 0,
+    status: 'listed',
+    actor_name: actorName,
+    lq_score: 87
+  }).select().single();
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+  logActivity('project_listed', 'project', data.id, { name });
+  toast('Project published to catalog!');
+  ['proj-name','proj-location','proj-developer','proj-capex','proj-solar','proj-bess','proj-gen','proj-itc'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  showPage('dev-projects');
+}
+
+// ── Financier: load marketplace projects ──
+async function loadMarketplaceProjects() {
+  const { data, error } = await sb.from('projects').select('*').order('created_at', { ascending: false });
+  const container = document.getElementById('live-projects-list');
+  if (!container) return;
+  if (error || !data.length) { container.innerHTML = '<div style="color:#6B5A3F;font-size:13px;padding:4px 0 12px;">No new projects yet — they appear here when developers publish.</div>'; return; }
+  container.innerHTML = data.map(p => `
+    <div class="project-card">
+      <div class="project-card-head">
+        <div><div class="project-name">${escHtml(p.name)}</div><div class="project-loc">${escHtml(p.location||'')}${p.developer?' · '+escHtml(p.developer):''}${p.actor_name?' · '+escHtml(p.actor_name):''}</div></div>
+        <div style="display:flex;gap:8px;align-items:center;"><div class="lq-badge green">LQ ${p.lq_score||'–'}</div><span class="status-pill amber">Seeking Finance</span></div>
+      </div>
+      <div class="project-specs">
+        ${p.solar_kw?`<div class="spec">Solar <b>${p.solar_kw} kW</b></div>`:''}
+        ${p.bess_kwh?`<div class="spec">BESS <b>${p.bess_kwh} kWh</b></div>`:''}
+        ${p.generator_kw?`<div class="spec">Gen <b>${p.generator_kw} kW</b></div>`:''}
+        ${p.capex_usd?`<div class="spec">Capex <b>$${(p.capex_usd/1000).toFixed(0)}K</b></div>`:''}
+        ${p.itc_usd?`<div class="spec">ITC <b>$${(p.itc_usd/1000).toFixed(0)}K</b></div>`:''}
+        <div class="spec">Type <b>${escHtml(p.asset_type||'–')}</b></div>
+      </div>
+      <div class="project-footer">
+        <button class="btn btn-primary btn-sm" onclick="openOfferForm('${p.id}','${escHtml(p.name).replace(/'/g,'')}')"><i data-lucide="file-plus"></i> Offer Loan</button>
+        <span class="spec" style="color:var(--ink-3);">Listed ${new Date(p.created_at).toLocaleDateString()}</span>
+      </div>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+function openOfferForm(projectId, projectName) {
+  document.getElementById('fin-offer-project-id').value = projectId;
+  document.getElementById('fin-offer-project-name').textContent = projectName;
+  showPage('fin-offers');
+}
+
+// ── Financier: submit offer ──
+async function submitOffer() {
+  const projectId = document.getElementById('fin-offer-project-id').value;
+  if (!projectId) { toast('Click "Offer Loan" on a project from the marketplace first', 'err'); return; }
+  const amount = parseFloat((document.getElementById('offer-amount').value||'').replace(/,/g,''));
+  if (!amount) { toast('Enter loan amount', 'err'); return; }
+  const { data, error } = await sb.from('loan_offers').insert({
+    project_id: projectId,
+    financier_name: actorName,
+    amount_usd: amount,
+    interest_rate: parseFloat(document.getElementById('offer-rate').value) || 5,
+    tranche: document.getElementById('offer-tranche').value,
+    term_years: parseInt(document.getElementById('offer-term').value) || 25,
+    min_uptime_pct: parseFloat(document.getElementById('offer-uptime').value) || 80,
+    min_lq_score: parseFloat(document.getElementById('offer-lq').value) || 85,
+    disbursement_trigger: document.getElementById('offer-disbursement').value,
+    status: 'pending',
+    actor_name: actorName
+  }).select().single();
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+  logActivity('loan_offer_submitted', 'loan_offer', data.id, { amount, financier: actorName });
+  toast('Loan offer submitted to developer!');
+  document.getElementById('fin-offer-project-id').value = '';
+  document.getElementById('fin-offer-project-name').textContent = 'Select a project from marketplace';
+  showPage('fin-marketplace');
+}
+
+// ── Developer: load incoming offers ──
+async function loadDevLoanOffers() {
+  const { data, error } = await sb.from('loan_offers').select('*, projects(name)').order('created_at', { ascending: false });
+  const container = document.getElementById('live-loan-offers');
+  if (!container) return;
+  if (error || !data.length) { container.innerHTML = '<div style="color:#6B5A3F;font-size:13px;padding:4px 0 8px;">No offers yet — they appear here when financiers submit.</div>'; return; }
+  container.innerHTML = data.map(o => `
+    <div class="offer-card ${o.status==='pending'?'highlight':''}">
+      <div class="offer-header">
+        <div><div class="offer-from">${escHtml(o.financier_name||o.actor_name||'–')}</div><div style="font-size:10px;color:var(--ink-3);margin-top:2px;text-transform:uppercase;letter-spacing:0.09em;">${escHtml(o.tranche||'')} · ${new Date(o.created_at).toLocaleDateString()}</div></div>
+        <div style="text-align:right;"><div class="offer-amount">$${Number(o.amount_usd).toLocaleString()}</div><span class="status-pill ${o.status==='accepted'?'green':o.status==='declined'?'':'amber'}">${o.status==='accepted'?'Accepted':o.status==='declined'?'Declined':'Pending Review'}</span></div>
+      </div>
+      <div class="offer-details">
+        <div class="offer-detail"><div class="label">Project</div><div class="value">${escHtml(o.projects?.name||'–')}</div></div>
+        <div class="offer-detail"><div class="label">Rate</div><div class="value">${o.interest_rate}% p.a.</div></div>
+        <div class="offer-detail"><div class="label">Term</div><div class="value">${o.term_years}y</div></div>
+        <div class="offer-detail"><div class="label">Tranche</div><div class="value">${escHtml(o.tranche||'–')}</div></div>
+        <div class="offer-detail"><div class="label">Min Uptime</div><div class="value">${o.min_uptime_pct||'–'}%</div></div>
+        <div class="offer-detail"><div class="label">Min LQ</div><div class="value">${o.min_lq_score||'–'}</div></div>
+      </div>
+      ${o.status==='pending'?`<div class="offer-actions"><button class="btn btn-primary" onclick="acceptOffer('${o.id}')"><i data-lucide="check-circle"></i> Accept + Sign</button><button class="btn btn-ghost btn-sm" style="color:var(--ember);border-color:var(--ember);" onclick="declineOffer('${o.id}')">Decline</button></div>`:''}
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+async function acceptOffer(offerId) {
+  const { error } = await sb.from('loan_offers').update({ status: 'accepted' }).eq('id', offerId);
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+  logActivity('offer_accepted', 'loan_offer', offerId, {});
+  toast('Offer accepted — now available to Securities Agents!');
+  loadDevLoanOffers();
+}
+
+async function declineOffer(offerId) {
+  const { error } = await sb.from('loan_offers').update({ status: 'declined' }).eq('id', offerId);
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+  toast('Offer declined');
+  loadDevLoanOffers();
+}
+
+// ── SA: load accepted loans ──
+async function loadSALoans() {
+  const { data, error } = await sb.from('loan_offers').select('*, projects(name, location, solar_kw, bess_kwh, lq_score)').in('status', ['accepted', 'pending']).order('created_at', { ascending: false });
+  const container = document.getElementById('live-sa-loans');
+  if (!container) return;
+  if (error || !data.length) { container.innerHTML = '<div style="color:#6B5A3F;font-size:13px;padding:4px 0 8px;">No accepted loans yet — appear when developers accept financier offers.</div>'; return; }
+  container.innerHTML = data.map(o => `
+    <div class="project-card">
+      <div class="project-card-head">
+        <div><div class="project-name">${escHtml(o.projects?.name||'–')}</div><div class="project-loc">${escHtml(o.projects?.location||'')} · ${escHtml(o.financier_name||'')}</div></div>
+        <div style="display:flex;gap:8px;align-items:center;"><div class="lq-badge green">LQ ${o.projects?.lq_score||'–'}</div><span class="status-pill ${o.status==='accepted'?'green':'amber'}">${o.status}</span></div>
+      </div>
+      <div class="project-specs">
+        <div class="spec">Amount <b style="color:var(--sun);">$${Number(o.amount_usd).toLocaleString()}</b></div>
+        <div class="spec">Rate <b>${o.interest_rate}%</b></div>
+        <div class="spec">Tranche <b>${escHtml(o.tranche||'–')}</b></div>
+        <div class="spec">Term <b>${o.term_years}y</b></div>
+      </div>
+      <div class="project-footer">
+        <button class="btn btn-primary btn-sm" onclick="openStructureForm('${o.id}','${o.project_id}','${escHtml(o.projects?.name||'').replace(/'/g,'')}')">Structure →</button>
+        <span class="spec" style="color:var(--ink-3);">${new Date(o.created_at).toLocaleDateString()}</span>
+      </div>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+function openStructureForm(loanId, projectId, projectName) {
+  document.getElementById('sa-loan-id').value = loanId;
+  document.getElementById('sa-project-id').value = projectId;
+  document.getElementById('sa-project-name').textContent = projectName;
+  showPage('sa-structure');
+}
+
+// ── SA: structure security ──
+async function structureSecurity() {
+  const projectId = document.getElementById('sa-project-id').value;
+  const loanId = document.getElementById('sa-loan-id').value;
+  const seniorA = parseFloat(document.getElementById('sa-senior-a').value) || 55;
+  const seniorB = parseFloat(document.getElementById('sa-senior-b').value) || 20;
+  const mezz = parseFloat(document.getElementById('sa-mezz').value) || 7;
+  const equity = Math.max(0, 100 - seniorA - seniorB - mezz);
+  let totalAmt = 640000;
+  let projectName = document.getElementById('sa-project-name').textContent;
+  if (loanId) {
+    const { data: loan } = await sb.from('loan_offers').select('amount_usd').eq('id', loanId).single();
+    if (loan) totalAmt = loan.amount_usd;
+  }
+  const { data, error } = await sb.from('securities').insert({ project_id: projectId||null, agent_name: actorName, total_amount_usd: totalAmt, senior_a_pct: seniorA, senior_b_pct: seniorB, mezz_pct: mezz, equity_pct: equity, lq_score: 87, status: 'listed', actor_name: actorName }).select().single();
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+  if (loanId) await sb.from('loan_offers').update({ status: 'securitised' }).eq('id', loanId);
+  logActivity('security_structured', 'security', data.id, { projectName, totalAmt });
+  toast('Security tokenised and listed!');
+  loadSecuritiesMarket();
+  showPage('sa-book');
+}
+
+// ── PM + Investor: load securities ──
+async function loadSecuritiesMarket() {
+  const { data, error } = await sb.from('securities').select('*, projects(name, location, lq_score)').order('created_at', { ascending: false });
+  ['live-securities-pm', 'live-securities-inv'].forEach(containerId => {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    if (error || !data.length) { container.innerHTML = '<div style="color:#6B5A3F;font-size:13px;padding:4px 0 8px;">No securities listed yet — appear when agent tokenises a loan.</div>'; return; }
+    container.innerHTML = data.map(s => `
+      <div class="project-card" style="${containerId.includes('inv')?'width:calc(33% - 8px);min-width:280px;':''}">
+        <div class="project-card-head">
+          <div><div class="project-name">${escHtml(s.projects?.name||'Security')}</div><div class="project-loc">${escHtml(s.projects?.location||'')} · Agent: ${escHtml(s.agent_name||s.actor_name||'–')}</div></div>
+          <div style="display:flex;gap:8px;"><div class="lq-badge green">LQ ${s.lq_score||s.projects?.lq_score||'–'}</div><span class="status-pill green">Listed</span></div>
+        </div>
+        <div class="project-specs">
+          <div class="spec">Total <b style="color:var(--sun);">$${(Number(s.total_amount_usd)/1000).toFixed(0)}K</b></div>
+          <div class="spec">Sr A <b>${s.senior_a_pct}%</b></div>
+          <div class="spec">Sr B <b>${s.senior_b_pct}%</b></div>
+          <div class="spec">Mezz <b>${s.mezz_pct}%</b></div>
+          <div class="spec">Equity <b>${Number(s.equity_pct).toFixed(0)}%</b></div>
+        </div>
+        <div class="project-footer">
+          <button class="btn btn-primary btn-sm" onclick="investInSecurity('${s.id}','${escHtml(s.projects?.name||'').replace(/'/g,'')}',${s.total_amount_usd})">Invest →</button>
+          <span class="spec" style="color:var(--ink-3);">${new Date(s.created_at).toLocaleDateString()}</span>
+        </div>
+      </div>`).join('');
+    lucide.createIcons();
+  });
+}
+
+async function investInSecurity(securityId, projectName, totalAmt) {
+  const rawAmt = prompt(`Invest in ${projectName}\nMinimum: $5,000. Enter amount ($):`);
+  if (!rawAmt) return;
+  const amountNum = parseFloat(rawAmt.replace(/[$,]/g,''));
+  if (isNaN(amountNum) || amountNum < 5000) { toast('Minimum investment is $5,000', 'err'); return; }
+  const tokens = Math.floor(amountNum / 5000);
+  const { data, error } = await sb.from('investments').insert({ security_id: securityId, investor_name: actorName, amount_usd: amountNum, token_count: tokens, investor_type: actorRole === 'pm' ? 'institutional' : 'retail', actor_name: actorName }).select().single();
+  if (error) { toast('Error: ' + error.message, 'err'); return; }
+  logActivity('investment_made', 'investment', data.id, { projectName, amountNum, tokens });
+  toast(`Investment confirmed — ${tokens} token${tokens>1?'s':''} issued!`);
+}
+
+// ── Utility fn ──
+function escHtml(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
 // ── Role + page navigation ──
 const rolePages = {
   developer: { default: 'dev-projects', nav: 'nav-developer', user: { initials: 'AD', name: 'Axil Developers', role: 'Developer' } },
@@ -2152,6 +2455,7 @@ let currentRole = 'developer';
 
 function switchRole(role) {
   currentRole = role;
+  actorRole = role;
   // Hide all navs
   Object.values(rolePages).forEach(r => {
     const el = document.getElementById(r.nav);
@@ -2182,6 +2486,13 @@ function showPage(pageId) {
       l.classList.add('active');
     }
   });
+  // Trigger live data loads
+  if (pageId === 'fin-marketplace') loadMarketplaceProjects();
+  if (pageId === 'dev-offers') loadDevLoanOffers();
+  if (pageId === 'sa-loans') loadSALoans();
+  if (pageId === 'pm-market' || pageId === 'sa-pm-list' || pageId === 'sa-inv-list') loadSecuritiesMarket();
+  if (pageId === 'inv-market') loadSecuritiesMarket();
+
   // Update topbar
   const titles = {
     'dev-projects': ['My Projects', 'Project Developer — Menlo Housing Microgrid'],
