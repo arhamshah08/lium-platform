@@ -461,13 +461,13 @@ body {
      SIDEBAR
 ═══════════════════════════ -->
 <aside class="sidebar">
-  <div class="sidebar-brand">
+  <a class="sidebar-brand" href="index.html" title="Back to platform home" style="text-decoration:none;color:inherit;cursor:pointer;">
     <div class="brand-logo">E</div>
     <div>
       <div class="brand-name">LIUM</div>
       <div class="brand-sub">Energy</div>
     </div>
-  </div>
+  </a>
 
   <div class="role-picker">
     <div class="label">Active Role</div>
@@ -494,6 +494,9 @@ body {
     <a class="nav-link" onclick="showPage('util-revenue')">
       <i data-lucide="coins"></i> Revenue Allocation
     </a>
+    <a class="nav-link" onclick="showPage('rp-telemetry')">
+      <i data-lucide="activity"></i> Live Telemetry
+    </a>
   </nav>
 
   <!-- Microgrid Nav -->
@@ -511,6 +514,9 @@ body {
     </a>
     <a class="nav-link" onclick="showPage('mg-capacity')">
       <i data-lucide="battery-charging"></i> My Capacity
+    </a>
+    <a class="nav-link" onclick="showPage('rp-telemetry')">
+      <i data-lucide="activity"></i> Live Telemetry
     </a>
   </nav>
 
@@ -1661,6 +1667,113 @@ body {
         </div>
       </div>
     </div>
+
+    <!-- Telemetry Update Rules -->
+    <div class="two-col" style="align-items:start;">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Update Rules</div>
+          <div style="font-size:10px;color:var(--ink-3);font-weight:400;">Controls when telemetry snapshots are pushed to LIUM</div>
+        </div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:16px;">
+          <!-- Rule type selector -->
+          <div class="form-group">
+            <label class="form-label">Trigger Type</label>
+            <select id="tel-rule-type" class="form-input form-select" onchange="toggleTelRuleInputs()">
+              <option value="pct">% Change Threshold — push when a reading changes by X%</option>
+              <option value="interval">Recurring Interval — push every X minutes</option>
+            </select>
+          </div>
+          <!-- % change inputs -->
+          <div id="tel-rule-pct" style="display:flex;flex-direction:column;gap:12px;">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Threshold (%)</label>
+                <input id="tel-pct-value" class="form-input" type="number" min="1" max="50" value="5" placeholder="5" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Applies To</label>
+                <select class="form-input form-select">
+                  <option>All parameters</option>
+                  <option>Power (kW) only</option>
+                  <option>SoC only</option>
+                  <option>Health Score only</option>
+                  <option>Voltage / Frequency</option>
+                </select>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--ink-3);padding:8px 10px;background:var(--panel-2);border-left:2px solid var(--teal);">
+              A snapshot is pushed whenever any selected reading moves by ≥ 5% from the last sent value. Prevents flooding during stable periods.
+            </div>
+          </div>
+          <!-- Interval inputs -->
+          <div id="tel-rule-interval" style="display:none;flex-direction:column;gap:12px;">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Interval (minutes)</label>
+                <input id="tel-interval-value" class="form-input" type="number" min="1" max="60" value="15" placeholder="15" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Start Time</label>
+                <input class="form-input" type="time" value="00:00" />
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--ink-3);padding:8px 10px;background:var(--panel-2);border-left:2px solid var(--teal);">
+              Snapshots sent every 15 minutes regardless of value change. Useful for audit trails and financial model inputs.
+            </div>
+          </div>
+          <!-- Certified operator -->
+          <div class="form-group">
+            <label class="form-label">Authorized Operator <span style="color:var(--teal);font-weight:700;">— certified personnel only</span></label>
+            <select id="tel-operator" class="form-input form-select">
+              <optgroup label="Risk Providers">
+                <option>TÜV Rheinland — Cyber &amp; Grid Compliance</option>
+                <option>LIUM Risk Desk — Internal Monitoring</option>
+                <option>Qcells Monitoring — Geli.Predict Platform</option>
+                <option>SunSpec Verification Lab — IEEE 2030.5 Audit</option>
+              </optgroup>
+              <optgroup label="Microgrid / DC Operators">
+                <option>BoxPower Field Ops — Menlo Park</option>
+                <option>Menlo Housing Authority — Site Ops</option>
+                <option>Armstrong DC Operations — TX</option>
+              </optgroup>
+              <optgroup label="Utilities">
+                <option>PG&amp;E Grid Operations — NorCal</option>
+                <option>Xcel Energy ERCOT — TX West</option>
+              </optgroup>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="savetelRule()"><i data-lucide="save"></i> Save Update Rule</button>
+          <div id="tel-rule-saved" style="display:none;font-size:11px;color:var(--good);font-weight:700;padding:8px 10px;background:color-mix(in srgb,var(--good) 8%,transparent);">
+            ✓ Rule saved — next push within the configured window
+          </div>
+        </div>
+      </div>
+
+      <!-- Active rules panel -->
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Active Rules</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:10px;">
+          <div style="padding:10px 12px;background:var(--panel-2);border-left:3px solid var(--teal);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-size:12px;font-weight:700;">% Change — 5%</span>
+              <span class="status-pill teal" style="font-size:9px;">Active</span>
+            </div>
+            <div style="font-size:11px;color:var(--ink-3);">All parameters · BoxPower Field Ops</div>
+            <div style="font-size:10px;color:var(--ink-3);margin-top:3px;">Last triggered: 3 min ago</div>
+          </div>
+          <div style="padding:10px 12px;background:var(--panel-2);border-left:3px solid var(--ink-3);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-size:12px;font-weight:700;">Recurring — 60 min</span>
+              <span class="status-pill" style="color:var(--ink-3);border-color:var(--line);">Standby</span>
+            </div>
+            <div style="font-size:11px;color:var(--ink-3);">Full snapshot · LIUM Risk Desk</div>
+            <div style="font-size:10px;color:var(--ink-3);margin-top:3px;">Next: in 47 min</div>
+          </div>
+          <div style="margin-top:4px;font-size:10px;color:var(--ink-3);">Rules are anchored to the P-Token DID. Changes require re-verification by authorized operator.</div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ══════════ RISK PROVIDER: RISK SCORING ══════════ -->
@@ -1907,6 +2020,25 @@ async function loadRPProjects() {
       <div style="font-size:10px;color:var(--ink-3);">Listed by ${escHtml(p.actor_name||'–')} · ${new Date(p.created_at).toLocaleDateString()}</div>
     </div>`;
   }).join('');
+}
+
+// ── Telemetry update rules ──
+function toggleTelRuleInputs() {
+  const type = document.getElementById('tel-rule-type').value;
+  document.getElementById('tel-rule-pct').style.display = type === 'pct' ? 'flex' : 'none';
+  document.getElementById('tel-rule-interval').style.display = type === 'interval' ? 'flex' : 'none';
+}
+
+function savetelRule() {
+  const type = document.getElementById('tel-rule-type').value;
+  const operator = document.getElementById('tel-operator').value;
+  const value = type === 'pct'
+    ? document.getElementById('tel-pct-value').value + '%'
+    : document.getElementById('tel-interval-value').value + ' min';
+  const saved = document.getElementById('tel-rule-saved');
+  saved.textContent = `✓ Rule saved — ${type === 'pct' ? 'push on ≥' + value + ' change' : 'push every ' + value} · ${operator.split('—')[0].trim()}`;
+  saved.style.display = 'block';
+  setTimeout(() => { saved.style.display = 'none'; }, 4000);
 }
 
 // ── Submit risk indicator ──
