@@ -751,10 +751,60 @@ body {
       <div class="page-head-left">
         <span class="eyebrow">Project Developer</span>
         <h1 class="page-title">My Projects</h1>
-        <p class="page-meta">1 active project — Axil Developers</p>
+        <p class="page-meta" id="dev-proj-meta">1 active project — Axil Developers</p>
       </div>
       <div class="btn-actions">
         <button class="btn btn-primary" onclick="showPage('dev-list')"><i data-lucide="plus"></i> List New Project</button>
+      </div>
+    </div>
+
+    <!-- LIUM Energy project picker -->
+    <div style="margin-bottom:20px;">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);font-weight:700;margin-bottom:8px;">Select LIUM Energy Project</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;" id="energy-project-picker">
+
+        <div class="energy-proj-card active-proj" id="eproj-menlo" onclick="selectEnergyProject('menlo')" style="background:var(--panel);border:1px solid var(--sun);padding:14px 16px;cursor:pointer;transition:border-color 120ms;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="font-size:12px;font-weight:700;color:var(--ink);">Menlo Housing Microgrid</div>
+            <div style="font-size:14px;font-weight:700;color:var(--good);">87</div>
+          </div>
+          <div style="font-size:10px;color:var(--ink-3);margin-bottom:8px;">Menlo Park, CA · LIUM-PROJ-001</div>
+          <div style="display:flex;flex-direction:column;gap:3px;font-size:10px;">
+            <div><span style="color:var(--ink-3);">Utility</span> <b style="color:var(--ink-2);">Pacific Gas &amp; Electric</b></div>
+            <div><span style="color:var(--ink-3);">DC Operator</span> <b style="color:var(--ink-2);">Microsoft Azure</b></div>
+            <div><span style="color:var(--ink-3);">Capex</span> <b style="color:var(--ink-2);">$854K</b></div>
+          </div>
+          <div style="margin-top:8px;"><span class="status-pill green" style="font-size:9px;">Securitisable</span></div>
+        </div>
+
+        <div class="energy-proj-card" id="eproj-armstrong" onclick="selectEnergyProject('armstrong')" style="background:var(--panel);border:1px solid var(--line);padding:14px 16px;cursor:pointer;transition:border-color 120ms;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="font-size:12px;font-weight:700;color:var(--ink);">Armstrong County Solar + Storage</div>
+            <div style="font-size:14px;font-weight:700;color:var(--amber);">79</div>
+          </div>
+          <div style="font-size:10px;color:var(--ink-3);margin-bottom:8px;">Armstrong County, PA · LIUM-PROJ-002</div>
+          <div style="display:flex;flex-direction:column;gap:3px;font-size:10px;">
+            <div><span style="color:var(--ink-3);">Utility</span> <b style="color:var(--ink-2);">West Penn Power</b></div>
+            <div><span style="color:var(--ink-3);">DC Operator</span> <b style="color:var(--ink-2);">Google Cloud</b></div>
+            <div><span style="color:var(--ink-3);">Capex</span> <b style="color:var(--ink-2);">$42M</b></div>
+          </div>
+          <div style="margin-top:8px;"><span class="status-pill amber" style="font-size:9px;">Seasoning</span></div>
+        </div>
+
+        <div class="energy-proj-card" id="eproj-oakland" onclick="selectEnergyProject('oakland')" style="background:var(--panel);border:1px solid var(--line);padding:14px 16px;cursor:pointer;transition:border-color 120ms;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="font-size:12px;font-weight:700;color:var(--ink);">Oakland DC Microgrid</div>
+            <div style="font-size:14px;font-weight:700;color:var(--amber);">72</div>
+          </div>
+          <div style="font-size:10px;color:var(--ink-3);margin-bottom:8px;">Oakland, CA · LIUM-PROJ-003</div>
+          <div style="display:flex;flex-direction:column;gap:3px;font-size:10px;">
+            <div><span style="color:var(--ink-3);">Utility</span> <b style="color:var(--ink-2);">Pacific Gas &amp; Electric</b></div>
+            <div><span style="color:var(--ink-3);">DC Operator</span> <b style="color:var(--ink-2);">Amazon Web Services</b></div>
+            <div><span style="color:var(--ink-3);">Capex</span> <b style="color:var(--ink-2);">$18M</b></div>
+          </div>
+          <div style="margin-top:8px;"><span class="status-pill amber" style="font-size:9px;">Seasoning</span></div>
+        </div>
+
       </div>
     </div>
 
@@ -771,27 +821,27 @@ body {
     <div class="kpi-row">
       <div class="kpi">
         <div class="k-label">Total Capex</div>
-        <div class="k-val">$854<small>K</small></div>
-        <div class="k-delta pos">After ITC: $544K</div>
+        <div class="k-val" id="dev-kpi-capex">$854<small>K</small></div>
+        <div class="k-delta pos" id="dev-kpi-capex-sub">After ITC: $544K</div>
       </div>
       <div class="kpi">
         <div class="k-label">LQ Score <span style="font-size:9px;color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0;"> · via LIUM Energy</span></div>
-        <div class="k-val">87<small>/100</small></div>
-        <div class="k-delta pos">● Securitisable · <a href="lium-energy.html" style="color:inherit;text-decoration:underline;opacity:0.7;">View detail →</a></div>
+        <div class="k-val" id="dev-kpi-lq">87<small>/100</small></div>
+        <div class="k-delta pos" id="dev-kpi-lq-sub">● Securitisable · <a href="lium-energy.html" style="color:inherit;text-decoration:underline;opacity:0.7;">View detail →</a></div>
       </div>
       <div class="kpi">
         <div class="k-label">Loan Offers</div>
-        <div class="k-val">2</div>
+        <div class="k-val" id="dev-kpi-offers">2</div>
         <div class="k-delta pos">New this week</div>
       </div>
       <div class="kpi">
         <div class="k-label">Disbursed</div>
-        <div class="k-val">$469<small>K</small></div>
+        <div class="k-val" id="dev-kpi-disbursed">$469<small>K</small></div>
         <div class="k-delta pos">Senior A drawn</div>
       </div>
       <div class="kpi">
         <div class="k-label">Savings Yr 1</div>
-        <div class="k-val">$9.5<small>K</small></div>
+        <div class="k-val" id="dev-kpi-savings">$9.5<small>K</small></div>
         <div class="k-delta pos">↑ on target</div>
       </div>
     </div>
@@ -800,22 +850,34 @@ body {
     <div class="project-card">
       <div class="project-card-head">
         <div>
-          <div class="project-name">Menlo Housing Microgrid</div>
-          <div class="project-loc">Menlo Park, CA · BoxPower · Enlisted Feb 2024</div>
+          <div class="project-name" id="dev-proj-name">Menlo Housing Microgrid</div>
+          <div class="project-loc" id="dev-proj-loc">Menlo Park, CA · BoxPower · Enlisted Feb 2024</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
-          <div class="lq-badge green">LQ 87</div>
-          <span class="status-pill green">Financed</span>
+          <div class="lq-badge green" id="dev-proj-lq-badge">LQ 87</div>
+          <span class="status-pill green" id="dev-proj-status">Financed</span>
+        </div>
+      </div>
+
+      <!-- Utility + DC Operator row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div style="background:var(--panel-2);padding:8px 12px;font-size:11px;">
+          <div style="color:var(--ink-3);font-size:9px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:3px;">Utility</div>
+          <div style="font-weight:700;" id="dev-proj-utility">Pacific Gas &amp; Electric</div>
+        </div>
+        <div style="background:var(--panel-2);padding:8px 12px;font-size:11px;">
+          <div style="color:var(--ink-3);font-size:9px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:3px;">DC Operator</div>
+          <div style="font-weight:700;" id="dev-proj-dcop">Microsoft Azure</div>
         </div>
       </div>
 
       <div class="project-specs">
-        <div class="spec">Solar PV <b>28.3 kW</b></div>
-        <div class="spec">BESS <b>420 kWh / 105 kW</b></div>
-        <div class="spec">Generator <b>150 kW LPG</b></div>
-        <div class="spec">Capex <b>$854,361</b></div>
-        <div class="spec">ITC <b>$256,308</b></div>
-        <div class="spec">Assets <b>10 physical</b></div>
+        <div class="spec">Solar PV <b id="dev-proj-solar">28.3 kW</b></div>
+        <div class="spec">BESS <b id="dev-proj-bess">420 kWh / 105 kW</b></div>
+        <div class="spec">Generator <b id="dev-proj-gen">150 kW LPG</b></div>
+        <div class="spec">Capex <b id="dev-proj-capex">$854,361</b></div>
+        <div class="spec">ITC <b id="dev-proj-itc">$256,308</b></div>
+        <div class="spec">Assets <b id="dev-proj-assets">10 physical</b></div>
       </div>
 
       <!-- Capital stack bar -->
@@ -3138,6 +3200,101 @@ async function loadMyTokens() {
 
 // ── Utility fn ──
 function escHtml(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── LIUM Energy project data + picker ──
+const energyProjects = {
+  menlo: {
+    name: 'Menlo Housing Microgrid',
+    location: 'Menlo Park, CA',
+    integrator: 'BoxPower',
+    enlisted: 'Feb 2024',
+    utility: 'Pacific Gas & Electric',
+    dcOperator: 'Microsoft Azure',
+    liumId: 'LIUM-PROJ-001',
+    lq: 87, lqClass: 'green',
+    status: 'Financed', statusClass: 'green',
+    capex: '$854K', capexFull: '$854,361', itc: '$256,308',
+    solar: '28.3 kW', bess: '420 kWh / 105 kW', gen: '150 kW LPG',
+    assets: '10 physical',
+    savings: '$9.5K', disbursed: '$469K', offers: '2',
+    flowState: 'Financed',
+  },
+  armstrong: {
+    name: 'Armstrong County Solar + Storage',
+    location: 'Armstrong County, PA',
+    integrator: 'Qcells Energy',
+    enlisted: 'Jan 2025',
+    utility: 'West Penn Power',
+    dcOperator: 'Google Cloud',
+    liumId: 'LIUM-PROJ-002',
+    lq: 79, lqClass: 'amber',
+    status: 'Seasoning', statusClass: 'amber',
+    capex: '$42M', capexFull: '$42,000,000', itc: '$12,600,000',
+    solar: '40 MW', bess: '80 MWh', gen: '—',
+    assets: '48 physical',
+    savings: '$280K', disbursed: '$0', offers: '0',
+    flowState: 'Enlisted',
+  },
+  oakland: {
+    name: 'Oakland DC Microgrid',
+    location: 'Oakland, CA',
+    integrator: 'SunPower',
+    enlisted: 'Mar 2025',
+    utility: 'Pacific Gas & Electric',
+    dcOperator: 'Amazon Web Services',
+    liumId: 'LIUM-PROJ-003',
+    lq: 72, lqClass: 'amber',
+    status: 'Seasoning', statusClass: 'amber',
+    capex: '$18M', capexFull: '$18,000,000', itc: '$5,400,000',
+    solar: '8 MW', bess: '24 MWh', gen: '—',
+    assets: '22 physical',
+    savings: '$95K', disbursed: '$0', offers: '0',
+    flowState: 'Enlisted',
+  },
+};
+let activeEnergyProject = 'menlo';
+
+function selectEnergyProject(id) {
+  activeEnergyProject = id;
+  const p = energyProjects[id];
+  // Update picker highlight
+  document.querySelectorAll('.energy-proj-card').forEach(c => {
+    c.style.borderColor = 'var(--line)';
+  });
+  document.getElementById('eproj-' + id).style.borderColor = 'var(--sun)';
+  // Update meta
+  document.getElementById('dev-proj-meta').textContent = p.name + ' — ' + p.integrator;
+  // Update KPIs
+  document.getElementById('dev-kpi-capex').innerHTML = p.capex.replace('$','$').replace('K','<small>K</small>').replace('M','<small>M</small>');
+  document.getElementById('dev-kpi-capex-sub').textContent = 'After ITC: ' + (p.capex.includes('M') ? '$' + (parseFloat(p.capex.slice(1))*0.7).toFixed(1) + 'M' : '$' + Math.round(parseInt(p.capexFull.replace(/[$,]/g,''))*0.7/1000) + 'K');
+  document.getElementById('dev-kpi-lq').textContent = p.lq + '/100';
+  document.getElementById('dev-kpi-lq-sub').innerHTML = p.lq >= 75 ? '● Securitisable · <a href="lium-energy.html" style="color:inherit;text-decoration:underline;opacity:0.7;">View detail →</a>' : '● Seasoning · <a href="lium-energy.html" style="color:inherit;text-decoration:underline;opacity:0.7;">View detail →</a>';
+  document.getElementById('dev-kpi-offers').textContent = p.offers;
+  document.getElementById('dev-kpi-disbursed').textContent = p.disbursed;
+  document.getElementById('dev-kpi-savings').textContent = p.savings;
+  // Update project card
+  document.getElementById('dev-proj-name').textContent = p.name;
+  document.getElementById('dev-proj-loc').textContent = p.location + ' · ' + p.integrator + ' · Enlisted ' + p.enlisted;
+  document.getElementById('dev-proj-utility').textContent = p.utility;
+  document.getElementById('dev-proj-dcop').textContent = p.dcOperator;
+  document.getElementById('dev-proj-lq-badge').textContent = 'LQ ' + p.lq;
+  document.getElementById('dev-proj-lq-badge').className = 'lq-badge ' + p.lqClass;
+  document.getElementById('dev-proj-status').textContent = p.status;
+  document.getElementById('dev-proj-status').className = 'status-pill ' + p.statusClass;
+  document.getElementById('dev-proj-solar').textContent = p.solar;
+  document.getElementById('dev-proj-bess').textContent = p.bess;
+  document.getElementById('dev-proj-gen').textContent = p.gen;
+  document.getElementById('dev-proj-capex').textContent = p.capexFull;
+  document.getElementById('dev-proj-itc').textContent = p.itc;
+  document.getElementById('dev-proj-assets').textContent = p.assets;
+  // Update flow steps
+  const flow = document.querySelectorAll('#page-dev-projects .flow-step');
+  const states = ['Enlisted', 'Financed', 'Securitised'];
+  const activeIdx = states.indexOf(p.flowState);
+  flow.forEach((s, i) => {
+    s.className = 'flow-step' + (i < activeIdx ? ' done' : i === activeIdx ? ' active' : '');
+  });
+}
 
 // ── Role + page navigation ──
 const rolePages = {
