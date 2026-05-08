@@ -923,15 +923,25 @@ body {
         </div>
         <div class="panel-body">
           <div class="form-section">
-            <!-- LIUM Energy project selector -->
+            <!-- Cascading project selector -->
             <div style="margin-bottom:16px;padding:14px 16px;background:var(--panel-2);border:1px solid var(--line);">
-              <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);font-weight:700;margin-bottom:8px;">Select LIUM Energy Project</div>
-              <select class="form-input form-select" id="energy-proj-select" onchange="prefillFromEnergyProject(this.value)" style="font-size:13px;font-weight:700;">
-                <option value="">— Choose a registered project —</option>
-                <option value="google-armstrong">Google Datacenter — Armstrong City</option>
-                <option value="microsoft-menlo">Microsoft Azure — Menlo Park</option>
-                <option value="amazon-oakland">Amazon Web Services — Oakland</option>
-              </select>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                  <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);font-weight:700;margin-bottom:6px;">Vertical</div>
+                  <select class="form-input form-select" id="vertical-select" onchange="onVerticalChange(this.value)" style="font-size:13px;font-weight:700;">
+                    <option value="">— Select vertical —</option>
+                    <option value="energy">Energy</option>
+                    <option value="mobility">Mobility</option>
+                    <option value="health">Health</option>
+                  </select>
+                </div>
+                <div>
+                  <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);font-weight:700;margin-bottom:6px;">Project</div>
+                  <select class="form-input form-select" id="energy-proj-select" onchange="prefillFromEnergyProject(this.value)" style="font-size:13px;font-weight:700;" disabled>
+                    <option value="">— Choose a project —</option>
+                  </select>
+                </div>
+              </div>
               <div id="proj-select-meta" style="margin-top:8px;font-size:11px;color:var(--ink-3);display:none;">
                 <span id="proj-select-utility"></span> · <span id="proj-select-dcop"></span> · Telemetry live
                 <span style="color:var(--good);font-weight:700;">●</span>
@@ -3354,6 +3364,36 @@ const listProjects = {
     type: 'Solar + Storage',
   },
 };
+
+const verticalProjects = {
+  energy: [
+    { value: 'google-armstrong', label: 'Google Datacenter — Armstrong City' },
+    { value: 'microsoft-menlo',  label: 'Microsoft Azure — Menlo Park' },
+    { value: 'amazon-oakland',   label: 'Amazon Web Services — Oakland' },
+  ],
+  mobility: [
+    { value: '', label: '— No registered projects yet —' },
+  ],
+  health: [
+    { value: '', label: '— No registered projects yet —' },
+  ],
+};
+
+function onVerticalChange(vertical) {
+  const projSelect = document.getElementById('energy-proj-select');
+  projSelect.innerHTML = '<option value="">— Choose a project —</option>';
+  document.getElementById('proj-select-meta').style.display = 'none';
+  if (!vertical) { projSelect.disabled = true; return; }
+  const options = verticalProjects[vertical] || [];
+  options.forEach(o => {
+    const el = document.createElement('option');
+    el.value = o.value;
+    el.textContent = o.label;
+    if (!o.value) el.disabled = true;
+    projSelect.appendChild(el);
+  });
+  projSelect.disabled = false;
+}
 
 function prefillFromEnergyProject(val) {
   const meta = document.getElementById('proj-select-meta');
