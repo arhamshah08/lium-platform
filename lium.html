@@ -610,6 +610,7 @@ body {
       <option value="sec-agent">Securitisation Agent</option>
       <option value="pm">Portfolio Manager</option>
       <option value="investor">Investor</option>
+      <option value="dcop">Data Centre Operator</option>
     </select>
   </div>
 
@@ -702,6 +703,20 @@ body {
     </a>
     <a class="nav-link" onclick="showPage('inv-returns')">
       <i data-lucide="trending-up"></i> Returns
+    </a>
+  </nav>
+
+  <!-- Data Centre Operator Nav -->
+  <nav class="nav-section" id="nav-dcop" style="display:none">
+    <div class="nav-section-label">Data Centre Operator</div>
+    <a class="nav-link active" onclick="showPage('dcop-overview')">
+      <i data-lucide="zap"></i> Power Request
+    </a>
+    <a class="nav-link" onclick="showPage('dcop-contracts')">
+      <i data-lucide="file-text"></i> Active Contracts
+    </a>
+    <a class="nav-link" onclick="showPage('dcop-telemetry')">
+      <i data-lucide="activity"></i> Live Power Feed
     </a>
   </nav>
 
@@ -809,14 +824,14 @@ body {
         <div class="cap-bar">
           <div class="cap-bar-seg" style="flex:55;background:#00D26A;"></div>
           <div class="cap-bar-seg" style="flex:20;background:#60A5FA;"></div>
-          <div class="cap-bar-seg" style="flex:7;background:#FF9E1B;"></div>
-          <div class="cap-bar-seg" style="flex:18;background:#C8341A;"></div>
+          <div class="cap-bar-seg" style="flex:15;background:#FF9E1B;"></div>
+          <div class="cap-bar-seg" style="flex:10;background:#C8341A;"></div>
         </div>
         <div style="display:flex;gap:14px;margin-top:4px;flex-wrap:wrap;">
-          <span class="spec" style="color:#00D26A;">■ Senior A 55% $469K ~5%</span>
-          <span class="spec" style="color:#60A5FA;">■ Senior B 20% $170K ~5.8%</span>
-          <span class="spec" style="color:#FF9E1B;">■ Mezz 7% $59K ~12%</span>
-          <span class="spec" style="color:#C8341A;">■ Equity 18% $153K 18–22% IRR</span>
+          <span class="spec" style="color:#00D26A;">■ Senior A 55% $469K 4.8%</span>
+          <span class="spec" style="color:#60A5FA;">■ Senior B 20% $170K 5.5%</span>
+          <span class="spec" style="color:#FF9E1B;">■ Mezz 15% $128K 8.0%</span>
+          <span class="spec" style="color:#C8341A;">■ Equity 10% $85K 12–18% IRR</span>
         </div>
       </div>
 
@@ -909,10 +924,9 @@ body {
             <div style="font-size:11px;color:var(--ink-3);margin-bottom:10px;">Based on entered specs</div>
             <div class="lq-badge green" style="font-size:22px;padding:8px 14px;">LQ ~87</div>
             <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;">
-              <div class="spec">Hardware <b style="color:var(--good);">30/30</b></div>
-              <div class="spec">Financial <b style="color:var(--good);">23/25</b></div>
-              <div class="spec">Compliance <b style="color:var(--amber);">18/25</b></div>
-              <div class="spec">Operations <b style="color:var(--good);">16/20</b></div>
+              <div class="spec">Hardware <b style="color:var(--good);">35/40</b></div>
+              <div class="spec">Financial <b style="color:var(--good);">31/35</b></div>
+              <div class="spec">Compliance <b style="color:var(--amber);">21/25</b></div>
             </div>
           </div>
         </div>
@@ -954,7 +968,7 @@ body {
       <div class="offer-details">
         <div class="offer-detail">
           <div class="label">Interest Rate</div>
-          <div class="value">5.0% p.a.</div>
+          <div class="value">4.8% p.a.</div>
         </div>
         <div class="offer-detail">
           <div class="label">Term</div>
@@ -999,7 +1013,7 @@ body {
       <div class="offer-details">
         <div class="offer-detail">
           <div class="label">Interest Rate</div>
-          <div class="value">5.8% p.a.</div>
+          <div class="value">5.5% p.a.</div>
         </div>
         <div class="offer-detail">
           <div class="label">Term</div>
@@ -1383,8 +1397,8 @@ body {
             <div style="display:flex;height:16px;width:100%;margin-bottom:14px;gap:1px;">
               <div style="flex:55;background:#00D26A;" title="Senior A 55%"></div>
               <div style="flex:20;background:#60A5FA;" title="Senior B 20%"></div>
-              <div style="flex:7;background:#FF9E1B;" title="Mezzanine 7%"></div>
-              <div style="flex:18;background:#C8341A;" title="Equity 18%"></div>
+              <div style="flex:15;background:#FF9E1B;" title="Mezzanine 15%"></div>
+              <div style="flex:10;background:#C8341A;" title="Equity 10%"></div>
             </div>
             <!-- Tranche rows -->
             <div style="display:flex;flex-direction:column;gap:10px;">
@@ -1394,7 +1408,7 @@ body {
                   <span style="font-size:13px;font-weight:700;">$469,898</span>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--ink-3);">
-                  <span>5.0% p.a.</span><span>25yr term</span><span>Monthly disburse</span>
+                  <span>4.8% p.a.</span><span>25yr term</span><span>Monthly disburse</span>
                 </div>
                 <div style="margin-top:6px;font-size:10px;color:var(--ink-3);">Annual service: <b style="color:var(--ink-2);">$33,261</b></div>
               </div>
@@ -1404,26 +1418,26 @@ body {
                   <span style="font-size:13px;font-weight:700;">$170,872</span>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--ink-3);">
-                  <span>5.8% p.a.</span><span>20yr term</span><span>Quarterly disburse</span>
+                  <span>5.5% p.a.</span><span>20yr term</span><span>Quarterly disburse</span>
                 </div>
                 <div style="margin-top:6px;font-size:10px;color:var(--ink-3);">Annual service: <b style="color:var(--ink-2);">$14,831</b></div>
               </div>
               <div style="border-left:3px solid #FF9E1B;padding:10px 12px;background:var(--panel-2);">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                  <span style="font-size:11px;font-weight:700;color:#FF9E1B;">Mezzanine · 7%</span>
-                  <span style="font-size:13px;font-weight:700;">$59,806</span>
+                  <span style="font-size:11px;font-weight:700;color:#FF9E1B;">Mezzanine · 15%</span>
+                  <span style="font-size:13px;font-weight:700;">$128,154</span>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--ink-3);">
-                  <span>12% p.a.</span><span>PIK eligible</span>
+                  <span>8.0% p.a.</span><span>PIK eligible</span>
                 </div>
               </div>
               <div style="border-left:3px solid #C8341A;padding:10px 12px;background:var(--panel-2);">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                  <span style="font-size:11px;font-weight:700;color:#C8341A;">Equity · 18%</span>
-                  <span style="font-size:13px;font-weight:700;">$153,786</span>
+                  <span style="font-size:11px;font-weight:700;color:#C8341A;">Equity · 10%</span>
+                  <span style="font-size:13px;font-weight:700;">$85,436</span>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--ink-3);">
-                  <span>18–22% IRR target</span><span>Sponsor equity</span>
+                  <span>12–18% IRR target</span><span>Sponsor equity</span>
                 </div>
               </div>
             </div>
@@ -1560,7 +1574,7 @@ body {
             <select class="form-input form-select">
               <option>Any</option>
               <option selected>≥ 80 (Securitisable)</option>
-              <option>≥ 65 (Seasoning)</option>
+              <option>≥ 60 (Seasoning)</option>
             </select>
           </div>
           <div class="form-group">
@@ -1668,7 +1682,7 @@ body {
                 <select id="offer-tranche" class="form-input form-select">
                   <option selected>Senior A (55%)</option>
                   <option>Senior B (20%)</option>
-                  <option>Mezzanine (7%)</option>
+                  <option>Mezzanine (15%)</option>
                 </select>
               </div>
               <div class="form-group">
@@ -2029,8 +2043,8 @@ body {
         <div class="tranche-row" style="margin-top:12px;">
           <span class="tranche-pill senior-a">Senior A — 55%</span>
           <span class="tranche-pill senior-b">Senior B — 20%</span>
-          <span class="tranche-pill mezz">Mezzanine — 7%</span>
-          <span class="tranche-pill equity">Equity — 18%</span>
+          <span class="tranche-pill mezz">Mezzanine — 15%</span>
+          <span class="tranche-pill equity">Equity — 10%</span>
         </div>
         <div style="display:flex;gap:8px;margin-top:14px;">
           <button class="btn btn-ghost btn-sm" onclick="showPage('sa-pm-list')">List to PM Market →</button>
@@ -2195,8 +2209,8 @@ body {
         <div class="tranche-row">
           <span class="tranche-pill senior-a">Senior A 55%</span>
           <span class="tranche-pill senior-b">Senior B 20%</span>
-          <span class="tranche-pill mezz">Mezz 7%</span>
-          <span class="tranche-pill equity">Equity 18%</span>
+          <span class="tranche-pill mezz">Mezz 15%</span>
+          <span class="tranche-pill equity">Equity 10%</span>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 0;border-top:1px solid var(--line);">
           <div><div class="k-label">Size</div><div style="font-size:14px;font-weight:700;color:var(--ink);">$640K</div></div>
@@ -2228,7 +2242,7 @@ body {
           <div><div class="k-label">Blended Yield</div><div style="font-size:14px;font-weight:700;color:var(--sun);">7.4%</div></div>
           <div><div class="k-label">Risk</div><div class="risk-indicator" style="padding:4px 8px;margin-top:4px;"><div class="risk-dot" style="background:var(--amber);"></div><div class="risk-label" style="font-size:10px;color:var(--amber);">Med</div></div></div>
         </div>
-        <div style="font-size:11px;color:var(--amber);padding:4px 0;">LQ below 80 — seasoning period</div>
+        <div style="font-size:11px;color:var(--amber);padding:4px 0;">LQ below 75 — seasoning period</div>
       </div>
     </div>
   </section>
@@ -2246,8 +2260,8 @@ body {
 
     <div class="kpi-row">
       <div class="kpi"><div class="k-label">Total AUM</div><div class="k-val">$352<small>K</small></div><div class="k-delta pos">1 security</div></div>
-      <div class="kpi"><div class="k-label">Avg Yield</div><div class="k-val">5.0<small>%</small></div><div class="k-delta pos">Senior A tranche</div></div>
-      <div class="kpi"><div class="k-label">LQ Score</div><div class="k-val">87</div><div class="k-delta pos">● Above threshold</div></div>
+      <div class="kpi"><div class="k-label">Avg Yield</div><div class="k-val">4.8<small>%</small></div><div class="k-delta pos">Senior A tranche</div></div>
+      <div class="kpi"><div class="k-label">LQ Score</div><div class="k-val">87</div><div class="k-delta pos">● Excellent</div></div>
       <div class="kpi"><div class="k-label">Risk</div><div class="k-val" style="color:var(--good);font-size:14px;margin-top:8px;">Low</div><div class="k-delta pos">kWh feed</div></div>
     </div>
 
@@ -2514,7 +2528,7 @@ body {
           <div style="display:flex;flex-direction:column;gap:8px;">
             <div class="spec">Est. yield <b style="color:var(--sun);">8–12% p.a.</b></div>
             <div class="spec">Asset-backed <b>real infrastructure</b></div>
-            <div class="spec">LQ score <b style="color:var(--good);">87 — Strong</b></div>
+            <div class="spec">LQ score <b style="color:var(--good);">87 — Excellent</b></div>
             <div class="spec">Quarterly distributions</div>
           </div>
         </div>
@@ -2588,6 +2602,144 @@ body {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ DATA CENTRE OPERATOR: POWER REQUEST ══════════════ -->
+  <section class="page" id="page-dcop-overview">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Data Centre Operator</span>
+        <h1 class="page-title">Power Request</h1>
+        <p class="page-meta">State your intent — LIUM assembles the solution</p>
+      </div>
+    </div>
+
+    <!-- Market context stats -->
+    <div class="kpi-row" style="margin-bottom:16px;">
+      <div class="kpi"><div class="k-label">New Capacity Needed by 2035</div><div class="k-val">106<small> GW</small></div><div class="k-delta" style="color:var(--ember);">Data centres alone</div></div>
+      <div class="kpi"><div class="k-label">US Interconnection Queue</div><div class="k-val">2,300<small> GW</small></div><div class="k-delta" style="color:var(--ember);">Avg wait 4+ years</div></div>
+      <div class="kpi"><div class="k-label">LIUM Seasoning</div><div class="k-val">6<small> mo</small></div><div class="k-delta pos">vs 36 mo legacy</div></div>
+      <div class="kpi"><div class="k-label">WACC Compression</div><div class="k-val">6.1<small>%</small></div><div class="k-delta pos">vs 8.6% legacy</div></div>
+    </div>
+
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">State Your Power Intent</div></div>
+        <div class="panel-body">
+          <div class="form-section">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Required Capacity (MW)</label>
+                <input class="form-input" type="number" placeholder="e.g. 800" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Uptime Requirement</label>
+                <select class="form-input form-select"><option>99.99%</option><option>99.9%</option><option>99.5%</option></select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Contract Term</label>
+                <select class="form-input form-select"><option>15 years</option><option>10 years</option><option>20 years</option><option>25 years</option></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pricing Model</label>
+                <select class="form-input form-select"><option>Fixed Price</option><option>Indexed</option></select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Carbon Requirement</label>
+                <select class="form-input form-select"><option>100% Carbon-Free</option><option>≥ 90% Carbon-Free</option><option>No Requirement</option></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Required Delivery</label>
+                <input class="form-input" type="text" placeholder="e.g. 18 months" />
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="margin-top:8px;"><i data-lucide="search"></i> Find Configurations</button>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Why LIUM</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--ink-2);">
+            <div style="display:flex;gap:10px;"><span style="color:var(--good);font-weight:700;">✓</span><span>Time-to-power months, not years</span></div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--good);font-weight:700;">✓</span><span>Fixed, predictable cost for full term</span></div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--good);font-weight:700;">✓</span><span>Cryptographic proof of carbon-free energy</span></div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--good);font-weight:700;">✓</span><span>Real-time verified power delivery data</span></div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--good);font-weight:700;">✓</span><span>Single agreement — no utility queue</span></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Active Contract</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Project</span><b>Menlo Housing MG</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Capacity</span><b style="color:var(--good);">47.1 kW live</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Term</span><b>15 years · Fixed</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Carbon-Free</span><b style="color:var(--good);">Verified ✓</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">LQ Score</span><b style="color:var(--good);">87 — Excellent</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ DATA CENTRE OPERATOR: CONTRACTS ══════════════ -->
+  <section class="page" id="page-dcop-contracts">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Data Centre Operator</span>
+        <h1 class="page-title">Active Contracts</h1>
+        <p class="page-meta">Power offtake agreements — verified delivery</p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Contracted Power</div></div>
+      <div class="panel-body no-pad">
+        <table class="tbl">
+          <thead><tr><th>Project</th><th>Capacity</th><th>Term</th><th>Price</th><th>Carbon</th><th>LQ</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="primary">Menlo Housing Microgrid</span><span class="sub">Menlo Park, CA · BoxPower</span></td>
+              <td><span class="primary" style="color:var(--good);">47.1 kW</span></td>
+              <td><span class="primary">15yr fixed</span></td>
+              <td><span class="primary">$0.054/kWh</span></td>
+              <td><span class="status-pill green">100% ✓</span></td>
+              <td><div class="lq-badge green" style="font-size:11px;padding:2px 7px;">87</div></td>
+              <td><span class="status-pill green">Active</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ DATA CENTRE OPERATOR: LIVE POWER FEED ══════════════ -->
+  <section class="page" id="page-dcop-telemetry">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Data Centre Operator</span>
+        <h1 class="page-title">Live Power Feed</h1>
+        <p class="page-meta">Real-time verified delivery — cryptographic proof chain</p>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">Live Capacity</div><div class="k-val" style="color:var(--good);">47.1<small> kW</small></div><div class="k-delta pos">Delivering now</div></div>
+      <div class="kpi"><div class="k-label">Today's Energy</div><div class="k-val">312<small> kWh</small></div><div class="k-delta pos">↑ +4% vs plan</div></div>
+      <div class="kpi"><div class="k-label">Carbon-Free</div><div class="k-val" style="color:var(--good);">100<small>%</small></div><div class="k-delta pos">Cryptographically verified</div></div>
+      <div class="kpi"><div class="k-label">LQ Score</div><div class="k-val">87</div><div class="k-delta pos">● Excellent</div></div>
+    </div>
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-head"><div class="panel-title">Proof Chain</div></div>
+      <div class="panel-body" style="font-size:12px;color:var(--ink-2);display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:10px;align-items:center;"><span style="color:var(--good);">●</span><span>Solar Panel → Inverter → Microgrid Controller → LIUM Ledger → <b style="color:var(--good);">Verified ✓</b></span></div>
+        <div style="display:flex;gap:10px;align-items:center;"><span style="color:var(--good);">●</span><span>Each kWh timestamped, signed, and anchored on-chain every 3 seconds</span></div>
+        <div style="display:flex;gap:10px;align-items:center;"><span style="color:var(--good);">●</span><span>Proof exportable for ESG reporting &amp; shareholder disclosure</span></div>
       </div>
     </div>
   </section>
@@ -2915,7 +3067,7 @@ function offtakeSecurity(securityId, projectName, totalAmt) {
       <div class="spec">Total Value <b style="color:var(--sun);">$${(Number(totalAmt)/1000).toFixed(0)}K</b></div>
       <div class="spec">Blended Yield <b style="color:var(--sun);">6.8%</b></div>
       <div class="spec">Risk Profile <b style="color:var(--good);">Low</b></div>
-      <div class="spec">LQ Score <b style="color:var(--good);">87 — Strong</b></div>
+      <div class="spec">LQ Score <b style="color:var(--good);">87 — Excellent</b></div>
     </div>`;
   showPage('pm-buy');
   setTimeout(() => document.getElementById('pm-buy-amount').focus(), 100);
@@ -2994,6 +3146,7 @@ const rolePages = {
   'sec-agent': { default: 'sa-loans', nav: 'nav-sec-agent', user: { initials: 'SA', name: 'Securities Agent', role: 'Sec. Agent' } },
   pm: { default: 'pm-market', nav: 'nav-pm', user: { initials: 'PM', name: 'BlackRock Energy', role: 'Portfolio Mgr' } },
   investor: { default: 'inv-market', nav: 'nav-investor', user: { initials: 'RJ', name: 'Retail Investor', role: 'Investor' } },
+  dcop: { default: 'dcop-overview', nav: 'nav-dcop', user: { initials: 'MS', name: 'Microsoft Azure', role: 'DC Operator' } },
 };
 
 let currentRole = 'developer';
