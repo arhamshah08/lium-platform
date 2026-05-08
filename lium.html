@@ -923,10 +923,26 @@ body {
         </div>
         <div class="panel-body">
           <div class="form-section">
+            <!-- LIUM Energy project selector -->
+            <div style="margin-bottom:16px;padding:14px 16px;background:var(--panel-2);border:1px solid var(--line);">
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);font-weight:700;margin-bottom:8px;">Select LIUM Energy Project</div>
+              <select class="form-input form-select" id="energy-proj-select" onchange="prefillFromEnergyProject(this.value)" style="font-size:13px;font-weight:700;">
+                <option value="">— Choose a registered project —</option>
+                <option value="google-armstrong">Google Datacenter — Armstrong City</option>
+                <option value="microsoft-menlo">Microsoft Azure — Menlo Park</option>
+                <option value="amazon-oakland">Amazon Web Services — Oakland</option>
+              </select>
+              <div id="proj-select-meta" style="margin-top:8px;font-size:11px;color:var(--ink-3);display:none;">
+                <span id="proj-select-utility"></span> · <span id="proj-select-dcop"></span> · Telemetry live
+                <span style="color:var(--good);font-weight:700;">●</span>
+                <a href="lium-energy.html" style="color:var(--sun);text-decoration:underline;margin-left:8px;">View in LIUM Energy →</a>
+              </div>
+            </div>
+
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Project Name</label>
-                <input id="proj-name" class="form-input" type="text" placeholder="e.g. Menlo Housing Microgrid" />
+                <input id="proj-name" class="form-input" type="text" placeholder="e.g. Google Datacenter — Armstrong City" />
               </div>
               <div class="form-group">
                 <label class="form-label">Location</label>
@@ -3294,6 +3310,68 @@ function selectEnergyProject(id) {
   flow.forEach((s, i) => {
     s.className = 'flow-step' + (i < activeIdx ? ' done' : i === activeIdx ? ' active' : '');
   });
+}
+
+// ── LIUM Energy project prefill for dev-list form ──
+const listProjects = {
+  'google-armstrong': {
+    name: 'Google Datacenter — Armstrong City',
+    location: 'Armstrong County, PA',
+    developer: 'Qcells Energy · Armstrong Energy Partners',
+    capex: '42,000,000',
+    solar: '40,000',
+    bess: '80,000',
+    gen: '',
+    itc: '12,600,000',
+    utility: 'West Penn Power',
+    dcop: 'Google Cloud',
+    type: 'Solar + Storage',
+  },
+  'microsoft-menlo': {
+    name: 'Microsoft Azure — Menlo Park',
+    location: 'Menlo Park, CA',
+    developer: 'BoxPower',
+    capex: '854,361',
+    solar: '28.3',
+    bess: '420',
+    gen: '150',
+    itc: '256,308',
+    utility: 'Pacific Gas & Electric',
+    dcop: 'Microsoft Azure',
+    type: 'Microgrid (Solar + BESS + Gen)',
+  },
+  'amazon-oakland': {
+    name: 'Amazon Web Services — Oakland',
+    location: 'Oakland, CA',
+    developer: 'SunPower · Hammerhead Infrastructure',
+    capex: '18,000,000',
+    solar: '8,000',
+    bess: '24,000',
+    gen: '',
+    itc: '5,400,000',
+    utility: 'Pacific Gas & Electric',
+    dcop: 'Amazon Web Services',
+    type: 'Solar + Storage',
+  },
+};
+
+function prefillFromEnergyProject(val) {
+  const meta = document.getElementById('proj-select-meta');
+  if (!val) { meta.style.display = 'none'; return; }
+  const p = listProjects[val];
+  if (!p) return;
+  document.getElementById('proj-name').value = p.name;
+  document.getElementById('proj-location').value = p.location;
+  document.getElementById('proj-developer').value = p.developer;
+  document.getElementById('proj-capex').value = p.capex;
+  document.getElementById('proj-solar').value = p.solar;
+  document.getElementById('proj-bess').value = p.bess;
+  document.getElementById('proj-gen').value = p.gen;
+  document.getElementById('proj-itc').value = p.itc;
+  document.getElementById('proj-type').value = p.type;
+  document.getElementById('proj-select-utility').textContent = p.utility;
+  document.getElementById('proj-select-dcop').textContent = p.dcop;
+  meta.style.display = 'block';
 }
 
 // ── Role + page navigation ──

@@ -474,6 +474,7 @@ body {
     <select class="role-select" id="roleSelect" onchange="switchRole(this.value)">
       <option value="utility">Utility</option>
       <option value="edgegrid">EdgeGrid</option>
+      <option value="project">Project</option>
       <option value="microgrid">Microgrid / DC Operator</option>
       <option value="risk-provider">Risk Provider</option>
     </select>
@@ -518,6 +519,23 @@ body {
     </a>
     <a class="nav-link" onclick="showPage('rp-telemetry')">
       <i data-lucide="activity"></i> Live Telemetry
+    </a>
+    <a class="nav-link" onclick="showPage('project-registry')">
+      <i data-lucide="database"></i> Project Registry
+    </a>
+  </nav>
+
+  <!-- Project Nav -->
+  <nav class="nav-section" id="nav-project" style="display:none">
+    <div class="nav-section-label">Project</div>
+    <a class="nav-link active" onclick="showPage('proj-dashboard')">
+      <i data-lucide="layout-grid"></i> Project Dashboard
+    </a>
+    <a class="nav-link" onclick="showPage('rp-telemetry')">
+      <i data-lucide="activity"></i> Live Telemetry
+    </a>
+    <a class="nav-link" onclick="showPage('proj-offtake')">
+      <i data-lucide="file-text"></i> Offtake Agreement
     </a>
     <a class="nav-link" onclick="showPage('project-registry')">
       <i data-lucide="database"></i> Project Registry
@@ -1983,6 +2001,185 @@ body {
     </div>
   </section>
 
+  <!-- ══════════════ PROJECT: DASHBOARD ══════════════ -->
+  <section class="page" id="page-proj-dashboard">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Project</span>
+        <h1 class="page-title">Armstrong County Solar + Storage</h1>
+        <p class="page-meta">Google Cloud · West Penn Power · LIUM-PROJ-002</p>
+      </div>
+      <a href="lium-energy.html" style="text-decoration:none;">
+        <button class="btn btn-primary"><i data-lucide="activity"></i> View Live Telemetry</button>
+      </a>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">LQ Score</div><div class="k-val" style="color:var(--amber);">79<small>/100</small></div><div class="k-delta" style="color:var(--amber);">● Seasoning</div></div>
+      <div class="kpi"><div class="k-label">Total Capex</div><div class="k-val">$42<small>M</small></div><div class="k-delta pos">ITC: $12.6M</div></div>
+      <div class="kpi"><div class="k-label">Capacity</div><div class="k-val">40<small> MW</small></div><div class="k-delta pos">PV · 80 MWh BESS</div></div>
+      <div class="kpi"><div class="k-label">Offtake Term</div><div class="k-val">20<small> yr</small></div><div class="k-delta pos">Fixed price</div></div>
+    </div>
+
+    <div class="col-2-1">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Telemetry snapshot -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Live Telemetry Snapshot</div>
+            <span class="status-pill green">● Live</span>
+          </div>
+          <div class="panel-body" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:12px;">
+            <div style="background:var(--panel-2);padding:10px 12px;">
+              <div style="color:var(--ink-3);font-size:9px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:4px;">Active Power</div>
+              <div style="font-size:22px;font-weight:700;color:var(--good);">31.4 <small style="font-size:11px;">MW</small></div>
+              <div style="color:var(--ink-3);font-size:10px;">Exporting to grid</div>
+            </div>
+            <div style="background:var(--panel-2);padding:10px 12px;">
+              <div style="color:var(--ink-3);font-size:9px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:4px;">BESS SoC</div>
+              <div style="font-size:22px;font-weight:700;color:var(--sun);">68 <small style="font-size:11px;">%</small></div>
+              <div style="color:var(--ink-3);font-size:10px;">54.4 MWh available</div>
+            </div>
+            <div style="background:var(--panel-2);padding:10px 12px;">
+              <div style="color:var(--ink-3);font-size:9px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:4px;">Frequency</div>
+              <div style="font-size:22px;font-weight:700;color:var(--ink);">60.01 <small style="font-size:11px;">Hz</small></div>
+              <div style="color:var(--ink-3);font-size:10px;">Nominal</div>
+            </div>
+            <div style="background:var(--panel-2);padding:10px 12px;">
+              <div style="color:var(--ink-3);font-size:9px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:4px;">Voltage</div>
+              <div style="font-size:22px;font-weight:700;color:var(--ink);">480 <small style="font-size:11px;">V</small></div>
+              <div style="color:var(--ink-3);font-size:10px;">Within spec</div>
+            </div>
+            <div style="background:var(--panel-2);padding:10px 12px;">
+              <div style="color:var(--ink-3);font-size:9px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:4px;">Today's Energy</div>
+              <div style="font-size:22px;font-weight:700;color:var(--good);">248 <small style="font-size:11px;">MWh</small></div>
+              <div style="color:var(--ink-3);font-size:10px;">↑ 6% vs plan</div>
+            </div>
+            <div style="background:var(--panel-2);padding:10px 12px;">
+              <div style="color:var(--ink-3);font-size:9px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:4px;">Carbon-Free</div>
+              <div style="font-size:22px;font-weight:700;color:var(--good);">100 <small style="font-size:11px;">%</small></div>
+              <div style="color:var(--ink-3);font-size:10px;">Cryptographically verified</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LQ breakdown -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Liveliness Quotient — LQ 79</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:80px;font-size:11px;color:var(--ink-3);">Hardware</div>
+              <div style="flex:1;height:6px;background:var(--panel-2);"><div style="height:100%;width:82%;background:var(--good);"></div></div>
+              <div style="font-size:11px;font-weight:700;color:var(--good);width:36px;text-align:right;">82/100</div>
+              <div style="font-size:10px;color:var(--ink-3);width:30px;">×40%</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:80px;font-size:11px;color:var(--ink-3);">Financial</div>
+              <div style="flex:1;height:6px;background:var(--panel-2);"><div style="height:100%;width:74%;background:var(--amber);"></div></div>
+              <div style="font-size:11px;font-weight:700;color:var(--amber);width:36px;text-align:right;">74/100</div>
+              <div style="font-size:10px;color:var(--ink-3);width:30px;">×35%</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:80px;font-size:11px;color:var(--ink-3);">Compliance</div>
+              <div style="flex:1;height:6px;background:var(--panel-2);"><div style="height:100%;width:80%;background:var(--good);"></div></div>
+              <div style="font-size:11px;font-weight:700;color:var(--good);width:36px;text-align:right;">80/100</div>
+              <div style="font-size:10px;color:var(--ink-3);width:30px;">×25%</div>
+            </div>
+            <div style="border-top:1px solid var(--line);padding-top:8px;display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:11px;color:var(--ink-3);">Composite LQ · Recalculated every 3 seconds</span>
+              <span style="font-size:16px;font-weight:700;color:var(--amber);">79 — Good</span>
+            </div>
+            <div style="font-size:11px;color:var(--amber);">Seasoning — 3 months remaining to securitisation eligibility (LQ ≥ 75 for 3 consecutive months)</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Project linkage -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Project Linkage</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Utility</span><b>West Penn Power</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Grid</span><b>PJM · FERC 2222</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">DC Operator</span><b style="color:var(--sun);">Google Cloud</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Developers</span><b>Qcells · Armstrong Energy</b></div>
+            <div style="border-top:1px solid var(--line);padding-top:8px;display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">LIUM Project ID</span><b style="font-size:10px;font-family:monospace;">LIUM-PROJ-002</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Capital Markets</span><a href="lium.html" style="font-size:11px;color:var(--teal);text-decoration:underline;">Open LIUM →</a></div>
+          </div>
+        </div>
+
+        <!-- Assets -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Asset Summary</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:6px;font-size:12px;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Solar PV</span><b>40 MW · 48 string inverters</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">BESS</span><b>80 MWh · 20 FranklinWH units</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Total Assets</span><b>48 physical</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Verified VCs</span><b style="color:var(--good);">186 / 192</b></div>
+          </div>
+        </div>
+
+        <!-- Proof chain -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Proof Chain</div></div>
+          <div class="panel-body" style="font-size:11px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;gap:8px;"><span style="color:var(--good);">●</span><span>Telemetry anchored every 3 seconds to LIUM Ledger</span></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--good);">●</span><span>Carbon-free proof exportable for Google ESG reporting</span></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--amber);">●</span><span>Seasoning clock: Month 3 of 6 — on track</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ PROJECT: OFFTAKE AGREEMENT ══════════════ -->
+  <section class="page" id="page-proj-offtake">
+    <div class="page-head">
+      <div class="page-head-left">
+        <span class="eyebrow">Project</span>
+        <h1 class="page-title">Offtake Agreement</h1>
+        <p class="page-meta">Google Cloud · Armstrong County Solar + Storage</p>
+      </div>
+    </div>
+    <div class="col-2-1">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Contract Terms</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);"><span style="color:var(--ink-3);">Offtaker</span><b>Google Cloud</b></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);"><span style="color:var(--ink-3);">Project</span><b>Armstrong County Solar + Storage</b></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);"><span style="color:var(--ink-3);">Contracted Capacity</span><b style="color:var(--good);">40 MW</b></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);"><span style="color:var(--ink-3);">Term</span><b>20 years · Fixed Price</b></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);"><span style="color:var(--ink-3);">Price</span><b style="color:var(--sun);">$38.50 / MWh</b></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);"><span style="color:var(--ink-3);">Uptime SLA</span><b>99.9%</b></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);"><span style="color:var(--ink-3);">Carbon-Free</span><b style="color:var(--good);">100% · Cryptographic proof</b></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:var(--ink-3);">Status</span><span class="status-pill green">Active</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Delivery Performance</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">MTD Energy</span><b style="color:var(--good);">4,820 MWh</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Uptime (30-day)</span><b style="color:var(--good);">99.4%</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">SLA Compliance</span><b style="color:var(--good);">✓ In spec</b></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-3);">Revenue (MTD)</span><b>$185,570</b></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Capital Markets Link</div></div>
+          <div class="panel-body" style="font-size:12px;color:var(--ink-2);">
+            <p style="margin-bottom:10px;">This offtake agreement is the primary collateral for securitisation of LIUM-PROJ-002. Financiers on LIUM can inspect delivery performance in real time.</p>
+            <a href="lium.html" style="color:var(--teal);text-decoration:underline;font-size:11px;">View on LIUM Capital Markets →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ══════════════ PROJECT REGISTRY ══════════════ -->
   <section class="page" id="page-project-registry">
     <div class="page-head">
@@ -2253,10 +2450,11 @@ async function submitIndicator() {
 }
 
 const roleConfig = {
-  utility:        { nav: 'nav-utility',       default: 'util-post',    initials: 'PG', name: 'Pacific Gas & Electric', role: 'Utility' },
-  edgegrid:       { nav: 'nav-edgegrid',      default: 'util-browse',  initials: 'EG', name: 'AutoGrid Networks',      role: 'EdgeGrid' },
-  microgrid:      { nav: 'nav-microgrid',     default: 'mg-requests',  initials: 'AX', name: 'Axil Developers',        role: 'DC Operator' },
-  'risk-provider':{ nav: 'nav-risk-provider', default: 'rp-projects',  initials: 'RP', name: 'Trusted Risk Prov.',     role: 'Risk Provider' },
+  utility:        { nav: 'nav-utility',       default: 'util-post',       initials: 'PG', name: 'Pacific Gas & Electric', role: 'Utility' },
+  edgegrid:       { nav: 'nav-edgegrid',      default: 'util-browse',     initials: 'EG', name: 'AutoGrid Networks',      role: 'EdgeGrid' },
+  project:        { nav: 'nav-project',       default: 'proj-dashboard',  initials: 'GC', name: 'Google Cloud',           role: 'Project' },
+  microgrid:      { nav: 'nav-microgrid',     default: 'mg-requests',     initials: 'AX', name: 'Axil Developers',        role: 'DC Operator' },
+  'risk-provider':{ nav: 'nav-risk-provider', default: 'rp-projects',     initials: 'RP', name: 'Trusted Risk Prov.',     role: 'Risk Provider' },
 };
 
 function switchRole(role) {
@@ -2292,10 +2490,13 @@ function showPage(pageId) {
     'util-browse':   ['Available Microgrid Capacity', 'Bay Area · 3 microgrids online'],
     'util-dispatch': ['Active Dispatch', 'GS-2026-0047 — delivering now'],
     'util-revenue':  ['Revenue Allocation', 'Confirm distribution pool'],
-    'mg-requests':   ['Incoming Requests', 'Microgrid / DC Operator — Menlo Housing MG'],
-    'mg-delivery':   ['Delivery Confirmation', 'GS-2026-0047 — dispatching now'],
-    'mg-revenue':    ['Revenue Received', 'Grid services income — UNITS settlement'],
-    'mg-capacity':   ['My Capacity', 'Menlo Housing Microgrid — availability'],
+    'mg-requests':      ['Incoming Requests', 'Microgrid / DC Operator — Menlo Housing MG'],
+    'mg-delivery':      ['Delivery Confirmation', 'GS-2026-0047 — dispatching now'],
+    'mg-revenue':       ['Revenue Received', 'Grid services income — UNITS settlement'],
+    'mg-capacity':      ['My Capacity', 'Menlo Housing Microgrid — availability'],
+    'proj-dashboard':   ['Armstrong County Solar + Storage', 'Google Cloud · LIUM-PROJ-002'],
+    'proj-offtake':     ['Offtake Agreement', 'Google Cloud · 20yr Fixed · $38.50/MWh'],
+    'project-registry': ['Project Registry', 'All registered LIUM Energy projects'],
   };
   const t = titles[pageId];
   if (t) {
