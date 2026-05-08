@@ -475,7 +475,6 @@ body {
       <option value="utility">Utility</option>
       <option value="edgegrid">EdgeGrid</option>
       <option value="project">Project</option>
-      <option value="microgrid">Microgrid / DC Operator</option>
       <option value="risk-provider">Risk Provider</option>
     </select>
   </div>
@@ -526,26 +525,13 @@ body {
   </nav>
 
   <!-- Project Nav -->
+  <!-- Project Nav (merged with Microgrid / DC Operator) -->
   <nav class="nav-section" id="nav-project" style="display:none">
     <div class="nav-section-label">Project</div>
     <a class="nav-link active" onclick="showPage('proj-dashboard')">
       <i data-lucide="layout-grid"></i> Project Dashboard
     </a>
-    <a class="nav-link" onclick="showPage('rp-telemetry')">
-      <i data-lucide="activity"></i> Live Telemetry
-    </a>
-    <a class="nav-link" onclick="showPage('proj-offtake')">
-      <i data-lucide="file-text"></i> Offtake Agreement
-    </a>
-    <a class="nav-link" onclick="showPage('project-registry')">
-      <i data-lucide="database"></i> Project Registry
-    </a>
-  </nav>
-
-  <!-- Microgrid Nav -->
-  <nav class="nav-section" id="nav-microgrid" style="display:none">
-    <div class="nav-section-label">Microgrid / DC Operator</div>
-    <a class="nav-link active" onclick="showPage('mg-requests')">
+    <a class="nav-link" onclick="showPage('mg-requests')">
       <i data-lucide="inbox"></i> Incoming Requests
       <span class="nav-badge">1</span>
     </a>
@@ -560,6 +546,9 @@ body {
     </a>
     <a class="nav-link" onclick="showPage('rp-telemetry')">
       <i data-lucide="activity"></i> Live Telemetry
+    </a>
+    <a class="nav-link" onclick="showPage('proj-offtake')">
+      <i data-lucide="file-text"></i> Offtake Agreement
     </a>
     <a class="nav-link" onclick="showPage('project-registry')">
       <i data-lucide="database"></i> Project Registry
@@ -2453,7 +2442,6 @@ const roleConfig = {
   utility:        { nav: 'nav-utility',       default: 'util-post',       initials: 'PG', name: 'Pacific Gas & Electric', role: 'Utility' },
   edgegrid:       { nav: 'nav-edgegrid',      default: 'util-browse',     initials: 'EG', name: 'AutoGrid Networks',      role: 'EdgeGrid' },
   project:        { nav: 'nav-project',       default: 'proj-dashboard',  initials: 'GC', name: 'Google Cloud',           role: 'Project' },
-  microgrid:      { nav: 'nav-microgrid',     default: 'mg-requests',     initials: 'AX', name: 'Axil Developers',        role: 'DC Operator' },
   'risk-provider':{ nav: 'nav-risk-provider', default: 'rp-projects',     initials: 'RP', name: 'Trusted Risk Prov.',     role: 'Risk Provider' },
 };
 
